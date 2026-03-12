@@ -2456,21 +2456,12 @@ function partilharCliente(id, btn) {
   var total = calcTotal(p);
   var totalStr = total > 0 ? ' no valor de ' + total.toFixed(2).replace('.',',') + ' €' : '';
 
-  var msg = 'Olá ' + (p.nome ? p.nome.split(' ')[0] : '') + '! 👋
-
-'
-    + 'A sua proposta de cozinha' + totalStr + ' está disponível para consulta:
-
-'
-    + '👉 ' + url + '
-
-'
-    + 'Pode ver todos os detalhes, orçamento e acompanhar o estado do projeto.
-
-'
-    + 'Qualquer dúvida estou disponível 🙂
-'
-    + 'Hélder Melo · Leroy Merlin';
+  var msg = 'Ol\u00e1 ' + (p.nome ? p.nome.split(' ')[0] : '') + '! \ud83d\udc4b\n\n'
+    + 'A sua proposta de cozinha' + totalStr + ' est\u00e1 dispon\u00edvel para consulta:\n\n'
+    + '\ud83d\udc49 ' + url + '\n\n'
+    + 'Pode ver todos os detalhes, or\u00e7amento e acompanhar o estado do projeto.\n\n'
+    + 'Qualquer d\u00favida estou dispon\u00edvel!\n'
+    + 'H\u00e9lder Melo \u00b7 Leroy Merlin';
 
   // Mostrar modal de partilha
   mostrarModalPartilha(url, msg, btn);
