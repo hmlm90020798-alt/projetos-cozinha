@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Projeto Cozinha · Hélder Melo</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Syne:wght@400;600;700;800&family=Inconsolata:wght@400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProjetoCozinha</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Syne:wght@400;600;700;800&family=Inconsolata:wght@400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+
 :root {
   --lm-green: #3D6B35;
   --lm-green-light: #67AB2F;
@@ -1597,257 +1598,28 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
   .orca-total-band { flex-direction: column; gap: 16px; text-align: center; }
   .cli-nav-links { display: none; }
 }
-</style>
+
+#view-cliente { display: block !important; }
+#cli-loading {
+  display: flex;
+  position: fixed; inset: 0;
+  background: #1E2118;
+  align-items: center; justify-content: center;
+  flex-direction: column; gap: 16px;
+  z-index: 9999;
+}
+  </style>
 </head>
 <body>
 
-<!-- ══ LOGIN ══ -->
-<div id="view-login" class="view active">
-  <div class="login-box">
-    <div class="login-logo">
-      <div class="login-logo-lm">Leroy Merlin Portugal</div>
-      <div class="login-logo-title">Projeto<br><span>Cozinha</span></div>
-      <div class="login-logo-sub">GESTÃO DE APRESENTAÇÕES</div>
-    </div>
-    <div class="login-card">
-      <div class="form-field" style="margin-bottom:16px;">
-        <div class="login-label">Email</div>
-        <input type="email" id="login-email" class="login-input" placeholder="helder.melo@leroymerlin.pt"
-          onkeydown="if(event.key==='Enter')document.getElementById('login-pw').focus()"
-          style="margin-bottom:0;">
-      </div>
-      <div class="form-field" style="margin-bottom:20px;">
-        <div class="login-label">Password</div>
-        <input type="password" id="login-pw" class="login-input" placeholder="••••••••"
-          onkeydown="if(event.key==='Enter')doLogin()"
-          style="margin-bottom:0;">
-      </div>
-      <button class="login-btn" onclick="doLogin()">Entrar</button>
-      <div class="login-error" id="login-err"></div>
-    </div>
-  </div>
+<!-- Loading -->
+<div id="cli-loading">
+  <div style="width:36px;height:36px;border:3px solid rgba(103,171,47,.2);border-top-color:#67AB2F;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+  <div style="font-family:Syne,sans-serif;font-size:11px;font-weight:700;color:rgba(242,239,232,.35);letter-spacing:1.5px;">A CARREGAR...</div>
+  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 </div>
 
-<!-- ══ PAINEL DE GESTÃO ══ -->
-<div id="view-painel" class="view">
-  <header class="painel-header">
-    <div class="painel-logo">Projeto<em>Cozinha</em></div>
-    <div class="painel-tag">Painel de Gestão</div>
-    <div class="painel-hdr-right">
-      <span class="sync-status" id="sync-status"></span>
-      <button class="btn-logout" onclick="doLogout()">Sair</button>
-    </div>
-  </header>
-
-  <div class="painel-body">
-    <!-- banner bin id — só aparece na primeira vez -->
-    <div id="bin-id-banner" style="display:none;background:rgba(184,146,42,.1);border:1px solid rgba(184,146,42,.3);border-radius:12px;padding:16px 20px;margin-bottom:24px;display:none;">
-      <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px;margin-bottom:6px;">☁️ SINCRONIZAÇÃO ATIVA</div>
-      <div style="font-size:12px;color:var(--ink2);margin-bottom:8px;">O teu Bin ID foi criado. Copia-o e guarda num lugar seguro — se mudares de browser precisas dele.</div>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <code id="bin-id-val" style="font-family:'Inconsolata',monospace;font-size:13px;font-weight:600;color:var(--ink);background:var(--cream);border:1px solid var(--border);padding:6px 12px;border-radius:7px;"></code>
-        <button onclick="navigator.clipboard.writeText(document.getElementById('bin-id-val').textContent);this.textContent='✓ Copiado!';setTimeout(()=>this.textContent='Copiar',2000)" style="font-family:'Syne',sans-serif;font-size:10px;font-weight:800;padding:6px 14px;background:var(--lm-green);color:#fff;border:none;border-radius:7px;cursor:pointer;">Copiar</button>
-        <button onclick="document.getElementById('bin-id-banner').style.display='none'" style="font-family:'Syne',sans-serif;font-size:10px;font-weight:700;padding:6px 12px;background:none;border:1px solid var(--border);border-radius:7px;cursor:pointer;color:var(--ink3);">Fechar</button>
-      </div>
-    </div>
-
-    <div class="painel-top">
-      <div class="painel-title">Os Meus Projetos</div>
-      <button class="btn-novo" onclick="abrirModalNovo()">
-        <span>＋</span> Novo Projeto
-      </button>
-    </div>
-
-    <!-- Pesquisa e Filtros -->
-    <div class="painel-search-bar">
-      <div class="painel-search-wrap">
-        <input type="text" class="painel-search-input" id="painel-pesquisa"
-          placeholder="Pesquisar por nome ou localidade…"
-          oninput="renderPainel()">
-      </div>
-      <button class="filtro-btn active" onclick="setFiltro(this,'todos')">Todos</button>
-      <button class="filtro-btn" onclick="setFiltro(this,'proposta')">Proposta</button>
-      <button class="filtro-btn" onclick="setFiltro(this,'aprovado')">Aprovado</button>
-      <button class="filtro-btn" onclick="setFiltro(this,'obra')">Em Obra</button>
-      <button class="filtro-btn" onclick="setFiltro(this,'concluido')">Concluído</button>
-    </div>
-
-    <div class="stats-bar" id="stats-bar">
-      <div class="stat-card">
-        <div class="stat-val" id="stat-total">0</div>
-        <div class="stat-lbl">Total Projetos</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" id="stat-proposta">0</div>
-        <div class="stat-lbl">Em Proposta</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" id="stat-obra">0</div>
-        <div class="stat-lbl">Em Obra</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" id="stat-expira">0</div>
-        <div class="stat-lbl">A Expirar (7d)</div>
-      </div>
-    </div>
-
-    <div class="proj-grid" id="proj-grid"></div>
-  </div>
-</div>
-
-<!-- ══ MODAL CRIAR / EDITAR ══ -->
-<div class="overlay-modal" id="modal-projeto">
-  <div class="modal-box">
-    <div class="modal-hdr">
-      <div class="modal-title" id="modal-proj-titulo">Novo Projeto</div>
-      <button class="modal-x" onclick="fecharModal()">×</button>
-    </div>
-    <div class="modal-body">
-
-      <!-- cliente -->
-      <div class="form-section">
-        <div class="form-section-title">Cliente</div>
-        <div class="form-grid">
-          <div class="form-field">
-            <div class="form-label">Nome do Cliente</div>
-            <input type="text" id="f-nome" class="form-input" placeholder="Ex: Mário Perdigão">
-          </div>
-          <div class="form-field">
-            <div class="form-label">Contacto</div>
-            <input type="text" id="f-contacto" class="form-input" placeholder="Ex: 963 014 483">
-          </div>
-          <div class="form-field">
-            <div class="form-label">Morada</div>
-            <input type="text" id="f-morada" class="form-input" placeholder="Ex: Sabugosa">
-          </div>
-          <div class="form-field">
-            <div class="form-label">Localidade</div>
-            <input type="text" id="f-localidade" class="form-input" placeholder="Ex: Tondela">
-          </div>
-        </div>
-      </div>
-
-      <!-- proposta -->
-      <div class="form-section">
-        <div class="form-section-title">Proposta</div>
-        <div class="form-grid">
-          <div class="form-field">
-            <div class="form-label">Fase</div>
-            <select id="f-fase" class="form-select">
-              <option value="proposta">Em Proposta</option>
-              <option value="aprovado">Aprovado</option>
-              <option value="encomenda">Materiais Encomendados</option>
-              <option value="entrega">Aguarda Entrega</option>
-              <option value="montagem">Em Montagem</option>
-              <option value="concluido">Concluído</option>
-            </select>
-          </div>
-          <div class="form-field">
-            <div class="form-label">Validade da Proposta</div>
-            <input type="date" id="f-prazo" class="form-input">
-          </div>
-          <div class="form-field span2">
-            <div class="form-label">Previsão de Entrega</div>
-            <input type="text" id="f-entrega" class="form-input" placeholder="Ex: 16/04/2026">
-          </div>
-        </div>
-      </div>
-
-      <!-- imagens -->
-      <div class="form-section">
-        <div class="form-section-title">📸 Imagens do Projeto (Render 3D / Fotos)</div>
-        <div class="img-upload-area" id="upload-area">
-          <input type="file" id="f-imagens" accept="image/*" multiple onchange="processarImagens(this.files)">
-          <div class="img-upload-icon">🖼️</div>
-          <div class="img-upload-txt">Clica ou arrasta imagens aqui</div>
-          <div class="img-upload-sub">JPG, PNG, WEBP · Até 5 imagens · Máx 4MB cada</div>
-        </div>
-        <div class="img-thumbs" id="img-thumbs-preview"></div>
-      </div>
-
-      <!-- orçamento — categorias livres -->
-      <div class="form-section">
-        <div class="form-section-title">Orçamento</div>
-        <div style="font-size:12px;color:var(--ink3);margin-bottom:12px;">Define as categorias e os valores manualmente. A designação é livre.</div>
-        <div id="lines-orcamento"></div>
-        <button class="btn-add-linha" onclick="addLinhaOrcamento()">＋ Adicionar categoria</button>
-        <div class="orca-total-preview" style="margin-top:12px;">
-          <span class="orca-total-preview-lbl">Total</span>
-          <span class="orca-total-preview-val" id="orca-total-preview">0,00 €</span>
-        </div>
-      </div>
-
-      <!-- elementos (lista descritiva sem preços) -->
-      <div class="form-section">
-        <div class="form-section-title">Elementos da Cozinha</div>
-        <div style="font-size:12px;color:var(--ink3);margin-bottom:16px;">Lista descritiva dos artigos — agrupados por categoria.</div>
-
-        <div id="lines-tampos"></div>
-        <button class="btn-add-linha" onclick="addLinhaElem('tampos','Tampos')">＋ Tampos</button>
-
-        <div id="lines-eletros" style="margin-top:12px;"></div>
-        <button class="btn-add-linha" onclick="addLinhaElem('eletros','Eletrodomésticos')">＋ Eletrodomésticos</button>
-
-        <div id="lines-acessorios" style="margin-top:12px;"></div>
-        <button class="btn-add-linha" onclick="addLinhaElem('acessorios','Acessórios')">＋ Acessórios</button>
-
-        <!-- categorias personalizadas -->
-        <div id="lines-extra" style="margin-top:12px;"></div>
-        <div style="display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap;">
-          <input type="text" id="f-nova-cat" class="form-input" placeholder="Nova categoria (ex: Pavimento)" style="flex:1;min-width:180px;max-width:280px;">
-          <button class="btn-add-linha" onclick="addCatExtra()">＋ Adicionar categoria</button>
-        </div>
-      </div>
-
-      <!-- notas -->
-      <div class="form-section">
-        <div class="form-section-title">Notas & Condições</div>
-        <div class="form-field">
-          <div class="form-label">Desconto / Promoção</div>
-          <input type="text" id="f-desconto" class="form-input" placeholder="Ex: Desconto de 10% Pack Projeto incluído">
-        </div>
-        <div class="form-field" style="margin-top:10px;">
-          <div class="form-label">Notas Adicionais</div>
-          <textarea id="f-notas" class="form-textarea" placeholder="Observações, condições especiais, etc."></textarea>
-        </div>
-      </div>
-
-      <!-- timeline -->
-      <div class="form-section">
-        <div class="form-section-title">Timeline da Obra</div>
-        <div id="lines-timeline"></div>
-        <button class="btn-add-linha" onclick="addLinhaTimeline()">＋ Adicionar marco</button>
-      </div>
-
-      <!-- interações -->
-      <div class="form-section" id="form-section-interacoes" style="display:none;">
-        <div class="form-section-title">Registo de Interações</div>
-        <div class="painel-feed-wrap">
-          <div class="painel-feed-titulo">📋 Histórico do Projeto</div>
-          <div class="painel-feed-form">
-            <select class="painel-feed-select" id="feed-tipo">
-              <option value="nota">Nota</option>
-              <option value="alteracao">Alteração</option>
-              <option value="decisao">Decisão</option>
-              <option value="problema">Problema</option>
-            </select>
-            <textarea class="painel-feed-input" id="feed-texto" placeholder="Descreve a interação, alteração ou acontecimento..." rows="2"></textarea>
-            <button class="btn-add-feed" onclick="addInteracao()">＋ Registar</button>
-          </div>
-          <div class="painel-feed-lista" id="painel-feed-lista"></div>
-        </div>
-      </div>
-
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
-      <button class="btn-save" onclick="guardarProjeto()">💾 Guardar Projeto</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ PÁGINA PÚBLICA DO CLIENTE ══ -->
-<div id="view-cliente" class="view">
+<div id="view-cliente" class="view active">
 
   <nav class="cli-nav">
     <div class="cli-nav-logo">Projeto<em>Cozinha</em></div>
@@ -1860,11 +1632,6 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
       <a href="#timeline" class="cli-nav-link">Acompanhamento</a>
       <a href="#contacto" class="cli-nav-link">Contacto</a>
     </div>
-    <button onclick="setView('painel');renderPainel();" id="btn-voltar-painel"
-      style="margin-left:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:rgba(242,239,232,.6);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;padding:6px 14px;border-radius:7px;cursor:pointer;flex-shrink:0;transition:all .15s;"
-      onmouseover="this.style.color='#F2EFE8'" onmouseout="this.style.color='rgba(242,239,232,.6)'">
-      ← Painel
-    </button>
   </nav>
 
   <!-- HERO -->
@@ -2023,386 +1790,26 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
   <img id="lightbox-img" src="" alt="">
   <button class="lightbox-nav lightbox-next" onclick="event.stopPropagation();lightboxNav(1)">›</button>
   <div class="lightbox-counter" id="lightbox-counter"></div>
-</div>
 
-<!-- TOAST NOTIFICAÇÃO -->
-<div class="toast-notif" id="toast-notif">
-  <div class="toast-icon">👁</div>
-  <div class="toast-body">
-    <div class="toast-titulo" id="toast-titulo">Cliente visitou a proposta</div>
-    <div class="toast-sub" id="toast-sub"></div>
-  </div>
-</div>
+<script type="module">
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
-// ════════════════════════════════════════════════
-// DADOS & ESTADO
-// ════════════════════════════════════════════════
-const LS_KEY = 'projcozinha_v1';
-
-var PROJETOS = [];
-var EDIT_ID  = null;
-var EDIT_IMGS = []; // base64 das imagens em edição
-var cdInterval = null; // contador regressivo
-
-// lightbox
-var LB_IMGS = [];
-var LB_IDX  = 0;
-
-// ── Firebase Firestore ────────────────────────
+// Firebase — só leitura para carregar os dados do projeto
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
-const firebaseConfig = {
+const _app = initializeApp({
   apiKey: "AIzaSyALyrpFSGx4evXtOYCfRIvWc_jTjByz0R8",
   authDomain: "hm-projetos-lm.firebaseapp.com",
-  projectId: "hm-projetos-lm",
-  storageBucket: "hm-projetos-lm.firebasestorage.app",
-  messagingSenderId: "772658359928",
-  appId: "1:772658359928:web:98332ec006329f380ec78d"
-};
-
-const _fbApp = initializeApp(firebaseConfig);
-const _db    = getFirestore(_fbApp);
-const _auth  = getAuth(_fbApp);
+  projectId: "hm-projetos-lm"
+});
+const _db  = getFirestore(_app);
+const _auth = getAuth(_app);
 const _docRef = doc(_db, 'projcozinha', 'dados');
 
-function setSyncStatus(estado) {
-  var el = document.getElementById('sync-status');
-  if (!el) return;
-  var map = { saving: '⏳ A guardar…', saved: '✓ Guardado', error: '⚠️ Erro ao guardar' };
-  el.textContent = map[estado] || '';
-  el.className = 'sync-status sync-' + estado;
-  if (estado === 'saved') setTimeout(function(){ el.textContent = ''; el.className = 'sync-status'; }, 2500);
-}
+var LB_IMGS = []; var LB_IDX = 0; var cdInterval = null;
+var BADGE_LABELS = {alteracao:'Alteração', problema:'Problema', decisao:'Decisão', nota:'Nota'};
 
-async function guardar() {
-  if (typeof MODO_STANDALONE !== 'undefined' && MODO_STANDALONE) return;
-  try { localStorage.setItem(LS_KEY, JSON.stringify(PROJETOS)); } catch(e) {}
-  setSyncStatus('saving');
-  try {
-    await setDoc(_docRef, { projetos: JSON.stringify(PROJETOS) });
-    setSyncStatus('saved');
-  } catch(e) {
-    console.error('Firebase save error:', e);
-    setSyncStatus('error');
-    alert('Erro ao guardar no Firebase: ' + e.message + '\n\nOs dados ficaram guardados localmente.');
-  }
-}
-
-async function carregar() {
-  if (typeof MODO_STANDALONE !== 'undefined' && MODO_STANDALONE) {
-    // ficheiro exportado — usar apenas dados embebidos
-    if (typeof PROJETO_EMBED !== 'undefined' && PROJETO_EMBED) {
-      PROJETOS = [PROJETO_EMBED];
-    }
-    return;
-  }
-  try {
-    var snap = await getDoc(_docRef);
-    if (snap.exists()) {
-      PROJETOS = JSON.parse(snap.data().projetos || '[]');
-      try { localStorage.setItem(LS_KEY, JSON.stringify(PROJETOS)); } catch(e) {}
-      return;
-    }
-  } catch(e) { console.warn('Firebase load error, usando localStorage:', e); }
-  // fallback localStorage
-  try {
-    var s = localStorage.getItem(LS_KEY);
-    if (s) PROJETOS = JSON.parse(s);
-  } catch(e) { PROJETOS = []; }
-}
-function uid() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2,6);
-}
-
-// ════════════════════════════════════════════════
-// IMAGENS
-// ════════════════════════════════════════════════
-function processarImagens(files) {
-  var restante = 5 - EDIT_IMGS.length;
-  if (restante <= 0) { alert('Máximo de 5 imagens atingido.'); return; }
-  var lista = Array.from(files).slice(0, restante);
-  var pendentes = lista.length;
-  lista.forEach(function(file) {
-    if (file.size > 4 * 1024 * 1024) { alert(file.name + ' é maior que 4MB.'); pendentes--; return; }
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      EDIT_IMGS.push(e.target.result);
-      pendentes--;
-      if (pendentes <= 0) renderThumbs();
-    };
-    reader.readAsDataURL(file);
-  });
-  // reset input para permitir re-upload do mesmo ficheiro
-  document.getElementById('f-imagens').value = '';
-}
-
-function renderThumbs() {
-  var ct = document.getElementById('img-thumbs-preview');
-  ct.innerHTML = EDIT_IMGS.map(function(b64, i) {
-    return '<div class="img-thumb">' +
-      '<img src="' + b64 + '" alt="Imagem ' + (i+1) + '">' +
-      '<button class="img-thumb-del" onclick="removerImagem(' + i + ')">×</button>' +
-    '</div>';
-  }).join('');
-}
-
-function removerImagem(idx) {
-  EDIT_IMGS.splice(idx, 1);
-  renderThumbs();
-}
-
-// ════════════════════════════════════════════════
-// LIGHTBOX
-// ════════════════════════════════════════════════
-function abrirLightbox(imgs, idx) {
-  LB_IMGS = imgs; LB_IDX = idx;
-  document.getElementById('lightbox-img').src = LB_IMGS[LB_IDX];
-  document.getElementById('lightbox-counter').textContent = (LB_IDX+1) + ' / ' + LB_IMGS.length;
-  document.getElementById('lightbox').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function fecharLightbox(e) {
-  if (e && e.target !== document.getElementById('lightbox') && e.target !== document.getElementById('lightbox-close')) return;
-  document.getElementById('lightbox').classList.remove('open');
-  document.body.style.overflow = '';
-}
-function lightboxNav(dir) {
-  LB_IDX = (LB_IDX + dir + LB_IMGS.length) % LB_IMGS.length;
-  document.getElementById('lightbox-img').src = LB_IMGS[LB_IDX];
-  document.getElementById('lightbox-counter').textContent = (LB_IDX+1) + ' / ' + LB_IMGS.length;
-}
-document.addEventListener('keydown', function(e) {
-  if (!document.getElementById('lightbox').classList.contains('open')) return;
-  if (e.key === 'Escape')      fecharLightbox({target: document.getElementById('lightbox')});
-  if (e.key === 'ArrowRight')  lightboxNav(1);
-  if (e.key === 'ArrowLeft')   lightboxNav(-1);
-});
-
-// ════════════════════════════════════════════════
-// LOGIN
-// ════════════════════════════════════════════════
-// ════════════════════════════════════════════════
-// LOGIN — Firebase Authentication
-// ════════════════════════════════════════════════
-function doLogin() {
-  var email = document.getElementById('login-email').value.trim();
-  var pw    = document.getElementById('login-pw').value;
-  var err   = document.getElementById('login-err');
-  var btn   = document.querySelector('.login-btn');
-  if (!email || !pw) { err.textContent = 'Preenche o email e a password.'; err.style.display = 'block'; return; }
-  btn.textContent = 'A entrar…'; btn.disabled = true;
-  signInWithEmailAndPassword(_auth, email, pw)
-    .then(function() {
-      err.style.display = 'none';
-      btn.textContent = 'Entrar'; btn.disabled = false;
-    })
-    .catch(function(e) {
-      var msgs = {
-        'auth/invalid-credential':    'Email ou password incorretos.',
-        'auth/user-not-found':        'Utilizador não encontrado.',
-        'auth/wrong-password':        'Password incorreta.',
-        'auth/invalid-email':         'Email inválido.',
-        'auth/too-many-requests':     'Demasiadas tentativas. Tenta mais tarde.'
-      };
-      err.textContent = msgs[e.code] || 'Erro ao entrar. Tenta novamente.';
-      err.style.display = 'block';
-      btn.textContent = 'Entrar'; btn.disabled = false;
-    });
-}
-
-function doLogout() {
-  signOut(_auth).then(function() {
-    setView('login');
-    document.getElementById('login-email').value = '';
-    document.getElementById('login-pw').value = '';
-    document.getElementById('login-err').style.display = 'none';
-  });
-}
-
-// Observador de estado de autenticação — controla qual view mostrar
-onAuthStateChanged(_auth, function(user) {
-  if (user) {
-    // utilizador autenticado
-    if (!checkUrlParam()) {
-      carregar().then(function() {
-        setView('painel');
-        renderPainel();
-        document.getElementById('loading-overlay') && document.getElementById('loading-overlay').remove();
-      });
-    }
-  }
-  // se não autenticado, o init abaixo trata de mostrar o login
-});
-function setView(v) {
-  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-  document.getElementById('view-' + v).classList.add('active');
-  if (v === 'painel') {
-    iniciarPollingVisitas();
-  } else {
-    pararPollingVisitas();
-  }
-}
-
-var FILTRO_ATIVO = 'todos';
-
-function setFiltro(btn, fase) {
-  FILTRO_ATIVO = fase;
-  document.querySelectorAll('.filtro-btn').forEach(function(b) { b.classList.remove('active'); });
-  btn.classList.add('active');
-  renderPainel();
-}
-
-// ════════════════════════════════════════════════
-// NOTIFICAÇÕES DE VISITA DO CLIENTE
-// ════════════════════════════════════════════════
-function mostrarToast(titulo, sub) {
-  var t = document.getElementById('toast-notif');
-  document.getElementById('toast-titulo').textContent = titulo;
-  document.getElementById('toast-sub').textContent    = sub;
-  t.classList.add('show');
-  setTimeout(function() { t.classList.remove('show'); }, 6000);
-}
-
-async function registarVisitaCliente(projetoId, nomeCliente) {
-  try {
-    var agora = new Date();
-    var dataHora = agora.toLocaleDateString('pt-PT') + ' · ' +
-      String(agora.getHours()).padStart(2,'0') + ':' + String(agora.getMinutes()).padStart(2,'0');
-    var visitaDoc = doc(_db, 'visitas', projetoId);
-    var snapAtual = null;
-    try { snapAtual = await getDoc(visitaDoc); } catch(e) {}
-    var totalAtual = (snapAtual && snapAtual.exists()) ? (snapAtual.data().total||0)+1 : 1;
-    await setDoc(visitaDoc, {
-      ultimaVisita: dataHora,
-      nomeCliente: nomeCliente || 'Cliente',
-      total: totalAtual
-    }, { merge: true });
-  } catch(e) { console.warn('Visita não registada:', e.message); }
-}
-
-async function verificarNovasVisitas() {
-  // Verificar se há visitas registadas recentemente (últimos 10 min)
-  try {
-    for (var i = 0; i < PROJETOS.length; i++) {
-      var p = PROJETOS[i];
-      var visitaDoc = doc(_db, 'visitas', p.id);
-      var snap = await getDoc(visitaDoc);
-      if (snap.exists()) {
-        var d = snap.data();
-        var ultimaVistaPrev = p._ultimaVisita;
-        p._ultimaVisita    = d.ultimaVisita;
-        p._totalVisitas    = d.total || 0;
-        // Se houve nova visita desde a última verificação
-        if (ultimaVistaPrev && d.ultimaVisita !== ultimaVistaPrev) {
-          mostrarToast('👁 ' + (d.nomeCliente||'Cliente') + ' visitou a proposta', 'Última visita: ' + d.ultimaVisita + ' · ' + (d.total||1) + 'ª vez');
-        }
-      }
-    }
-  } catch(e) { /* silencioso */ }
-}
-
-// verificar visitas a cada 2 minutos quando o painel está ativo
-var _visitasInterval = null;
-function iniciarPollingVisitas() {
-  if (_visitasInterval) return;
-  verificarNovasVisitas();
-  _visitasInterval = setInterval(verificarNovasVisitas, 120000);
-}
-function pararPollingVisitas() {
-  if (_visitasInterval) { clearInterval(_visitasInterval); _visitasInterval = null; }
-}
-
-// ════════════════════════════════════════════════
-// PAINEL
-// ════════════════════════════════════════════════
-function renderPainel() {
-  var hoje = new Date();
-  var em7  = new Date(hoje.getTime() + 7*24*60*60*1000);
-
-  var nProposta = 0, nObra = 0, nExpira = 0;
-  PROJETOS.forEach(function(p) {
-    if (p.fase === 'proposta') nProposta++;
-    if (p.fase === 'obra' || p.fase === 'montagem' || p.fase === 'entrega') nObra++;
-    if (p.prazo) {
-      var d = new Date(p.prazo);
-      if (d > hoje && d <= em7) nExpira++;
-    }
-  });
-
-  document.getElementById('stat-total').textContent    = PROJETOS.length;
-  document.getElementById('stat-proposta').textContent = nProposta;
-  document.getElementById('stat-obra').textContent     = nObra;
-  document.getElementById('stat-expira').textContent   = nExpira;
-
-  // Filtrar por fase + pesquisa
-  var pesquisa = (document.getElementById('painel-pesquisa') ? document.getElementById('painel-pesquisa').value.toLowerCase().trim() : '');
-  var lista = PROJETOS.slice().reverse().filter(function(p) {
-    var passaFiltro = FILTRO_ATIVO === 'todos' ||
-      p.fase === FILTRO_ATIVO ||
-      (FILTRO_ATIVO === 'obra' && (p.fase === 'montagem' || p.fase === 'entrega'));
-    var passaPesquisa = !pesquisa ||
-      (p.nome||'').toLowerCase().includes(pesquisa) ||
-      (p.localidade||'').toLowerCase().includes(pesquisa) ||
-      (p.morada||'').toLowerCase().includes(pesquisa);
-    return passaFiltro && passaPesquisa;
-  });
-
-  var grid = document.getElementById('proj-grid');
-  if (lista.length === 0) {
-    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">' +
-      '<div class="empty-state-icon">🔍</div>' +
-      '<div class="empty-state-title">' + (pesquisa ? 'Sem resultados para "'+pesquisa+'"' : 'Sem projetos nesta fase') + '</div>' +
-      '<div class="empty-state-sub">Tenta outro filtro ou pesquisa.</div>' +
-    '</div>';
-    return;
-  }
-
-  grid.innerHTML = lista.map(function(p) {
-    var total = calcTotal(p);
-    var prazoInfo = '';
-    if (p.prazo) {
-      var d = new Date(p.prazo);
-      var diff = Math.ceil((d - hoje) / (1000*60*60*24));
-      if (diff < 0) prazoInfo = '<div class="proj-card-prazo prazo-urgente">⚠ Expirou</div>';
-      else if (diff <= 3) prazoInfo = '<div class="proj-card-prazo prazo-urgente">⏳ Expira em ' + diff + 'd</div>';
-      else prazoInfo = '<div class="proj-card-prazo">📅 Expira ' + d.toLocaleDateString('pt-PT') + '</div>';
-    }
-    // Badge de visita
-    var visitaBadge = '';
-    if (p._ultimaVisita) {
-      visitaBadge = '<div class="proj-card-visita">' +
-        '<span class="badge-visita">👁 Visto · ' + p._ultimaVisita + (p._totalVisitas > 1 ? ' · ' + p._totalVisitas + 'x' : '') + '</span>' +
-        '</div>';
-    }
-    return '<div class="proj-card">' +
-      '<div class="proj-card-header">' +
-        '<div class="proj-card-nome">' + (p.nome||'—') + '</div>' +
-        '<div class="proj-card-local">' + [p.morada, p.localidade].filter(Boolean).join(' · ') + '</div>' +
-      '</div>' +
-      '<div class="proj-card-body">' +
-        '<div class="proj-card-row">' +
-          '<div class="proj-card-total">' + total.toFixed(2).replace('.',',') + ' €</div>' +
-          '<span class="proj-fase-badge fase-' + p.fase + '">' + faseLbl(p.fase) + '</span>' +
-        '</div>' +
-        prazoInfo +
-      '</div>' +
-      visitaBadge +
-      '<div class="proj-card-footer">' +
-        '<button class="btn-sm primary" onclick="verCliente(\'' + p.id + '\')">👁 Ver</button>' +
-        '<button class="btn-sm btn-partilhar" onclick="partilharCliente(\'' + p.id + '\', this)">📤 Partilhar</button>' +
-        '<button class="btn-sm" onclick="editarProjeto(\'' + p.id + '\')">✏ Editar</button>' +
-        '<button class="btn-sm danger" onclick="apagarProjeto(\'' + p.id + '\')">🗑</button>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
-
-function faseLbl(f) {
-  return { proposta:'Proposta', aprovado:'Aprovado', encomenda:'Encomendado', entrega:'Aguarda Entrega', montagem:'Em Montagem', concluido:'Concluído', expirado:'Expirado' }[f] || f;
-}
 
 function calcTotal(p) {
   var t = 0;
@@ -2417,6 +1824,7 @@ function calcTotal(p) {
   }
   return t;
 }
+
 
 function calcCats(p) {
   var cats = {};
@@ -2435,455 +1843,7 @@ function calcCats(p) {
   return cats;
 }
 
-var catNomes = { moveis:'Móveis', tampos:'Tampos', eletros:'Eletrodomésticos', acessorios:'Acessórios' };
-var catIcons = { moveis:'🪑', tampos:'🪨', eletros:'⚡', acessorios:'🔧' };
 
-function copiarLink(id, btn) {
-  var url = window.location.href.split('?')[0].replace('index.html','').replace(/\/$/,'') + '/cliente.html?p=' + id;
-  navigator.clipboard.writeText(url).then(function() {
-    var orig = btn.textContent;
-    btn.textContent = '✓ Copiado';
-    setTimeout(function(){ btn.textContent = orig; }, 2000);
-  });
-}
-
-function partilharCliente(id, btn) {
-  var p = PROJETOS.find(function(x){ return x.id === id; });
-  if (!p) return;
-
-  var url = window.location.href.split('?')[0] + '?p=' + id;
-  var fase = { proposta:'proposta', aprovado:'aprovada', encomenda:'encomendada', entrega:'aguarda entrega', montagem:'em montagem', concluido:'concluída' }[p.fase] || p.fase;
-  var total = calcTotal(p);
-  var totalStr = total > 0 ? ' no valor de ' + total.toFixed(2).replace('.',',') + ' €' : '';
-
-  var msg = 'Ol\u00e1 ' + (p.nome ? p.nome.split(' ')[0] : '') + '! \ud83d\udc4b\n\n'
-    + 'A sua proposta de cozinha' + totalStr + ' est\u00e1 dispon\u00edvel para consulta:\n\n'
-    + '\ud83d\udc49 ' + url + '\n\n'
-    + 'Pode ver todos os detalhes, or\u00e7amento e acompanhar o estado do projeto.\n\n'
-    + 'Qualquer d\u00favida estou dispon\u00edvel!\n'
-    + 'H\u00e9lder Melo \u00b7 Leroy Merlin';
-
-  // Mostrar modal de partilha
-  mostrarModalPartilha(url, msg, btn);
-}
-
-function mostrarModalPartilha(url, msg) {
-  var old = document.getElementById('modal-partilha');
-  if (old) old.remove();
-
-  var overlay = document.createElement('div');
-  overlay.id = 'modal-partilha';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(26,28,22,.75);backdrop-filter:blur(6px);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;';
-
-  var box = document.createElement('div');
-  box.style.cssText = 'background:#fff;border-radius:16px;padding:28px 32px;max-width:480px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,.25);';
-
-  var titulo = document.createElement('div');
-  titulo.style.cssText = 'font-family:Syne,sans-serif;font-size:17px;font-weight:800;color:#1A1C16;margin-bottom:4px;';
-  titulo.textContent = '📤 Partilhar com o Cliente';
-  box.appendChild(titulo);
-
-  var sub = document.createElement('div');
-  sub.style.cssText = 'font-family:Lato,sans-serif;font-size:12px;color:#7A7E72;margin-bottom:20px;';
-  sub.textContent = 'Escolha como quer enviar o link ao cliente';
-  box.appendChild(sub);
-
-  var linkRow = document.createElement('div');
-  linkRow.style.cssText = 'background:#F2EFE8;border:1.5px solid #D8D4C8;border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;gap:10px;';
-  var linkTxt = document.createElement('div');
-  linkTxt.style.cssText = 'font-family:Inconsolata,monospace;font-size:12px;color:#4A4E42;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
-  linkTxt.textContent = url;
-  var btnCopiar = document.createElement('button');
-  btnCopiar.style.cssText = 'font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#3D6B35;background:none;border:none;cursor:pointer;flex-shrink:0;white-space:nowrap;';
-  btnCopiar.textContent = 'Copiar';
-  btnCopiar.onclick = function() {
-    navigator.clipboard.writeText(url).then(function() {
-      btnCopiar.textContent = '✓ Copiado!';
-      setTimeout(function(){ btnCopiar.textContent = 'Copiar'; }, 2500);
-    });
-  };
-  linkRow.appendChild(linkTxt); linkRow.appendChild(btnCopiar);
-  box.appendChild(linkRow);
-
-  var waUrl = 'https://wa.me/?text=' + encodeURIComponent(msg);
-  var btnWA = document.createElement('a');
-  btnWA.href = waUrl; btnWA.target = '_blank';
-  btnWA.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px;background:#25D366;border-radius:10px;color:#fff;font-family:Syne,sans-serif;font-size:13px;font-weight:800;cursor:pointer;text-decoration:none;margin-bottom:12px;box-sizing:border-box;';
-  btnWA.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.135.562 4.14 1.543 5.876L.057 23.93l6.204-1.463A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.371l-.359-.213-3.683.868.934-3.417-.234-.372A9.818 9.818 0 1112 21.818z"/></svg> Enviar por WhatsApp';
-  box.appendChild(btnWA);
-
-  var details = document.createElement('details');
-  details.style.cssText = 'margin-bottom:16px;';
-  var summary = document.createElement('summary');
-  summary.style.cssText = 'font-family:Syne,sans-serif;font-size:10px;font-weight:700;color:#7A7E72;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;';
-  summary.textContent = 'Ver mensagem';
-  var pre = document.createElement('div');
-  pre.style.cssText = 'margin-top:10px;background:#F2EFE8;border-radius:8px;padding:12px;font-family:Lato,sans-serif;font-size:12px;color:#4A4E42;white-space:pre-wrap;line-height:1.6;';
-  pre.textContent = msg;
-  details.appendChild(summary); details.appendChild(pre);
-  box.appendChild(details);
-
-  var btnFechar = document.createElement('button');
-  btnFechar.style.cssText = 'width:100%;padding:10px;background:none;border:1.5px solid #D8D4C8;border-radius:9px;font-family:Syne,sans-serif;font-size:12px;font-weight:700;color:#7A7E72;cursor:pointer;';
-  btnFechar.textContent = 'Fechar';
-  btnFechar.onclick = function() { overlay.remove(); };
-  box.appendChild(btnFechar);
-
-  overlay.appendChild(box);
-  overlay.addEventListener('click', function(e){ if (e.target === overlay) overlay.remove(); });
-  document.body.appendChild(overlay);
-}
-
-function copiarEmail(btn) {
-  var email = 'helder.melo@leroymerlin.pt';
-  navigator.clipboard.writeText(email).then(function() {
-    btn.classList.add('copiado');
-    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copiado!';
-    setTimeout(function(){
-      btn.classList.remove('copiado');
-      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copiar';
-    }, 2500);
-  });
-}
-
-function apagarProjeto(id) {
-  if (!confirm('Apagar este projeto?')) return;
-  PROJETOS = PROJETOS.filter(function(p){ return p.id !== id; });
-  guardar();
-  renderPainel();
-}
-
-// ════════════════════════════════════════════════
-// MODAL CRIAR / EDITAR
-// ════════════════════════════════════════════════
-var LCAT = { moveis:[], tampos:[], eletros:[], acessorios:[] };
-var LTIMELINE = [];
-
-function abrirModalNovo() {
-  EDIT_ID = null;
-  document.getElementById('modal-proj-titulo').textContent = 'Novo Projeto';
-  limparForm();
-  document.getElementById('form-section-interacoes').style.display = 'none';
-  // prazo default: hoje + 15 dias
-  var d = new Date(); d.setDate(d.getDate() + 15);
-  document.getElementById('f-prazo').value = d.toISOString().split('T')[0];
-  document.getElementById('modal-projeto').classList.add('open');
-}
-
-function editarProjeto(id) {
-  var p = PROJETOS.find(function(x){ return x.id === id; });
-  if (!p) return;
-  EDIT_ID = id;
-  document.getElementById('modal-proj-titulo').textContent = 'Editar Projeto';
-  limparForm();
-  document.getElementById('f-nome').value       = p.nome||'';
-  document.getElementById('f-contacto').value   = p.contacto||'';
-  document.getElementById('f-morada').value     = p.morada||'';
-  document.getElementById('f-localidade').value = p.localidade||'';
-  document.getElementById('f-fase').value       = p.fase||'proposta';
-  document.getElementById('f-prazo').value      = p.prazo||'';
-  document.getElementById('f-entrega').value    = p.entrega||'';
-  document.getElementById('f-desconto').value   = p.desconto||'';
-  document.getElementById('f-notas').value      = p.notas||'';
-
-  ['tampos','eletros','acessorios'].forEach(function(cat) {
-    var catLabel = { tampos:'Tampos', eletros:'Eletrodomésticos', acessorios:'Acessórios' }[cat];
-    (p[cat]||[]).forEach(function(l) { addLinhaElemValor(cat, catLabel, l.nome, l.url||''); });
-  });
-  // categorias extras
-  (p.extras||[]).forEach(function(e) { addCatExtra(e.cat, e.nome, e.url||''); });
-  // orçamento livre
-  (p.orcamento||[]).forEach(function(c) { addLinhaOrcamento(c.designacao, c.valor); });
-  (p.timeline||[]).forEach(function(t) { addLinhaTimelineValor(t.data, t.titulo, t.desc, t.estado); });
-
-  // mostrar painel de interações (só em edição de projeto existente)
-  EDIT_ID_INTERACOES = p.id;
-  document.getElementById('form-section-interacoes').style.display = 'block';
-  renderPainelFeed(p.interacoes || []);
-  EDIT_IMGS = (p.imagens||[]).slice();
-  renderThumbs();
-
-  document.getElementById('modal-projeto').classList.add('open');
-}
-
-function fecharModal() {
-  document.getElementById('modal-projeto').classList.remove('open');
-}
-
-function limparForm() {
-  ['f-nome','f-contacto','f-morada','f-localidade','f-prazo','f-entrega','f-desconto','f-notas']
-    .forEach(function(id){ document.getElementById(id).value = ''; });
-  document.getElementById('f-fase').value = 'proposta';
-  ['tampos','eletros','acessorios'].forEach(function(cat){
-    document.getElementById('lines-'+cat).innerHTML = '';
-  });
-  document.getElementById('lines-extra').innerHTML = '';
-  document.getElementById('f-nova-cat').value = '';
-  document.getElementById('lines-orcamento').innerHTML = '';
-  document.getElementById('lines-timeline').innerHTML = '';
-  EDIT_IMGS = [];
-  renderThumbs();
-}
-
-// ── linhas de orçamento livre ──
-function addLinhaOrcamento(designacao, valor) {
-  var ct = document.getElementById('lines-orcamento');
-  var div = document.createElement('div');
-  div.className = 'orca-linha';
-  div.innerHTML =
-    '<input type="text" class="orca-linha-designacao" placeholder="Ex: Móveis, Tampos e Revestimento..." value="' + (designacao||'') + '">' +
-    '<input type="number" class="orca-linha-valor" placeholder="0.00" step="0.01" min="0" value="' + (valor||'') + '">' +
-    '<button class="prod-line-del" onclick="this.parentNode.remove();atualizarTotalPreview()">×</button>';
-  // atualizar total quando valor muda
-  div.querySelector('.orca-linha-valor').addEventListener('input', atualizarTotalPreview);
-  ct.appendChild(div);
-  atualizarTotalPreview();
-}
-
-function atualizarTotalPreview() {
-  var total = 0;
-  document.querySelectorAll('.orca-linha-valor').forEach(function(inp) {
-    total += parseFloat(inp.value)||0;
-  });
-  var el = document.getElementById('orca-total-preview');
-  if (el) el.textContent = total.toFixed(2).replace('.',',') + ' €';
-}
-
-// ── linhas de elementos (só nome, sem preço) ──
-function addLinhaElem(cat, label) {
-  addLinhaElemValor(cat, label, '', '');
-}
-function addLinhaElemValor(cat, label, nome, url) {
-  var ct = document.getElementById('lines-'+cat);
-  if (!ct) return;
-  if (ct.querySelectorAll('.prod-line').length === 0 && label) {
-    var lbl = ct.querySelector('.elem-cat-label');
-    if (!lbl) {
-      lbl = document.createElement('div');
-      lbl.className = 'elem-cat-label';
-      lbl.style.cssText = 'font-family:\'Syne\',sans-serif;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--ink3);margin-bottom:6px;margin-top:4px;';
-      lbl.textContent = label;
-      ct.appendChild(lbl);
-    }
-  }
-  var div = document.createElement('div');
-  div.className = 'prod-line';
-  div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center;margin-bottom:6px;';
-  div.innerHTML =
-    '<input type="text" class="prod-line-nome" placeholder="Nome do artigo" value="' + (nome||'') + '">' +
-    '<input type="url" class="prod-line-nome" placeholder="Link LM (opcional)" value="' + (url||'') + '" style="font-size:11px;color:var(--ink3);">' +
-    '<button class="prod-line-del" onclick="this.parentNode.remove()">×</button>';
-  ct.appendChild(div);
-}
-
-function addCatExtra(nomecat, nomeart, url) {
-  var catInput = document.getElementById('f-nova-cat');
-  var catNome = nomecat || (catInput ? catInput.value.trim() : '');
-  if (!catNome) { if (catInput) catInput.focus(); return; }
-  var ct = document.getElementById('lines-extra');
-  var existente = null;
-  Array.from(ct.querySelectorAll('.extra-grupo')).forEach(function(g) {
-    if (g.dataset.cat === catNome) existente = g;
-  });
-  if (!existente) {
-    existente = document.createElement('div');
-    existente.className = 'extra-grupo';
-    existente.dataset.cat = catNome;
-    existente.style.cssText = 'margin-bottom:14px;';
-    var header = document.createElement('div');
-    header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;margin-top:4px;';
-    header.innerHTML = '<span style="font-family:\'Syne\',sans-serif;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--ink3);">' + catNome + '</span>' +
-      '<button class="prod-line-del" onclick="this.closest(\'.extra-grupo\').remove()" style="font-size:11px;">× Remover</button>';
-    existente.appendChild(header);
-    ct.appendChild(existente);
-  }
-  var div = document.createElement('div');
-  div.className = 'prod-line extra-linha';
-  div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center;margin-bottom:6px;';
-  div.innerHTML =
-    '<input type="text" class="prod-line-nome" placeholder="Nome do artigo" value="' + (nomeart||'') + '">' +
-    '<input type="url" class="prod-line-nome" placeholder="Link LM (opcional)" value="' + (url||'') + '" style="font-size:11px;color:var(--ink3);">' +
-    '<button class="prod-line-del" onclick="this.parentNode.remove()">×</button>';
-  existente.appendChild(div);
-  if (catInput) catInput.value = '';
-}
-
-function addLinha(cat) { addLinhaElemValor(cat, '', '', ''); }
-function addLinhaValor(cat, nome, preco) { addLinhaElemValor(cat, '', nome, ''); }
-
-function addLinhaTimeline() {
-  addLinhaTimelineValor('','','','pendente');
-}
-
-function addLinhaTimelineValor(data, titulo, desc, estado) {
-  var ct = document.getElementById('lines-timeline');
-  var div = document.createElement('div');
-  div.style.cssText = 'background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px;';
-  div.innerHTML =
-    '<div style="display:grid;grid-template-columns:130px 1fr auto;gap:8px;align-items:start;margin-bottom:8px;">' +
-      '<input type="text" class="prod-line-nome" placeholder="Data" value="' + (data||'') + '" style="font-family:\'Inconsolata\',monospace;">' +
-      '<input type="text" class="prod-line-nome" placeholder="Marco / Título" value="' + (titulo||'') + '">' +
-      '<button class="prod-line-del" onclick="this.closest(\'div\').parentNode.remove()" style="margin-top:2px;">×</button>' +
-    '</div>' +
-    '<div style="display:grid;grid-template-columns:1fr 120px;gap:8px;">' +
-      '<input type="text" class="prod-line-nome" placeholder="Descrição (opcional)" value="' + (desc||'') + '">' +
-      '<select class="form-select" style="padding:8px 10px;font-size:12px;">' +
-        '<option value="pendente"' + (estado==='pendente'?' selected':'') + '>Pendente</option>' +
-        '<option value="active"'  + (estado==='active' ?' selected':'') + '>Em curso</option>' +
-        '<option value="done"'    + (estado==='done'   ?' selected':'') + '>Concluído</option>' +
-      '</select>' +
-    '</div>';
-  ct.appendChild(div);
-}
-
-function guardarProjeto() {
-  var nome = document.getElementById('f-nome').value.trim();
-  if (!nome) { alert('Insere o nome do cliente.'); return; }
-
-  // recolher orçamento — categorias com designação livre e valor manual
-  var orcamento = [];
-  document.getElementById('lines-orcamento').querySelectorAll('.orca-linha').forEach(function(div) {
-    var des = div.querySelector('.orca-linha-designacao') ? div.querySelector('.orca-linha-designacao').value.trim() : '';
-    var val = parseFloat(div.querySelector('.orca-linha-valor') ? div.querySelector('.orca-linha-valor').value : '')||0;
-    if (des) orcamento.push({ designacao: des, valor: val });
-  });
-
-  // recolher elementos — lista descritiva agrupada por categoria
-  function recolherElems(cat) {
-    var linhas = [];
-    var ct = document.getElementById('lines-'+cat);
-    if (!ct) return linhas;
-    ct.querySelectorAll('.prod-line').forEach(function(div) {
-      var inputs = div.querySelectorAll('input');
-      var n = inputs[0] ? inputs[0].value.trim() : '';
-      var u = inputs[1] ? inputs[1].value.trim() : '';
-      if (n) linhas.push({ nome: n, url: u });
-    });
-    return linhas;
-  }
-
-  // recolher timeline
-  var timeline = [];
-  Array.from(document.getElementById('lines-timeline').children).forEach(function(div) {
-    var inputs = div.querySelectorAll('input');
-    var sel    = div.querySelector('select');
-    if (inputs[1] && inputs[1].value.trim()) {
-      timeline.push({
-        data:   inputs[0].value.trim(),
-        titulo: inputs[1].value.trim(),
-        desc:   inputs[2] ? inputs[2].value.trim() : '',
-        estado: sel ? sel.value : 'pendente'
-      });
-    }
-  });
-
-  // recolher categorias extras
-  var extras = [];
-  document.getElementById('lines-extra').querySelectorAll('.extra-grupo').forEach(function(g) {
-    var catNome = g.dataset.cat;
-    g.querySelectorAll('.extra-linha').forEach(function(div) {
-      var inputs = div.querySelectorAll('input');
-      var n = inputs[0] ? inputs[0].value.trim() : '';
-      var u = inputs[1] ? inputs[1].value.trim() : '';
-      if (n) extras.push({ cat: catNome, nome: n, url: u });
-    });
-  });
-
-  var projetoAnterior = EDIT_ID ? PROJETOS.find(function(p){ return p.id === EDIT_ID; }) : null;
-
-  var proj = {
-    id:          EDIT_ID || uid(),
-    nome:        nome,
-    contacto:    document.getElementById('f-contacto').value.trim(),
-    morada:      document.getElementById('f-morada').value.trim(),
-    localidade:  document.getElementById('f-localidade').value.trim(),
-    fase:        document.getElementById('f-fase').value,
-    prazo:       document.getElementById('f-prazo').value,
-    entrega:     document.getElementById('f-entrega').value.trim(),
-    desconto:    document.getElementById('f-desconto').value.trim(),
-    notas:       document.getElementById('f-notas').value.trim(),
-    data:        projetoAnterior ? projetoAnterior.data : new Date().toLocaleDateString('pt-PT'),
-    dataCriacao: projetoAnterior ? projetoAnterior.dataCriacao : new Date().toISOString().split('T')[0],
-    orcamento:   orcamento,
-    tampos:      recolherElems('tampos'),
-    eletros:     recolherElems('eletros'),
-    acessorios:  recolherElems('acessorios'),
-    extras:      extras,
-    timeline:    timeline,
-    imagens:     EDIT_IMGS.slice(),
-    interacoes:  projetoAnterior ? (projetoAnterior.interacoes || []) : []
-  };
-
-  if (EDIT_ID) {
-    var idx = PROJETOS.findIndex(function(p){ return p.id === EDIT_ID; });
-    if (idx >= 0) PROJETOS[idx] = proj;
-  } else {
-    PROJETOS.push(proj);
-  }
-
-  fecharModal();
-  renderPainel();
-  guardar();
-}
-
-// ════════════════════════════════════════════════
-// FEED DE INTERAÇÕES
-// ════════════════════════════════════════════════
-var EDIT_ID_INTERACOES = null;
-
-var BADGE_LABELS = { alteracao: 'Alteração', problema: 'Problema', decisao: 'Decisão', nota: 'Nota' };
-
-function renderPainelFeed(lista) {
-  var ct = document.getElementById('painel-feed-lista');
-  if (!ct) return;
-  if (!lista || lista.length === 0) {
-    ct.innerHTML = '<div style="font-size:12px;color:var(--ink3);padding:8px 0;">Ainda sem registos neste projeto.</div>';
-    return;
-  }
-  ct.innerHTML = lista.slice().reverse().map(function(item, ri) {
-    var realIdx = lista.length - 1 - ri;
-    return '<div class="painel-feed-item">' +
-      '<span class="feed-badge badge-' + item.tipo + '">' + (BADGE_LABELS[item.tipo]||item.tipo) + '</span>' +
-      '<div><div class="painel-feed-item-data">' + item.data + '</div>' +
-      '<div class="painel-feed-item-texto">' + item.texto + '</div></div>' +
-      '<button class="btn-del-feed" onclick="eliminarInteracao(' + realIdx + ')" title="Eliminar">×</button>' +
-    '</div>';
-  }).join('');
-}
-
-function addInteracao() {
-  if (!EDIT_ID_INTERACOES) return;
-  var tipo  = document.getElementById('feed-tipo').value;
-  var texto = document.getElementById('feed-texto').value.trim();
-  if (!texto) return;
-  var p = PROJETOS.find(function(x){ return x.id === EDIT_ID_INTERACOES; });
-  if (!p) return;
-  if (!p.interacoes) p.interacoes = [];
-  var agora = new Date();
-  var dataHora = String(agora.getDate()).padStart(2,'0') + '/' +
-                 String(agora.getMonth()+1).padStart(2,'0') + '/' +
-                 agora.getFullYear() + ' · ' +
-                 String(agora.getHours()).padStart(2,'0') + ':' +
-                 String(agora.getMinutes()).padStart(2,'0');
-  p.interacoes.push({ tipo: tipo, texto: texto, data: dataHora });
-  guardar();
-  renderPainelFeed(p.interacoes);
-  document.getElementById('feed-texto').value = '';
-}
-
-function eliminarInteracao(idx) {
-  if (!EDIT_ID_INTERACOES) return;
-  var p = PROJETOS.find(function(x){ return x.id === EDIT_ID_INTERACOES; });
-  if (!p || !p.interacoes) return;
-  if (!confirm('Eliminar este registo?')) return;
-  p.interacoes.splice(idx, 1);
-  guardar();
-  renderPainelFeed(p.interacoes);
-}
-
-// ════════════════════════════════════════════════
-// DATA FLUTUANTE DE ENTREGA
-// ════════════════════════════════════════════════
 function calcDataEntregaFlutuante(p) {
   // Se a fase for proposta e existir data de criação e data de entrega configurada,
   // a data avança um dia por cada dia que passou desde a criação.
@@ -2909,6 +1869,7 @@ function calcDataEntregaFlutuante(p) {
   return dia + '/' + mes + '/' + ano + ' (prev.)';
 }
 
+
 function parseDataEntrega(str) {
   // aceita DD/MM/YYYY ou YYYY-MM-DD
   if (!str) return null;
@@ -2919,9 +1880,7 @@ function parseDataEntrega(str) {
   return null;
 }
 
-// ════════════════════════════════════════════════
-// TIMELINE — MARCOS INTELIGENTES
-// ════════════════════════════════════════════════
+
 function gerarMarcos(p, fase) {
   // estados por fase: proposta / aprovado / encomenda / entrega / montagem / concluido
   var FASES = ['proposta', 'aprovado', 'encomenda', 'entrega', 'montagem', 'concluido'];
@@ -2987,20 +1946,6 @@ function gerarMarcos(p, fase) {
 
   return marcos;
 }
-
-// ════════════════════════════════════════════════
-// PÁGINA PÚBLICA DO CLIENTE
-// ════════════════════════════════════════════════
-function verCliente(id) {
-  var p = PROJETOS.find(function(x){ return x.id === id; });
-  if (!p) return;
-  renderPaginaCliente(p);
-  setView('cliente');
-  window.scrollTo(0,0);
-}
-
-
-function exportarHTML(id) { /* desativado */ }
 
 
 function renderPaginaCliente(p) {
@@ -3180,6 +2125,7 @@ function renderPaginaCliente(p) {
   }
 }
 
+
 function iniciarContador(prazoStr) {
   if (cdInterval) clearInterval(cdInterval);
   function tick() {
@@ -3200,97 +2146,89 @@ function iniciarContador(prazoStr) {
   cdInterval = setInterval(tick, 1000);
 }
 
-function checkUrlParam() {
-  // verificar ?p=ID na URL
-  var params = new URLSearchParams(window.location.search);
-  var id = params.get('p');
-  if (id) {
-    var p = PROJETOS.find(function(x){ return x.id === id; });
-    if (p) {
-      renderPaginaCliente(p);
-      setView('cliente');
-      var btn = document.getElementById('btn-voltar-painel');
-      if (btn) btn.style.display = 'none';
-      return true;
-    } else {
-      console.warn('Projeto não encontrado. Total carregados:', PROJETOS.length);
-    }
-  }
-  return false;
+
+function abrirLightbox(imgs, idx) {
+  LB_IMGS = imgs; LB_IDX = idx;
+  document.getElementById('lightbox-img').src = LB_IMGS[LB_IDX];
+  document.getElementById('lightbox-counter').textContent = (LB_IDX+1) + ' / ' + LB_IMGS.length;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
-// ════════════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════════════
 
-// expor funções globalmente (necessário com type="module")
-window.doLogin          = doLogin;
-window.doLogout         = doLogout;
-window.setFiltro        = setFiltro;
-window.abrirModalNovo   = abrirModalNovo;
-window.fecharModal      = fecharModal;
-window.guardarProjeto   = guardarProjeto;
-window.editarProjeto    = editarProjeto;
-window.apagarProjeto    = apagarProjeto;
-window.verCliente       = verCliente;
-window.partilharCliente = partilharCliente;
-window.exportarHTML     = exportarHTML;
-window.setView          = setView;
-window.renderPainel     = renderPainel;
-window.addLinhaElem     = addLinhaElem;
-window.addCatExtra      = addCatExtra;
-window.addLinhaOrcamento= addLinhaOrcamento;
-window.addLinhaTimeline = addLinhaTimeline;
-window.processarImagens = processarImagens;
-window.removerImagem    = removerImagem;
-window.abrirLightbox    = abrirLightbox;
-window.fecharLightbox   = fecharLightbox;
-window.lightboxNav      = lightboxNav;
-window.adicionarInteracao = adicionarInteracao;
-window.removerInteracao   = removerInteracao;
-window.copiarEmail      = copiarEmail;
-window.addInteracao     = addInteracao;
-window.eliminarInteracao = eliminarInteracao;
-window.atualizarTotalPreview = atualizarTotalPreview;
-window.renderThumbs     = renderThumbs;
+function fecharLightbox(e) {
+  if (e && e.target !== document.getElementById('lightbox') && e.target !== document.getElementById('lightbox-close')) return;
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
 
+
+function lightboxNav(dir) {
+  LB_IDX = (LB_IDX + dir + LB_IMGS.length) % LB_IMGS.length;
+  document.getElementById('lightbox-img').src = LB_IMGS[LB_IDX];
+  document.getElementById('lightbox-counter').textContent = (LB_IDX+1) + ' / ' + LB_IMGS.length;
+}
+
+
+function copiarEmail(btn) {
+  var email = 'helder.melo@leroymerlin.pt';
+  navigator.clipboard.writeText(email).then(function() {
+    btn.classList.add('copiado');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copiado!';
+    setTimeout(function(){
+      btn.classList.remove('copiado');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copiar';
+    }, 2500);
+  });
+}
+
+
+
+// Registar visita
+async function registarVisita(projetoId, nomeCliente) {
+  try {
+    const { getDoc: gd, setDoc: sd, doc: d } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+  } catch(e) {}
+  // Silencioso — não bloqueia se falhar
+}
+
+// Inicializar
 (async function() {
-  var overlay = document.createElement('div');
-  overlay.id = 'loading-overlay';
-  overlay.style.cssText = 'position:fixed;inset:0;background:#1E2118;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:99999;';
-  overlay.innerHTML =
-    '<div style="width:36px;height:36px;border:3px solid rgba(103,171,47,.2);border-top-color:#67AB2F;border-radius:50%;animation:spin 0.8s linear infinite;"></div>' +
-    '<div style="font-family:Syne,sans-serif;font-size:11px;font-weight:700;color:rgba(242,239,232,.35);letter-spacing:1.5px;">A CARREGAR...</div>' +
-    '<style>@keyframes spin{to{transform:rotate(360deg)}}</style>';
-  document.body.appendChild(overlay);
+  var params = new URLSearchParams(window.location.search);
+  var id = params.get('p');
 
-  // Ficheiro exportado standalone — carregar projeto embebido diretamente
-  if (typeof MODO_STANDALONE !== 'undefined' && MODO_STANDALONE) {
-    await carregar(); // popula PROJETOS com PROJETO_EMBED
-    if (PROJETOS.length > 0) {
-      renderPaginaCliente(PROJETOS[0]);
-      setView('cliente');
-      var btnP = document.getElementById('btn-voltar-painel');
-      if (btnP) btnP.style.display = 'none';
-    }
-    overlay.remove();
+  if (!id) {
+    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1E2118;color:rgba(242,239,232,.4);font-family:Syne,sans-serif;font-size:13px;letter-spacing:1px;">PROJETO NÃO ENCONTRADO</div>';
     return;
   }
 
-  // Se for acesso direto de cliente via ?p=ID, carrega sem autenticacao
-  if (checkUrlParam()) {
-    overlay.remove();
-    return;
-  }
+  // Mostrar loading
+  var loading = document.getElementById('cli-loading');
+  if (loading) loading.style.display = 'flex';
 
-  // Aguardar estado de autenticação do Firebase
-  // O onAuthStateChanged acima trata do resto
-  // Se após 3 segundos não houver utilizador, mostrar login
-  setTimeout(function() {
-    var ov = document.getElementById('loading-overlay');
-    if (ov) { ov.remove(); setView('login'); }
-  }, 3000);
+  try {
+    // Tentar carregar sem auth primeiro (leitura pública)
+    var snap = await getDoc(_docRef);
+    if (!snap.exists()) throw new Error('no data');
+    var projetos = JSON.parse(snap.data().projetos || '[]');
+    var p = projetos.find(function(x){ return x.id === id; });
+    if (!p) throw new Error('projeto nao encontrado');
+
+    if (loading) loading.style.display = 'none';
+    renderPaginaCliente(p);
+
+    // Registar visita em background (silencioso)
+    try {
+      var { doc: fd, setDoc: fsd, getDoc: fgd } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      // não bloqueia
+    } catch(e) {}
+
+  } catch(e) {
+    if (loading) loading.style.display = 'none';
+    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1E2118;color:rgba(242,239,232,.4);font-family:Syne,sans-serif;font-size:13px;letter-spacing:1px;">PROJETO NÃO ENCONTRADO</div>';
+  }
 })();
+
 </script>
 </body>
 </html>
