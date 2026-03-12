@@ -2925,7 +2925,7 @@ function exportarHTML(id) {
     + "<style>" + CSS + "#view-cliente{display:block!important;}</style>"
     + "</head><body>"
     + HCLI
-    + "<script>var PROJETOS=[];var LB_IMGS=[];var LB_IDX=0;\n"
+    + "<script>var PROJETOS=[];var LB_IMGS=[];var LB_IDX=0;var cdInterval=null;var BADGE_LABELS={alteracao:'Alteração',problema:'Problema',decisao:'Decisão',nota:'Nota'};\n"
     + JSCLI
     + "\n(function(){var p=" + pj + ";renderPaginaCliente(p);var b=document.getElementById(\"btn-voltar-painel\");if(b)b.style.display=\"none\";})();"
     + "<\/script></body></html>";
