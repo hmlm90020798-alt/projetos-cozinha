@@ -2475,7 +2475,8 @@ var FILTRO_ATIVO = 'todos'; // filtro ativo no painel
 
 // Observador de estado de autenticação — controla qual view mostrar
 onAuthStateChanged(_auth, async function(user) {
-  if (_IS_CLIENTE_MODE) return; // cliente nunca vai para o painel ou login
+  // verificar diretamente no URL — não depende de variáveis ou timing
+  if ((new URLSearchParams(window.location.search)).get('p')) return;
   var ov = document.getElementById('loading-overlay');
   if (user) {
     await carregar();
