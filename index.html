@@ -3110,6 +3110,22 @@ function guardarProjeto() {
     interacoes:  projetoAnterior ? (projetoAnterior.interacoes || []) : []
   };
 
+  // se a fase foi mudada para aprovado e não há data de aprovação, registar agora
+  var faseAnterior = projetoAnterior ? projetoAnterior.fase : 'proposta';
+  if (proj.fase === 'aprovado' && faseAnterior !== 'aprovado') {
+    if (!projetoAnterior || !projetoAnterior.aprovacao || !projetoAnterior.aprovacao.data) {
+      var agora = new Date();
+      proj.aprovacao = {
+        data: agora.toLocaleDateString('pt-PT'),
+        hora: String(agora.getHours()).padStart(2,'0') + ':' + String(agora.getMinutes()).padStart(2,'0')
+      };
+    } else {
+      proj.aprovacao = projetoAnterior.aprovacao;
+    }
+  } else {
+    proj.aprovacao = projetoAnterior ? (projetoAnterior.aprovacao || null) : null;
+  }
+
   if (EDIT_ID) {
     var idx = PROJETOS.findIndex(function(p){ return p.id === EDIT_ID; });
     if (idx >= 0) PROJETOS[idx] = proj;
@@ -3588,10 +3604,10 @@ function iniciarContador(prazoStr) {
 var _PROJ_ATUAL_ID = null; // ID do projeto na vista cliente
 
 async function renderEstadoAprovacao(projetoId, aprovacao) {
-  var wrap = document.getElementById('aprovacao-estado');
-  if (!wrap) return;
+  var secao = document.getElementById('sec-aprovacao');
+  if (!secao) return;
 
-  // aprovado: ou tem registo de aprovação OU a fase já passou de proposta
+  // aprovado: tem registo de aprovação OU fase já passou de proposta
   var projAprovado = (aprovacao && aprovacao.data) || (function() {
     var p = PROJETOS.find(function(x){ return x.id === projetoId; });
     return p && p.fase && p.fase !== 'proposta';
@@ -3603,36 +3619,35 @@ async function renderEstadoAprovacao(projetoId, aprovacao) {
       var snap = await getDoc(doc(_db, 'projetos', projetoId));
       if (snap.exists() && snap.data().fase && snap.data().fase !== 'proposta') {
         projAprovado = true;
-        if (!aprovacao || !aprovacao.data) aprovacao = snap.data().aprovacao || {};
+        if (!aprovacao || !aprovacao.data) aprovacao = snap.data().aprovacao || null;
       }
     } catch(e) {}
   }
 
   if (projAprovado) {
-    // esconder título e subtítulo da secção
-    var titulo = wrap.closest('.aprovacao-wrap') && wrap.closest('.aprovacao-wrap').querySelector('.aprovacao-titulo');
-    var sub    = wrap.closest('.aprovacao-wrap') && wrap.closest('.aprovacao-wrap').querySelector('.aprovacao-sub');
-    if (titulo) titulo.style.display = 'none';
-    if (sub)    sub.style.display    = 'none';
-
     var dataTexto = (aprovacao && aprovacao.data)
-      ? '✓ Proposta aprovada em ' + aprovacao.data + (aprovacao.hora ? ' às ' + aprovacao.hora : '')
-      : '✓ Proposta aprovada';
-    wrap.innerHTML =
-      '<div class="aprovacao-confirmada show">' +
-        '<div class="aprovacao-confirmada-titulo">✓ Aprovação registada!</div>' +
-        '<div class="aprovacao-confirmada-texto">A sua confirmação foi recebida com sucesso. Entrarei em contacto brevemente para avançarmos com os próximos passos.</div>' +
-      '</div>' +
-      '<div class="aprovacao-ja-feita">' + dataTexto + '</div>';
+      ? 'em ' + aprovacao.data + (aprovacao.hora ? ' às ' + aprovacao.hora : '')
+      : '';
+    secao.innerHTML =
+      '<div class="aprovacao-inner">' +
+        '<div class="aprovacao-confirmada show">' +
+          '<div class="aprovacao-confirmada-titulo">✓ Aprovação registada!</div>' +
+          '<div class="aprovacao-confirmada-texto">A sua confirmação foi recebida com sucesso. Entrarei em contacto brevemente para avançarmos com os próximos passos.</div>' +
+        '</div>' +
+        (dataTexto ? '<div class="aprovacao-ja-feita">✓ Proposta aprovada ' + dataTexto + '</div>' : '') +
+      '</div>';
   } else {
-    // ainda não aprovado — mostrar botão
-    wrap.innerHTML =
-      '<button class="btn-aprovar" id="btn-aprovar-proj" onclick="aprovarProposta()">' +
-        '✓ Aprovar esta Proposta' +
-      '</button>' +
-      '<div class="aprovacao-confirmada" id="aprovacao-confirmada">' +
-        '<div class="aprovacao-confirmada-titulo">✓ Aprovação registada!</div>' +
-        '<div class="aprovacao-confirmada-texto">A sua confirmação foi enviada com sucesso. Entrarei em contacto brevemente para avançarmos com os próximos passos.</div>' +
+    secao.innerHTML =
+      '<div class="aprovacao-inner">' +
+        '<div class="aprovacao-titulo">Está pronto para avançar?</div>' +
+        '<div class="aprovacao-sub">Com um clique confirma a aprovação desta proposta.<br>Ficará registado e serei notificado imediatamente.</div>' +
+        '<div id="aprovacao-estado">' +
+          '<button class="btn-aprovar" id="btn-aprovar-proj" onclick="aprovarProposta()">✓ Aprovar esta Proposta</button>' +
+          '<div class="aprovacao-confirmada" id="aprovacao-confirmada">' +
+            '<div class="aprovacao-confirmada-titulo">✓ Aprovação registada!</div>' +
+            '<div class="aprovacao-confirmada-texto">A sua confirmação foi enviada com sucesso. Entrarei em contacto brevemente para avançarmos com os próximos passos.</div>' +
+          '</div>' +
+        '</div>' +
       '</div>';
   }
 }
