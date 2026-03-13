@@ -1786,7 +1786,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
       </div>
       <div class="stat-card">
         <div class="stat-val" id="stat-proposta">0</div>
-        <div class="stat-lbl">Apresentados</div>
+        <div class="stat-lbl">Em Análise</div>
       </div>
       <div class="stat-card">
         <div class="stat-val" id="stat-obra">0</div>
@@ -1851,9 +1851,9 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
         <div class="form-section-title">Proposta</div>
         <div class="form-grid">
           <div class="form-field">
-            <div class="form-label">Fase</div>
+            <div class="form-label">Fase da Obra</div>
             <select id="f-fase" class="form-select">
-              <option value="proposta">Apresentado</option>
+              <option value="proposta">Em Análise</option>
               <option value="aprovado">Aprovado</option>
               <option value="encomenda">Materiais Encomendados</option>
               <option value="entrega">Aguarda Entrega</option>
@@ -1865,9 +1865,29 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
             <div class="form-label">Validade da Proposta</div>
             <input type="date" id="f-prazo" class="form-input">
           </div>
-          <div class="form-field span2">
-            <div class="form-label">Previsão de Entrega</div>
-            <input type="text" id="f-entrega" class="form-input" placeholder="Ex: 16/04/2026">
+        </div>
+      </div>
+
+      <!-- datas da obra -->
+      <div class="form-section">
+        <div class="form-section-title">Datas da Obra</div>
+        <div style="font-size:12px;color:var(--ink3);margin-bottom:14px;">Preenche à medida que a obra avança. As datas confirmadas aparecem na timeline do cliente.</div>
+        <div class="form-grid">
+          <div class="form-field">
+            <div class="form-label">Entrega de Materiais</div>
+            <input type="date" id="f-data-entrega-mat" class="form-input">
+          </div>
+          <div class="form-field">
+            <div class="form-label">Início da Instalação</div>
+            <input type="date" id="f-data-instalacao" class="form-input">
+          </div>
+          <div class="form-field">
+            <div class="form-label">Conclusão Prevista</div>
+            <input type="date" id="f-data-conclusao" class="form-input">
+          </div>
+          <div class="form-field">
+            <div class="form-label">Previsão de Entrega <span style="font-size:10px;color:var(--ink3)">(texto livre)</span></div>
+            <input type="text" id="f-entrega" class="form-input" placeholder="Ex: Semana de 16/04/2026">
           </div>
         </div>
       </div>
@@ -1987,7 +2007,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
         </div>
         <div class="expirada-linha">
           <span class="expirada-label">Email</span>
-          <span class="expirada-valor">helder.melo@leroymerlin.pt</span>
+          <span class="expirada-valor"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="80e8e5ece4e5f2aeede5ecefc0ece5f2eff9ede5f2ece9eeaef0f4">[email&#160;protected]</a></span>
         </div>
       </div>
     </div>
@@ -2192,7 +2212,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
 // ════════════════════════════════════════════════
 // DADOS & ESTADO
 // ════════════════════════════════════════════════
@@ -2642,7 +2662,7 @@ function renderPainel() {
 }
 
 function faseLbl(f) {
-  return { proposta:'Apresentado', aprovado:'Aprovado', encomenda:'Encomendado', entrega:'Aguarda Entrega', montagem:'Em Montagem', concluido:'Concluído', expirado:'Expirado' }[f] || f;
+  return { proposta:'Em Análise', aprovado:'Aprovado', encomenda:'Encomendado', entrega:'Aguarda Entrega', montagem:'Em Montagem', concluido:'Concluído', expirado:'Expirado' }[f] || f;
 }
 
 function calcTotal(p) {
@@ -2839,6 +2859,9 @@ function editarProjeto(id) {
   }
   document.getElementById('f-prazo').value      = p.prazo||'';
   document.getElementById('f-entrega').value    = p.entrega||'';
+  document.getElementById('f-data-entrega-mat').value = p.dataEntregaMat||'';
+  document.getElementById('f-data-instalacao').value  = p.dataInstalacao||'';
+  document.getElementById('f-data-conclusao').value   = p.dataConclusao||'';
   document.getElementById('f-desconto').value   = p.desconto||'';
   document.getElementById('f-notas').value      = p.notas||'';
 
@@ -2873,6 +2896,9 @@ function limparForm() {
   document.getElementById('f-tipo').value = 'cozinha';
   document.getElementById('f-tipo-outro').value = '';
   document.getElementById('f-tipo-outro-wrap').style.display = 'none';
+  document.getElementById('f-data-entrega-mat').value = '';
+  document.getElementById('f-data-instalacao').value  = '';
+  document.getElementById('f-data-conclusao').value   = '';
   ['tampos','eletros','acessorios'].forEach(function(cat){
     document.getElementById('lines-'+cat).innerHTML = '';
   });
@@ -3064,6 +3090,9 @@ function guardarProjeto() {
     fase:        document.getElementById('f-fase').value,
     prazo:       document.getElementById('f-prazo').value,
     entrega:     document.getElementById('f-entrega').value.trim(),
+    dataEntregaMat:  document.getElementById('f-data-entrega-mat').value,
+    dataInstalacao:  document.getElementById('f-data-instalacao').value,
+    dataConclusao:   document.getElementById('f-data-conclusao').value,
     desconto:    document.getElementById('f-desconto').value.trim(),
     notas:       document.getElementById('f-notas').value.trim(),
     data:        projetoAnterior ? projetoAnterior.data : new Date().toLocaleDateString('pt-PT'),
@@ -3149,24 +3178,34 @@ function eliminarInteracao(idx) {
 // DATA FLUTUANTE DE ENTREGA
 // ════════════════════════════════════════════════
 function calcDataEntregaFlutuante(p) {
-  // Se a fase for proposta e existir data de criação e data de entrega configurada,
-  // a data avança um dia por cada dia que passou desde a criação.
-  // Em qualquer outra fase, a data fixada no campo entrega vigora sem alteração.
-  if (!p.entrega) return null;
-  var faseAberta = (!p.fase || p.fase === 'proposta');
-  if (!faseAberta || !p.dataCriacao) return p.entrega;
+  // Fonte da data base: dataEntregaMat (ISO) preferido, fallback campo texto entrega
+  var dataBase = p.dataEntregaMat || p.entrega;
+  if (!dataBase) return null;
 
-  // tentar parse da entrega no formato DD/MM/YYYY ou YYYY-MM-DD
-  var entregaDate = parseDataEntrega(p.entrega);
-  if (!entregaDate) return p.entrega; // não conseguiu fazer parse, devolve como está
+  var aprovado = p.fase && p.fase !== 'proposta';
 
-  var criacao = new Date(p.dataCriacao);
-  criacao.setHours(0,0,0,0);
-  var hoje = new Date(); hoje.setHours(0,0,0,0);
-  var diasPassados = Math.floor((hoje - criacao) / 86400000);
-  if (diasPassados <= 0) return p.entrega;
+  // Após aprovação — data fixa, sem flutuar
+  if (aprovado) {
+    if (p.dataEntregaMat) {
+      var d = new Date(p.dataEntregaMat + 'T12:00:00');
+      return isNaN(d) ? p.entrega : d.toLocaleDateString('pt-PT');
+    }
+    return p.entrega || null;
+  }
 
-  entregaDate.setDate(entregaDate.getDate() + diasPassados);
+  // Antes da aprovação — data flutua +1 dia por dia desde criação
+  var entregaDate = p.dataEntregaMat
+    ? new Date(p.dataEntregaMat + 'T12:00:00')
+    : parseDataEntrega(p.entrega);
+  if (!entregaDate || isNaN(entregaDate)) return p.entrega || null;
+
+  if (p.dataCriacao) {
+    var criacao = new Date(p.dataCriacao); criacao.setHours(0,0,0,0);
+    var hoje = new Date(); hoje.setHours(0,0,0,0);
+    var diasPassados = Math.floor((hoje - criacao) / 86400000);
+    if (diasPassados > 0) entregaDate.setDate(entregaDate.getDate() + diasPassados);
+  }
+
   var dia = String(entregaDate.getDate()).padStart(2,'0');
   var mes = String(entregaDate.getMonth()+1).padStart(2,'0');
   var ano = entregaDate.getFullYear();
@@ -3187,7 +3226,6 @@ function parseDataEntrega(str) {
 // TIMELINE — MARCOS INTELIGENTES
 // ════════════════════════════════════════════════
 function gerarMarcos(p, fase) {
-  // estados por fase: proposta / aprovado / encomenda / entrega / montagem / concluido
   var FASES = ['proposta', 'aprovado', 'encomenda', 'entrega', 'montagem', 'concluido'];
   var faseIdx = FASES.indexOf(fase);
   if (faseIdx < 0) faseIdx = 0;
@@ -3198,56 +3236,73 @@ function gerarMarcos(p, fase) {
     return 'pendente';
   }
 
-  var prazoStr = p.prazo ? new Date(p.prazo).toLocaleDateString('pt-PT') : null;
-  var entregaStr = p.entrega ? (calcDataEntregaFlutuante(p) || p.entrega) : null;
+  function fmtDate(iso) {
+    if (!iso) return null;
+    var d = new Date(iso + 'T12:00:00');
+    return isNaN(d) ? null : d.toLocaleDateString('pt-PT', { day:'2-digit', month:'long', year:'numeric' });
+  }
+
+  // tipo de projeto para adaptar textos
+  var tipoNome = p.tipo === 'casa-de-banho' ? 'casa de banho'
+               : (p.tipo && p.tipo !== 'cozinha') ? p.tipo
+               : 'cozinha';
+  var tipoArt  = p.tipo === 'casa-de-banho' ? 'a nova casa de banho'
+               : (p.tipo && p.tipo !== 'cozinha') ? 'o projeto'
+               : 'a nova cozinha';
+
+  var prazoStr    = p.prazo            ? 'Válido até ' + fmtDate(p.prazo) : null;
+  var dataEntMat  = p.dataEntregaMat   ? fmtDate(p.dataEntregaMat)        : null;
+  var dataInst    = p.dataInstalacao   ? fmtDate(p.dataInstalacao)        : null;
+  var dataConcl   = p.dataConclusao    ? fmtDate(p.dataConclusao)         : null;
+  var entregaStr  = p.entrega          ? (calcDataEntregaFlutuante(p) || p.entrega) : null;
+
+  // data de entrega: preferir dataEntregaMat, fallback entregaStr
+  var dataEntregaFinal = dataEntMat || entregaStr;
 
   var marcos = [
     {
       titulo: 'Projeto apresentado',
       data: p.data || null,
-      desc: 'Proposta entregue com elementos da cozinha, orçamento detalhado' + (p.imagens && p.imagens.length ? ' e render 3D' : '') + '.',
-      estado: estadoPara(0),
+      desc: 'Proposta entregue com os elementos do projeto, orçamento detalhado' + (p.imagens && p.imagens.length ? ' e render 3D' : '') + '.',
+      estado: 'done',
       apelo: null
     },
     {
       titulo: 'A sua análise e decisão',
-      data: prazoStr ? 'Até ' + prazoStr : null,
+      data: prazoStr,
       desc: 'Período para analisar a proposta com calma. Estou disponível para qualquer ajuste ou esclarecimento.',
       estado: estadoPara(1),
       apelo: faseIdx <= 1 ? '✦ Um sim é tudo o que falta para começar' : null
     },
     {
       titulo: 'Encomenda dos materiais',
-      data: faseIdx >= 2 ? null : 'Após aprovação',
+      data: faseIdx >= 2 ? (p.aprovacao ? 'Aprovado em ' + p.aprovacao.data : null) : 'Após aprovação',
       desc: 'Assim que confirmar, avançamos imediatamente com a encomenda junto dos fornecedores.',
       estado: estadoPara(2),
-      apelo: faseIdx <= 2 ? '📦 Cada dia conta para cumprir o prazo de entrega' : null
+      apelo: faseIdx === 2 ? '📦 Materiais em encomenda — estamos a avançar!' : null
     },
     {
       titulo: 'Entrega da mercadoria',
-      data: entregaStr || (faseIdx >= 3 ? null : 'Data prevista'),
-      desc: 'Móveis, tampos e eletrodomésticos entregues em obra na data acordada.',
+      data: dataEntregaFinal || (faseIdx >= 3 ? null : 'Data a confirmar'),
+      desc: 'Móveis, tampos e materiais entregues em obra na data acordada.',
       estado: estadoPara(3),
-      apelo: faseIdx <= 3 ? '🏠 Cada semana conta para ter a cozinha pronta a tempo' : null
+      apelo: faseIdx === 3 ? '🚚 Mercadoria a caminho — entrega confirmada' : null
     },
     {
-      titulo: 'Montagem e instalação',
-      data: faseIdx >= 4 ? null : 'A definir',
-      desc: 'Instalação completa — da montagem dos móveis à ligação dos eletrodomésticos.',
+      titulo: 'Instalação',
+      data: dataInst || (faseIdx >= 4 ? null : 'Data a confirmar'),
+      desc: 'Instalação completa — da montagem à ligação de todos os equipamentos.',
       estado: estadoPara(4),
-      apelo: faseIdx <= 4 ? '🍳 A sua nova cozinha está mesmo ao virar da esquina' : null
+      apelo: faseIdx === 4 ? '🔧 Instalação em curso — está quase!' : null
     },
     {
-      titulo: 'Cozinha entregue ✓',
-      data: faseIdx >= 5 ? null : null,
-      desc: 'Projeto concluído. Obrigado pela confiança.',
+      titulo: tipoNome.charAt(0).toUpperCase() + tipoNome.slice(1) + ' entregue ✓',
+      data: dataConcl || null,
+      desc: 'Projeto concluído. Obrigado pela confiança — foi um prazer trabalhar consigo.',
       estado: estadoPara(5),
-      apelo: null
+      apelo: faseIdx === 5 ? '🎉 Parabéns pela sua nova ' + tipoNome + '!' : null
     }
   ];
-
-  // Se a fase for "proposta", o primeiro marco aparece como done (já apresentado)
-  if (faseIdx === 0) marcos[0].estado = 'done';
 
   return marcos;
 }
@@ -3309,9 +3364,9 @@ function renderPaginaCliente(p) {
   document.getElementById('cli-local-hero').textContent = [p.morada, p.localidade].filter(Boolean).join(', ') || '—';
   document.getElementById('cli-data-hero').textContent = p.data || '—';
 
-  if (p.entrega) {
-    var entregaTexto = calcDataEntregaFlutuante(p);
-    document.getElementById('cli-entrega-hero').textContent = entregaTexto || p.entrega;
+  var entregaDinamicaHero = calcDataEntregaFlutuante(p);
+  if (entregaDinamicaHero) {
+    document.getElementById('cli-entrega-hero').textContent = entregaDinamicaHero;
     document.getElementById('cli-entrega-row').style.display = 'flex';
   }
 
@@ -3422,7 +3477,14 @@ function renderPaginaCliente(p) {
     { icon:'📅', titulo:'Validade da Proposta', texto: p.prazo ? 'Este orçamento é válido até ' + new Date(p.prazo).toLocaleDateString('pt-PT') + '.' : 'Consulte-nos para informações sobre validade.' },
   ];
   if (p.desconto) notas.push({ icon:'⭐', titulo:'Desconto Incluído', texto: p.desconto });
-  if (p.entrega)  notas.push({ icon:'🚚', titulo:'Previsão de Entrega', texto: 'A previsão de entrega da mercadoria é para ' + p.entrega + ', podendo sofrer alterações por motivos alheios à nossa responsabilidade.' });
+  var dataEntregaDinamica = calcDataEntregaFlutuante(p);
+  if (dataEntregaDinamica) {
+    var aprovado = p.fase && p.fase !== 'proposta';
+    var textoEntrega = aprovado
+      ? 'A entrega da mercadoria está prevista para ' + dataEntregaDinamica + '.'
+      : 'A previsão de entrega da mercadoria é para ' + dataEntregaDinamica + ', podendo sofrer alterações por motivos alheios à nossa responsabilidade.';
+    notas.push({ icon:'🚚', titulo:'Previsão de Entrega', texto: textoEntrega });
+  }
   notas.push({ icon:'🔄', titulo:'Flexibilidade', texto:'Todos os elementos do projeto, incluindo materiais, cores e disposições, podem ser ajustados mediante nova análise e revisão do orçamento.' });
   notas.push({ icon:'🤝', titulo:'Transparência Total', texto:'Este documento pretende ser uma base clara para análise e tomada de decisão, promovendo uma comunicação transparente e eficaz.' });
   if (p.notas) notas.push({ icon:'📝', titulo:'Nota Adicional', texto: p.notas });
@@ -3683,12 +3745,3 @@ function atualizarTipoProjeto() {
 
   // Aguardar estado de autenticação do Firebase
   // O onAuthStateChanged acima trata do resto
-  // Se após 3 segundos não houver utilizador, mostrar login
-  setTimeout(function() {
-    var ov = document.getElementById('loading-overlay');
-    if (ov) { ov.remove(); setView('login'); }
-  }, 3000);
-})();
-</script>
-</body>
-</html>
