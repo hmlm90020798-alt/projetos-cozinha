@@ -1756,7 +1756,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
           oninput="renderPainel()">
       </div>
       <button class="filtro-btn active" onclick="setFiltro(this,'todos')">Todos</button>
-      <button class="filtro-btn" onclick="setFiltro(this,'proposta')">Proposta</button>
+      <button class="filtro-btn" onclick="setFiltro(this,'proposta')">Em Análise</button>
       <button class="filtro-btn" onclick="setFiltro(this,'aprovado')">Aprovado</button>
       <button class="filtro-btn" onclick="setFiltro(this,'obra')">Em Obra</button>
       <button class="filtro-btn" onclick="setFiltro(this,'concluido')">Concluído</button>
@@ -1769,7 +1769,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
       </div>
       <div class="stat-card">
         <div class="stat-val" id="stat-proposta">0</div>
-        <div class="stat-lbl">Em Proposta</div>
+        <div class="stat-lbl">Em Análise</div>
       </div>
       <div class="stat-card">
         <div class="stat-val" id="stat-obra">0</div>
@@ -1803,6 +1803,18 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
             <input type="text" id="f-nome" class="form-input" placeholder="Ex: Mário Perdigão">
           </div>
           <div class="form-field">
+            <div class="form-label">Tipo de Projeto</div>
+            <select id="f-tipo" class="form-select" onchange="atualizarTipoProjeto()">
+              <option value="cozinha">🍳 Cozinha</option>
+              <option value="casa-de-banho">🚿 Casa de Banho</option>
+              <option value="outro">✦ Outro</option>
+            </select>
+          </div>
+          <div class="form-field" id="f-tipo-outro-wrap" style="display:none;">
+            <div class="form-label">Especificar Tipo</div>
+            <input type="text" id="f-tipo-outro" class="form-input" placeholder="Ex: Quarto, Sala, Renovação...">
+          </div>
+          <div class="form-field">
             <div class="form-label">Contacto</div>
             <input type="text" id="f-contacto" class="form-input" placeholder="Ex: 963 014 483">
           </div>
@@ -1824,7 +1836,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
           <div class="form-field">
             <div class="form-label">Fase</div>
             <select id="f-fase" class="form-select">
-              <option value="proposta">Em Proposta</option>
+              <option value="proposta">Em Análise</option>
               <option value="aprovado">Aprovado</option>
               <option value="encomenda">Materiais Encomendados</option>
               <option value="entrega">Aguarda Entrega</option>
@@ -1963,7 +1975,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
       <!-- esquerda -->
       <div>
         <div class="cli-hero-eyebrow">Leroy Merlin Portugal</div>
-        <div class="cli-hero-titulo">Projeto<br>da Cozinha</div>
+        <div class="cli-hero-titulo" id="cli-hero-titulo">Projeto<br>da Cozinha</div>
         <div class="cli-hero-cliente" id="cli-nome-hero">—</div>
         <div class="cli-hero-meta">
           <div class="cli-hero-meta-row">📍 <strong id="cli-local-hero">—</strong></div>
@@ -2015,7 +2027,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
         <div class="cli-section-num">02</div>
         <div class="cli-section-title-wrap">
           <div class="cli-section-eyebrow">Composição</div>
-          <div class="cli-section-title">Elementos da Cozinha</div>
+          <div class="cli-section-title" id="cli-title-elementos">Elementos da Cozinha</div>
         </div>
       </div>
       <div id="cli-elementos"></div>
@@ -2029,7 +2041,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
         <div class="cli-section-num">03</div>
         <div class="cli-section-title-wrap">
           <div class="cli-section-eyebrow">Investimento</div>
-          <div class="cli-section-title">Orçamento da Cozinha</div>
+          <div class="cli-section-title" id="cli-title-orcamento">Orçamento da Cozinha</div>
         </div>
       </div>
       <div id="cli-orcamento"></div>
@@ -2080,8 +2092,8 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
   <section id="contacto">
     <div class="cli-contacto">
       <div class="cli-contacto-inner">
-        <div class="cli-contacto-titulo">Pronto para avançar?</div>
-        <div class="cli-contacto-sub">Estou à distância de uma mensagem.<br>Qualquer dúvida ou confirmação, contacte-me diretamente.</div>
+        <div class="cli-contacto-titulo">Estou aqui para si.</div>
+        <div class="cli-contacto-sub">Tenha aprovado ou ainda esteja a pensar — estou disponível para qualquer dúvida, ajuste ou esclarecimento. Não hesite em contactar-me diretamente.</div>
         <div class="cli-contacto-card">
           <div class="cli-contacto-cabecalho">
             <div class="cli-contacto-avatar">H</div>
@@ -2560,7 +2572,10 @@ function renderPainel() {
     return '<div class="proj-card">' +
       '<div class="proj-card-header">' +
         '<div class="proj-card-nome">' + (p.nome||'—') + '</div>' +
-        '<div class="proj-card-local">' + [p.morada, p.localidade].filter(Boolean).join(' · ') + '</div>' +
+        '<div class="proj-card-local">' +
+          (p.tipo && p.tipo !== 'cozinha' ? '<span style="font-family:\'Syne\',sans-serif;font-size:9px;font-weight:800;color:var(--lm-green-light);letter-spacing:.8px;text-transform:uppercase;margin-right:6px;">' + p.tipo.replace('casa-de-banho','Casa de Banho') + '</span>' : '') +
+          [p.morada, p.localidade].filter(Boolean).join(' · ') +
+        '</div>' +
       '</div>' +
       '<div class="proj-card-body">' +
         '<div class="proj-card-row">' +
@@ -2582,7 +2597,7 @@ function renderPainel() {
 }
 
 function faseLbl(f) {
-  return { proposta:'Proposta', aprovado:'Aprovado', encomenda:'Encomendado', entrega:'Aguarda Entrega', montagem:'Em Montagem', concluido:'Concluído', expirado:'Expirado' }[f] || f;
+  return { proposta:'Em Análise', aprovado:'Aprovado', encomenda:'Encomendado', entrega:'Aguarda Entrega', montagem:'Em Montagem', concluido:'Concluído', expirado:'Expirado' }[f] || f;
 }
 
 function calcTotal(p) {
@@ -2633,12 +2648,13 @@ function partilharCliente(id, btn) {
   if (!p) return;
 
   var url = window.location.href.split('?')[0] + '?p=' + id;
-  var fase = { proposta:'proposta', aprovado:'aprovada', encomenda:'encomendada', entrega:'aguarda entrega', montagem:'em montagem', concluido:'concluída' }[p.fase] || p.fase;
+  var tipoNome = p.tipo === 'casa-de-banho' ? 'casa de banho' : (p.tipo && p.tipo !== 'cozinha' ? p.tipo : 'cozinha');
+  var fase = { proposta:'em análise', aprovado:'aprovada', encomenda:'encomendada', entrega:'aguarda entrega', montagem:'em montagem', concluido:'concluída' }[p.fase] || p.fase;
   var total = calcTotal(p);
   var totalStr = total > 0 ? ' no valor de ' + total.toFixed(2).replace('.',',') + ' €' : '';
 
   var msg = 'Ol\u00e1 ' + (p.nome ? p.nome.split(' ')[0] : '') + '! \ud83d\udc4b\n\n'
-    + 'A sua proposta de cozinha' + totalStr + ' est\u00e1 dispon\u00edvel para consulta:\n\n'
+    + 'A sua proposta de ' + tipoNome + totalStr + ' est\u00e1 dispon\u00edvel para consulta:\n\n'
     + '\ud83d\udc49 ' + url + '\n\n'
     + 'Pode ver todos os detalhes, or\u00e7amento e acompanhar o estado do projeto.\n\n'
     + 'Qualquer d\u00favida estou dispon\u00edvel!\n'
@@ -2765,6 +2781,17 @@ function editarProjeto(id) {
   document.getElementById('f-morada').value     = p.morada||'';
   document.getElementById('f-localidade').value = p.localidade||'';
   document.getElementById('f-fase').value       = p.fase||'proposta';
+  // tipo de projeto
+  var tipoGuardado = p.tipo || 'cozinha';
+  var tiposFixos = ['cozinha','casa-de-banho'];
+  if (tiposFixos.includes(tipoGuardado)) {
+    document.getElementById('f-tipo').value = tipoGuardado;
+    document.getElementById('f-tipo-outro-wrap').style.display = 'none';
+  } else {
+    document.getElementById('f-tipo').value = 'outro';
+    document.getElementById('f-tipo-outro').value = tipoGuardado;
+    document.getElementById('f-tipo-outro-wrap').style.display = '';
+  }
   document.getElementById('f-prazo').value      = p.prazo||'';
   document.getElementById('f-entrega').value    = p.entrega||'';
   document.getElementById('f-desconto').value   = p.desconto||'';
@@ -2798,6 +2825,9 @@ function limparForm() {
   ['f-nome','f-contacto','f-morada','f-localidade','f-prazo','f-entrega','f-desconto','f-notas']
     .forEach(function(id){ document.getElementById(id).value = ''; });
   document.getElementById('f-fase').value = 'proposta';
+  document.getElementById('f-tipo').value = 'cozinha';
+  document.getElementById('f-tipo-outro').value = '';
+  document.getElementById('f-tipo-outro-wrap').style.display = 'none';
   ['tampos','eletros','acessorios'].forEach(function(cat){
     document.getElementById('lines-'+cat).innerHTML = '';
   });
@@ -2975,8 +3005,13 @@ function guardarProjeto() {
 
   var projetoAnterior = EDIT_ID ? PROJETOS.find(function(p){ return p.id === EDIT_ID; }) : null;
 
+  var tipoVal = document.getElementById('f-tipo').value;
+  var tipoOutro = document.getElementById('f-tipo-outro').value.trim();
+  var tipo = tipoVal === 'outro' ? (tipoOutro || 'Outro') : tipoVal;
+
   var proj = {
     id:          EDIT_ID || uid(),
+    tipo:        tipo,
     nome:        nome,
     contacto:    document.getElementById('f-contacto').value.trim(),
     morada:      document.getElementById('f-morada').value.trim(),
@@ -3198,6 +3233,24 @@ function renderPaginaCliente(p) {
   if (typeof _db !== 'undefined' && typeof setDoc !== 'undefined') {
     registarVisitaCliente(p.id, p.nome).catch(function(){});
   }
+
+  // adaptar títulos ao tipo de projeto
+  var tipoLabels = {
+    'cozinha':      { hero: 'Projeto<br>da Cozinha',    elementos: 'Elementos da Cozinha',    orcamento: 'Orçamento da Cozinha' },
+    'casa-de-banho':{ hero: 'Projeto<br>Casa de Banho', elementos: 'Elementos da Casa de Banho', orcamento: 'Orçamento da Casa de Banho' }
+  };
+  var tipo = p.tipo || 'cozinha';
+  var lbl = tipoLabels[tipo] || {
+    hero: 'Projeto<br>' + tipo.charAt(0).toUpperCase() + tipo.slice(1),
+    elementos: 'Elementos do Projeto',
+    orcamento: 'Orçamento do Projeto'
+  };
+  var heroTit = document.getElementById('cli-hero-titulo');
+  if (heroTit) heroTit.innerHTML = lbl.hero;
+  var elTit = document.getElementById('cli-title-elementos');
+  if (elTit) elTit.textContent = lbl.elementos;
+  var orcTit = document.getElementById('cli-title-orcamento');
+  if (orcTit) orcTit.textContent = lbl.orcamento;
 
   // hero
   document.getElementById('cli-nome-hero').textContent = p.nome || '—';
@@ -3539,6 +3592,12 @@ window.eliminarInteracao = eliminarInteracao;
 window.atualizarTotalPreview = atualizarTotalPreview;
 window.renderThumbs     = renderThumbs;
 window.aprovarProposta  = aprovarProposta;
+window.atualizarTipoProjeto = atualizarTipoProjeto;
+
+function atualizarTipoProjeto() {
+  var val = document.getElementById('f-tipo').value;
+  document.getElementById('f-tipo-outro-wrap').style.display = val === 'outro' ? '' : 'none';
+}
 
 (async function() {
   var overlay = document.createElement('div');
