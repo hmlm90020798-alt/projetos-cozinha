@@ -3231,8 +3231,12 @@ function gerarMarcos(p, fase) {
   if (faseIdx < 0) faseIdx = 0;
 
   function estadoPara(marcoIdx) {
-    if (marcoIdx < faseIdx) return 'done';
-    if (marcoIdx === faseIdx) return 'active';
+    // marco 0 = Apresentado — sempre done
+    if (marcoIdx === 0) return 'done';
+    // marco 1 = Em Análise/Aprovação — active quando proposta (idx 0)
+    var idxEfetivo = faseIdx === 0 ? 1 : faseIdx + 1;
+    if (marcoIdx < idxEfetivo) return 'done';
+    if (marcoIdx === idxEfetivo) return 'active';
     return 'pendente';
   }
 
@@ -3267,7 +3271,7 @@ function gerarMarcos(p, fase) {
       estado: 'done',
       apelo: null
     },
-    faseIdx >= 2
+    faseIdx >= 1
     ? {
         titulo: 'Obrigado pela confiança! ✦',
         data: p.aprovacao ? p.aprovacao.data + (p.aprovacao.hora ? ' · ' + p.aprovacao.hora : '') : null,
@@ -3279,7 +3283,7 @@ function gerarMarcos(p, fase) {
         titulo: 'A sua análise e decisão',
         data: prazoStr,
         desc: 'Período para analisar a proposta com calma. Estou disponível para qualquer ajuste ou esclarecimento.',
-        estado: estadoPara(1),
+        estado: 'active',
         apelo: '✦ Um sim é tudo o que falta para começar'
       },
     {
@@ -3613,6 +3617,13 @@ async function aprovarProposta() {
     var conf = document.getElementById('aprovacao-confirmada');
     if (conf) conf.classList.add('show');
     if (btn) btn.style.display = 'none';
+    // recarregar a página do cliente com os dados atualizados (mostra agradecimento na timeline)
+    setTimeout(async function() {
+      try {
+        var snapAtual = await getDoc(doc(_db, 'projetos', _PROJ_ATUAL_ID));
+        if (snapAtual.exists()) renderPaginaCliente(snapAtual.data());
+      } catch(e) {}
+    }, 1200);
     // notificar o painel se estiver aberto
     mostrarToast('✓ Proposta aprovada!', 'O cliente aprovou · ' + data + ' · ' + hora);
   } catch(e) {
