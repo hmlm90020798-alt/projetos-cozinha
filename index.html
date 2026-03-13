@@ -2468,6 +2468,7 @@ function doLogout() {
 
 // Observador de estado de autenticação — controla qual view mostrar
 onAuthStateChanged(_auth, async function(user) {
+  if (_IS_CLIENTE_MODE) return; // cliente nunca vai para o painel
   if (user) {
     var isCliente = await checkUrlParam();
     if (!isCliente) {
@@ -2490,7 +2491,7 @@ function setView(v) {
   }
 }
 
-var FILTRO_ATIVO = 'todos';
+var _IS_CLIENTE_MODE = false; // true quando acesso via ?p=ID — nunca mostrar login
 
 function setFiltro(btn, fase) {
   FILTRO_ATIVO = fase;
@@ -3111,7 +3112,8 @@ function guardarProjeto() {
       var agora = new Date();
       proj.aprovacao = {
         data: agora.toLocaleDateString('pt-PT'),
-        hora: String(agora.getHours()).padStart(2,'0') + ':' + String(agora.getMinutes()).padStart(2,'0')
+        hora: String(agora.getHours()).padStart(2,'0') + ':' + String(agora.getMinutes()).padStart(2,'0'),
+        origem: 'painel'
       };
     } else {
       proj.aprovacao = projetoAnterior.aprovacao;
@@ -3620,16 +3622,25 @@ async function renderEstadoAprovacao(projetoId, aprovacao) {
 
   if (projAprovado) {
     var dataTexto = (aprovacao && aprovacao.data)
-      ? 'em ' + aprovacao.data + (aprovacao.hora ? ' às ' + aprovacao.hora : '')
-      : '';
-    secao.innerHTML =
-      '<div class="aprovacao-inner">' +
-        '<div class="aprovacao-confirmada show">' +
-          '<div class="aprovacao-confirmada-titulo">✓ Aprovação registada!</div>' +
-          '<div class="aprovacao-confirmada-texto">A sua confirmação foi recebida com sucesso. Entrarei em contacto brevemente para avançarmos com os próximos passos.</div>' +
-        '</div>' +
-        (dataTexto ? '<div class="aprovacao-ja-feita">✓ Proposta aprovada ' + dataTexto + '</div>' : '') +
-      '</div>';
+      ? '✓ Proposta aprovada em ' + aprovacao.data + (aprovacao.hora ? ' às ' + aprovacao.hora : '')
+      : '✓ Proposta aprovada';
+    // cliente aprovou = origem 'cliente'; painel = origem 'painel' ou sem origem mas fase mudada
+    var aprovadoPeloCliente = aprovacao && aprovacao.data && aprovacao.origem === 'cliente';
+    if (aprovadoPeloCliente) {
+      secao.innerHTML =
+        '<div class="aprovacao-inner">' +
+          '<div class="aprovacao-confirmada show">' +
+            '<div class="aprovacao-confirmada-titulo">✓ Aprovação registada!</div>' +
+            '<div class="aprovacao-confirmada-texto">A sua confirmação foi recebida com sucesso. Entrarei em contacto brevemente para avançarmos com os próximos passos.</div>' +
+          '</div>' +
+          '<div class="aprovacao-ja-feita">' + dataTexto + '</div>' +
+        '</div>';
+    } else {
+      secao.innerHTML =
+        '<div class="aprovacao-inner">' +
+          '<div class="aprovacao-ja-feita">' + dataTexto + '</div>' +
+        '</div>';
+    }
   } else {
     secao.innerHTML =
       '<div class="aprovacao-inner">' +
@@ -3660,7 +3671,7 @@ async function aprovarProposta() {
     var snap = await getDoc(projDoc);
     if (snap.exists()) {
       var p = snap.data();
-      p.aprovacao = { data: data, hora: hora };
+      p.aprovacao = { data: data, hora: hora, origem: 'cliente' };
       p.fase = 'aprovado';
       await setDoc(projDoc, p);
     }
@@ -3714,6 +3725,7 @@ async function checkUrlParam() {
     var snap = await getDoc(projDoc);
     if (snap.exists()) {
       var p = snap.data();
+      _IS_CLIENTE_MODE = true;
       renderPaginaCliente(p);
       setView('cliente');
       var btn = document.getElementById('btn-voltar-painel');
@@ -3727,6 +3739,7 @@ async function checkUrlParam() {
   // fallback: procurar no array local (compatibilidade)
   var pLocal = PROJETOS.find(function(x){ return x.id === id; });
   if (pLocal) {
+    _IS_CLIENTE_MODE = true;
     renderPaginaCliente(pLocal);
     setView('cliente');
     var btn2 = document.getElementById('btn-voltar-painel');
@@ -3810,10 +3823,9 @@ function atualizarTipoProjeto() {
     return;
   }
 
-  // Aguardar estado de autenticação do Firebase
-  // O onAuthStateChanged acima trata do resto
-  // Se após 3 segundos não houver utilizador, mostrar login
+  // Se após 3 segundos não houver utilizador, mostrar login — mas nunca se for acesso de cliente
   setTimeout(function() {
+    if (_IS_CLIENTE_MODE) return;
     var ov = document.getElementById('loading-overlay');
     if (ov) { ov.remove(); setView('login'); }
   }, 3000);
