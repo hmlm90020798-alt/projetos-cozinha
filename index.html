@@ -2474,18 +2474,17 @@ var _IS_CLIENTE_MODE = (new URLSearchParams(window.location.search)).get('p') !=
 var FILTRO_ATIVO = 'todos'; // filtro ativo no painel
 
 // Observador de estado de autenticação — controla qual view mostrar
+// NOTA: só age quando há utilizador autenticado — o init trata do acesso cliente
 onAuthStateChanged(_auth, async function(user) {
-  // verificar diretamente no URL — não depende de variáveis ou timing
-  if ((new URLSearchParams(window.location.search)).get('p')) return;
-  var ov = document.getElementById('loading-overlay');
   if (user) {
-    await carregar();
-    if (ov) ov.remove();
-    setView('painel');
-    renderPainel();
-  } else {
-    if (ov) ov.remove();
-    setView('login');
+    var isCliente = await checkUrlParam();
+    if (!isCliente) {
+      carregar().then(function() {
+        setView('painel');
+        renderPainel();
+        document.getElementById('loading-overlay') && document.getElementById('loading-overlay').remove();
+      });
+    }
   }
 });
 
@@ -3825,14 +3824,18 @@ function atualizarTipoProjeto() {
   }
 
   // Modo cliente — acesso via ?p=ID (sem autenticação)
-  if (_IS_CLIENTE_MODE) {
-    await checkUrlParam();
+  var isClienteAccess = await checkUrlParam();
+  if (isClienteAccess) {
     overlay.remove();
     return;
   }
 
-  // Modo painel — o onAuthStateChanged trata do resto
-  // (remove o overlay e mostra painel ou login conforme o estado)
+  // Sem ?p=ID — aguardar Firebase Auth
+  // Se não houver sessão após 3s, mostrar login
+  setTimeout(function() {
+    var ov = document.getElementById('loading-overlay');
+    if (ov) { ov.remove(); setView('login'); }
+  }, 3000);
 })();
 </script>
 </body>
