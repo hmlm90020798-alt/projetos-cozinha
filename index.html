@@ -2471,6 +2471,8 @@ function doLogout() {
 // ════════════════════════════════════════════════
 var _IS_CLIENTE_MODE = (new URLSearchParams(window.location.search)).get('p') !== null;
 
+var FILTRO_ATIVO = 'todos'; // filtro ativo no painel
+
 // Observador de estado de autenticação — controla qual view mostrar
 onAuthStateChanged(_auth, async function(user) {
   if (_IS_CLIENTE_MODE) return; // cliente nunca vai para o painel ou login
