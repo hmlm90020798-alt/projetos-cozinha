@@ -3268,6 +3268,8 @@ var T = {
       outro:         { hero:'Projeto',                  elementos:'Elementos do Projeto',         orcamento:'Orçamento do Projeto' }
     },
     secTitles: { notas:'Notas Importantes', timeline:'Estado da Obra' },
+    eyebrows: { composicao:'Composição', investimento:'Investimento', transparencia:'Transparência', acompanhamento:'Acompanhamento' },
+    catNomes: { tampos:'Tampos', eletros:'Eletrodomésticos', acessorios:'Acessórios' },
     orcamento: { total:'Investimento Total', iva:'IVA, entrega e instalação incluídos' },
     elementos: { vazio:'Sem elementos registados.' },
     feed: { registo:'📋 Registo de Interações' },
@@ -3312,6 +3314,8 @@ var T = {
       outro:         { hero:'Project',                   elementos:'Project Elements',        orcamento:'Project Budget' }
     },
     secTitles: { notas:'Important Notes', timeline:'Project Progress' },
+    eyebrows: { composicao:'Composition', investimento:'Investment', transparencia:'Transparency', acompanhamento:'Progress' },
+    catNomes: { tampos:'Worktops', eletros:'Appliances', acessorios:'Accessories' },
     orcamento: { total:'Total Investment', iva:'VAT, delivery and installation included' },
     elementos: { vazio:'No elements registered.' },
     feed: { registo:'📋 Interaction Log' },
@@ -3510,6 +3514,18 @@ function renderPaginaCliente(p) {
   var orcTit = document.getElementById('cli-title-orcamento');
   if (orcTit) orcTit.textContent = lbl.orcamento;
 
+  // eyebrows das secções
+  var eyebrows = [
+    { sel:'#elementos .cli-section-eyebrow', key:'composicao' },
+    { sel:'#orcamento .cli-section-eyebrow', key:'investimento' },
+    { sel:'#condicoes .cli-section-eyebrow', key:'transparencia' },
+    { sel:'#timeline .cli-section-eyebrow',  key:'acompanhamento' }
+  ];
+  eyebrows.forEach(function(e) {
+    var el = document.querySelector(e.sel);
+    if (el) el.textContent = L.eyebrows[e.key];
+  });
+
   // títulos de secção fixos
   var secNotas = document.querySelector('#condicoes .cli-section-title');
   if (secNotas) secNotas.textContent = L.secTitles.notas;
@@ -3615,7 +3631,7 @@ function renderPaginaCliente(p) {
     document.querySelector('#timeline .cli-section-num').textContent  = '04';
   }
   var elemHTML = '';
-  var catNomesElem = { tampos:'Tampos', eletros:'Eletrodomésticos', acessorios:'Acessórios' };
+  var catNomesElem = L.catNomes;
   var catIconsElem = { tampos:'🪨', eletros:'⚡', acessorios:'🔧' };
 
   function renderGrupoElem(titulo, icone, items) {
