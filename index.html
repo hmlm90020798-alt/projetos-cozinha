@@ -2075,7 +2075,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
   </section>
 
   <!-- GALERIA -->
-  <section id="galeria" style="display:none;" id="sec-galeria">
+  <section id="galeria" style="display:none;">
     <div class="cli-galeria">
       <div class="cli-galeria-inner">
         <div class="cli-galeria-header">
@@ -2348,8 +2348,6 @@ async function carregar() {
       // Se os dados antigos estiverem no formato antigo (array direto), migrar
       if (Array.isArray(dadosAntigos)) {
         PROJETOS = dadosAntigos;
-        // Migrar automaticamente para o novo formato
-        console.log('A migrar ' + PROJETOS.length + ' projetos para o novo formato...');
         for (var i = 0; i < PROJETOS.length; i++) {
           try { await guardarProjFirestore(PROJETOS[i]); } catch(e) {}
         }
@@ -3474,9 +3472,6 @@ function verCliente(id) {
 }
 
 
-function exportarHTML(id) { /* desativado */ }
-
-
 function renderPaginaCliente(p) {
   _PROJ_ATUAL_ID = p.id;
   _PROJ_CACHE = p; // guardar para re-renderizar ao mudar idioma
@@ -3943,7 +3938,6 @@ window.editarProjeto    = editarProjeto;
 window.apagarProjeto    = apagarProjeto;
 window.verCliente       = verCliente;
 window.partilharCliente = partilharCliente;
-window.exportarHTML     = exportarHTML;
 window.setView          = setView;
 window.renderPainel     = renderPainel;
 window.addLinhaElem     = addLinhaElem;
@@ -3958,8 +3952,6 @@ window.lightboxNav      = lightboxNav;
 window.addInteracao       = addInteracao;
 window.eliminarInteracao  = eliminarInteracao;
 window.copiarEmail      = copiarEmail;
-window.addInteracao     = addInteracao;
-window.eliminarInteracao = eliminarInteracao;
 window.atualizarTotalPreview = atualizarTotalPreview;
 window.renderThumbs     = renderThumbs;
 window.aprovarProposta  = aprovarProposta;
