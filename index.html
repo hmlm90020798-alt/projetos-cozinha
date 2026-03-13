@@ -390,8 +390,6 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
 .btn-sm.danger:hover { border-color: var(--red); color: var(--red); }
 .btn-sm.primary { background: var(--lm-green); border-color: var(--lm-green); color: #fff; }
 .btn-sm.primary:hover { background: var(--lm-green-dark); }
-.btn-sm.btn-partilhar { border-color: rgba(37,211,102,.4); color: #1a7a3a; }
-.btn-sm.btn-partilhar:hover { background: #25D366; border-color: #25D366; color: #fff; }
 
 .empty-state {
   text-align: center;
@@ -1464,246 +1462,22 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
   color: rgba(255,255,255,.5); letter-spacing: 1px;
 }
 
-/* ══ BARRA DE PESQUISA E FILTROS ══ */
-.painel-search-bar {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.painel-search-input {
-  flex: 1;
-  min-width: 200px;
-  padding: 10px 16px 10px 38px;
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  font-family: 'Lato', sans-serif;
-  font-size: 13px;
-  color: var(--ink);
-  background: var(--surface);
-  outline: none;
-  transition: border-color .15s;
-  position: relative;
-}
-.painel-search-input:focus { border-color: var(--lm-green); }
-.painel-search-wrap {
-  position: relative;
-  flex: 1;
-  min-width: 200px;
-}
-.painel-search-wrap::before {
-  content: '🔍';
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 13px;
-  pointer-events: none;
-  z-index: 1;
-}
-.filtro-btn {
-  padding: 9px 16px;
-  border: 1.5px solid var(--border);
-  border-radius: 9px;
-  background: var(--surface);
-  color: var(--ink2);
-  font-family: 'Syne', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all .15s;
-  white-space: nowrap;
-  letter-spacing: .3px;
-}
-.filtro-btn:hover { border-color: var(--lm-green); color: var(--lm-green); }
-.filtro-btn.active { background: var(--lm-green); border-color: var(--lm-green); color: #fff; }
-
-/* ══ BADGE VISITA CLIENTE ══ */
-.badge-visita {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(184,146,42,.12);
-  border: 1px solid rgba(184,146,42,.3);
-  color: var(--gold);
-  font-family: 'Syne', sans-serif;
-  font-size: 9px;
-  font-weight: 800;
-  padding: 3px 8px;
-  border-radius: 99px;
-  letter-spacing: .4px;
-  animation: pulsar 2s ease-in-out infinite;
-}
-@keyframes pulsar {
-  0%, 100% { opacity: 1; }
-  50% { opacity: .65; }
-}
-.badge-visita-nova {
-  background: rgba(196,48,48,.1);
-  border-color: rgba(196,48,48,.3);
-  color: var(--red);
-}
-.proj-card-visita {
-  padding: 8px 20px 0;
-  font-size: 11px;
-}
-
-/* ══ TOAST NOTIFICAÇÃO ══ */
-.toast-notif {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  background: var(--dark);
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 14px;
-  padding: 16px 20px;
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  box-shadow: 0 12px 40px rgba(0,0,0,.4);
-  z-index: 9999;
-  max-width: 340px;
-  transform: translateY(80px);
-  opacity: 0;
-  transition: all .4s cubic-bezier(.16,1,.3,1);
-  pointer-events: none;
-}
-.toast-notif.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
-.toast-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
-.toast-body {}
-.toast-titulo { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 800; color: #F2EFE8; margin-bottom: 3px; }
-.toast-sub { font-size: 12px; color: rgba(242,239,232,.5); line-height: 1.5; }
-
 @media (max-width: 768px) {
-  .painel-search-bar { gap: 8px; }
-  .toast-notif { left: 16px; right: 16px; bottom: 16px; max-width: none; }
-}
-
-/* ══ RESPONSIVE ══ */
-.badge-aprovacao {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(61,107,53,.15);
-  border: 1px solid rgba(103,171,47,.4);
-  color: var(--lm-green-light);
-  font-family: 'Syne', sans-serif;
-  font-size: 9px;
-  font-weight: 800;
-  padding: 3px 8px;
-  border-radius: 99px;
-  letter-spacing: .4px;
-}
-
-/* ══ BOTÃO DE APROVAÇÃO DO CLIENTE ══ */
-.aprovacao-wrap {
-  background: var(--dark);
-  padding: 60px 40px;
-  border-top: 1px solid rgba(255,255,255,.06);
-}
-.aprovacao-inner {
-  max-width: 580px;
-  margin: 0 auto;
-  text-align: center;
-}
-.aprovacao-titulo {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(26px, 4vw, 38px);
-  font-weight: 900;
-  color: #F2EFE8;
-  margin-bottom: 12px;
-  line-height: 1.1;
-}
-.aprovacao-sub {
-  font-size: 14px;
-  color: rgba(242,239,232,.38);
-  margin-bottom: 36px;
-  line-height: 1.8;
-}
-.btn-aprovar {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 18px 40px;
-  background: linear-gradient(135deg, var(--lm-green), var(--lm-green-light));
-  border: none;
-  border-radius: 14px;
-  color: #fff;
-  font-family: 'Syne', sans-serif;
-  font-size: 15px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all .25s cubic-bezier(.16,1,.3,1);
-  letter-spacing: .3px;
-  box-shadow: 0 8px 32px rgba(61,107,53,.4);
-}
-.btn-aprovar:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 40px rgba(61,107,53,.55);
-}
-.btn-aprovar:disabled {
-  background: rgba(255,255,255,.1);
-  box-shadow: none;
-  cursor: default;
-  transform: none;
-}
-.aprovacao-confirmada {
-  display: none;
-  background: rgba(61,107,53,.12);
-  border: 1.5px solid rgba(103,171,47,.35);
-  border-radius: 16px;
-  padding: 28px 32px;
-  margin-top: 20px;
-}
-.aprovacao-confirmada.show { display: block; }
-.aprovacao-confirmada-titulo {
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--lm-green-light);
-  letter-spacing: .5px;
-  margin-bottom: 6px;
-}
-.aprovacao-confirmada-texto {
-  font-size: 13px;
-  color: rgba(242,239,232,.5);
-  line-height: 1.6;
-}
-.aprovacao-ja-feita {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(61,107,53,.12);
-  border: 1.5px solid rgba(103,171,47,.3);
-  border-radius: 12px;
-  padding: 14px 24px;
-  color: var(--lm-green-light);
-  font-family: 'Syne', sans-serif;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: .5px;
+  .cli-galeria { padding: 48px 24px; }
+  .galeria-grid.n3, .galeria-grid.n4plus { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+  .galeria-grid.n3 .galeria-img:first-child,
+  .galeria-grid.n4plus .galeria-img:first-child { grid-row: auto; grid-column: 1/-1; }
 }
 @media (max-width: 768px) {
-  .aprovacao-wrap { padding: 40px 24px; }
+  .cli-hero-grid { grid-template-columns: 1fr; gap: 40px; }
+  .cli-hero { padding: 80px 24px 48px; }
+  .cli-section { padding: 56px 24px; }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  .painel-body { padding: 20px; }
+  .cli-contacto { padding: 56px 24px; }
+  .orca-total-band { flex-direction: column; gap: 16px; text-align: center; }
+  .cli-nav-links { display: none; }
 }
-/* ══ PÁGINA EXPIRADA ══ */
-#view-expirada { display:none; min-height:100vh; background:var(--dark); align-items:center; justify-content:center; }
-#view-expirada.active { display:flex; }
-.expirada-box { max-width:480px; width:100%; padding:48px 32px; text-align:center; }
-.expirada-icone { font-size:52px; margin-bottom:28px; opacity:.6; }
-.expirada-titulo { font-family:'Playfair Display',serif; font-size:clamp(28px,5vw,40px); font-weight:900; color:#F2EFE8; line-height:1.1; margin-bottom:16px; }
-.expirada-sub { font-size:14px; color:rgba(242,239,232,.45); line-height:1.9; margin-bottom:40px; }
-.expirada-card { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); border-radius:16px; overflow:hidden; text-align:left; }
-.expirada-card-header { display:flex; align-items:center; gap:16px; padding:24px 28px; border-bottom:1px solid rgba(255,255,255,.06); }
-.expirada-avatar { width:46px; height:46px; border-radius:50%; background:linear-gradient(145deg,var(--lm-green-dark),var(--lm-green)); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:19px; font-weight:700; color:#F2EFE8; flex-shrink:0; }
-.expirada-nome { font-family:'Playfair Display',serif; font-size:16px; font-weight:700; color:#F2EFE8; }
-.expirada-cargo { font-size:11px; color:rgba(242,239,232,.35); font-style:italic; margin-top:2px; }
-.expirada-contactos { padding:20px 28px; display:flex; flex-direction:column; gap:14px; }
-.expirada-linha { display:flex; align-items:center; gap:12px; }
-.expirada-label { font-family:'Syne',sans-serif; font-size:9px; font-weight:800; letter-spacing:1.5px; color:rgba(242,239,232,.25); text-transform:uppercase; width:52px; flex-shrink:0; }
-.expirada-valor { font-family:'Inconsolata',monospace; font-size:15px; color:rgba(242,239,232,.8); }
-@media(max-width:480px){ .expirada-box{ padding:32px 20px; } }
 </style>
 </head>
 <body>
@@ -1717,20 +1491,13 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
       <div class="login-logo-sub">GESTÃO DE APRESENTAÇÕES</div>
     </div>
     <div class="login-card">
-      <div class="form-field" style="margin-bottom:16px;">
-        <div class="login-label">Email</div>
-        <input type="email" id="login-email" class="login-input" placeholder="helder.melo@leroymerlin.pt"
-          onkeydown="if(event.key==='Enter')document.getElementById('login-pw').focus()"
-          style="margin-bottom:0;">
-      </div>
-      <div class="form-field" style="margin-bottom:20px;">
+      <div class="form-field">
         <div class="login-label">Password</div>
         <input type="password" id="login-pw" class="login-input" placeholder="••••••••"
-          onkeydown="if(event.key==='Enter') window.doLogin && window.doLogin()"
-          style="margin-bottom:0;">
+          onkeydown="if(event.key==='Enter')doLogin()">
       </div>
-      <button class="login-btn" onclick="window.doLogin && window.doLogin()">Entrar</button>
-      <div class="login-error" id="login-err"></div>
+      <button class="login-btn" onclick="doLogin()">Entrar</button>
+      <div class="login-error" id="login-err">Password incorreta</div>
     </div>
   </div>
 </div>
@@ -1765,20 +1532,6 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
       </button>
     </div>
 
-    <!-- Pesquisa e Filtros -->
-    <div class="painel-search-bar">
-      <div class="painel-search-wrap">
-        <input type="text" class="painel-search-input" id="painel-pesquisa"
-          placeholder="Pesquisar por nome ou localidade…"
-          oninput="renderPainel()">
-      </div>
-      <button class="filtro-btn active" onclick="setFiltro(this,'todos')">Todos</button>
-      <button class="filtro-btn" onclick="setFiltro(this,'proposta')">Apresentado</button>
-      <button class="filtro-btn" onclick="setFiltro(this,'aprovado')">Aprovado</button>
-      <button class="filtro-btn" onclick="setFiltro(this,'obra')">Em Obra</button>
-      <button class="filtro-btn" onclick="setFiltro(this,'concluido')">Concluído</button>
-    </div>
-
     <div class="stats-bar" id="stats-bar">
       <div class="stat-card">
         <div class="stat-val" id="stat-total">0</div>
@@ -1786,7 +1539,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
       </div>
       <div class="stat-card">
         <div class="stat-val" id="stat-proposta">0</div>
-        <div class="stat-lbl">Em Análise</div>
+        <div class="stat-lbl">Em Proposta</div>
       </div>
       <div class="stat-card">
         <div class="stat-val" id="stat-obra">0</div>
@@ -1820,18 +1573,6 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
             <input type="text" id="f-nome" class="form-input" placeholder="Ex: Mário Perdigão">
           </div>
           <div class="form-field">
-            <div class="form-label">Tipo de Projeto</div>
-            <select id="f-tipo" class="form-select" onchange="atualizarTipoProjeto()">
-              <option value="cozinha">🍳 Cozinha</option>
-              <option value="casa-de-banho">🚿 Casa de Banho</option>
-              <option value="outro">✦ Outro</option>
-            </select>
-          </div>
-          <div class="form-field" id="f-tipo-outro-wrap" style="display:none;">
-            <div class="form-label">Especificar Tipo</div>
-            <input type="text" id="f-tipo-outro" class="form-input" placeholder="Ex: Quarto, Sala, Renovação...">
-          </div>
-          <div class="form-field">
             <div class="form-label">Contacto</div>
             <input type="text" id="f-contacto" class="form-input" placeholder="Ex: 963 014 483">
           </div>
@@ -1851,9 +1592,9 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
         <div class="form-section-title">Proposta</div>
         <div class="form-grid">
           <div class="form-field">
-            <div class="form-label">Fase da Obra</div>
+            <div class="form-label">Fase</div>
             <select id="f-fase" class="form-select">
-              <option value="proposta">Em Análise</option>
+              <option value="proposta">Em Proposta</option>
               <option value="aprovado">Aprovado</option>
               <option value="encomenda">Materiais Encomendados</option>
               <option value="entrega">Aguarda Entrega</option>
@@ -1865,29 +1606,9 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
             <div class="form-label">Validade da Proposta</div>
             <input type="date" id="f-prazo" class="form-input">
           </div>
-        </div>
-      </div>
-
-      <!-- datas da obra -->
-      <div class="form-section">
-        <div class="form-section-title">Datas da Obra</div>
-        <div style="font-size:12px;color:var(--ink3);margin-bottom:14px;">Preenche à medida que a obra avança. As datas confirmadas aparecem na timeline do cliente.</div>
-        <div class="form-grid">
-          <div class="form-field">
-            <div class="form-label">Entrega de Materiais</div>
-            <input type="date" id="f-data-entrega-mat" class="form-input">
-          </div>
-          <div class="form-field">
-            <div class="form-label">Início da Instalação</div>
-            <input type="date" id="f-data-instalacao" class="form-input">
-          </div>
-          <div class="form-field">
-            <div class="form-label">Conclusão Prevista</div>
-            <input type="date" id="f-data-conclusao" class="form-input">
-          </div>
-          <div class="form-field">
-            <div class="form-label">Previsão de Entrega <span style="font-size:10px;color:var(--ink3)">(texto livre)</span></div>
-            <input type="text" id="f-entrega" class="form-input" placeholder="Ex: Semana de 16/04/2026">
+          <div class="form-field span2">
+            <div class="form-label">Previsão de Entrega</div>
+            <input type="text" id="f-entrega" class="form-input" placeholder="Ex: 16/04/2026">
           </div>
         </div>
       </div>
@@ -1986,34 +1707,6 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
 </div>
 
 <!-- ══ PÁGINA PÚBLICA DO CLIENTE ══ -->
-<!-- ══ EXPIRADA ══ -->
-<div id="view-expirada" class="view">
-  <div class="expirada-box">
-    <div class="expirada-icone">⏳</div>
-    <div class="expirada-titulo">Esta proposta<br>já não está disponível.</div>
-    <div class="expirada-sub">O período de validade desta proposta terminou.<br>Mas não se preocupe — estou sempre disponível<br>para rever o projeto e encontrar a melhor solução para si.</div>
-    <div class="expirada-card">
-      <div class="expirada-card-header">
-        <div class="expirada-avatar">H</div>
-        <div>
-          <div class="expirada-nome">Hélder Melo</div>
-          <div class="expirada-cargo">Vendedor de Projetos · Leroy Merlin</div>
-        </div>
-      </div>
-      <div class="expirada-contactos">
-        <div class="expirada-linha">
-          <span class="expirada-label">Tel.</span>
-          <span class="expirada-valor">917 880 364</span>
-        </div>
-        <div class="expirada-linha">
-          <span class="expirada-label">Email</span>
-          <span class="expirada-valor"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="80e8e5ece4e5f2aeede5ecefc0ece5f2eff9ede5f2ece9eeaef0f4">[email&#160;protected]</a></span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div id="view-cliente" class="view">
 
   <nav class="cli-nav">
@@ -2040,7 +1733,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
       <!-- esquerda -->
       <div>
         <div class="cli-hero-eyebrow">Leroy Merlin Portugal</div>
-        <div class="cli-hero-titulo" id="cli-hero-titulo">Projeto<br>da Cozinha</div>
+        <div class="cli-hero-titulo">Projeto<br>da Cozinha</div>
         <div class="cli-hero-cliente" id="cli-nome-hero">—</div>
         <div class="cli-hero-meta">
           <div class="cli-hero-meta-row">📍 <strong id="cli-local-hero">—</strong></div>
@@ -2092,7 +1785,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
         <div class="cli-section-num">02</div>
         <div class="cli-section-title-wrap">
           <div class="cli-section-eyebrow">Composição</div>
-          <div class="cli-section-title" id="cli-title-elementos">Elementos da Cozinha</div>
+          <div class="cli-section-title">Elementos da Cozinha</div>
         </div>
       </div>
       <div id="cli-elementos"></div>
@@ -2106,7 +1799,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
         <div class="cli-section-num">03</div>
         <div class="cli-section-title-wrap">
           <div class="cli-section-eyebrow">Investimento</div>
-          <div class="cli-section-title" id="cli-title-orcamento">Orçamento da Cozinha</div>
+          <div class="cli-section-title">Orçamento da Cozinha</div>
         </div>
       </div>
       <div id="cli-orcamento"></div>
@@ -2142,23 +1835,12 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
     </div>
   </section>
 
-  <!-- APROVAÇÃO DA PROPOSTA -->
-  <div class="aprovacao-wrap" id="sec-aprovacao">
-    <div class="aprovacao-inner">
-      <div class="aprovacao-titulo">Está pronto para avançar?</div>
-      <div class="aprovacao-sub">Com um clique confirma a aprovação desta proposta.<br>Ficará registado e serei notificado imediatamente.</div>
-      <div id="aprovacao-estado">
-        <!-- preenchido por JS -->
-      </div>
-    </div>
-  </div>
-
   <!-- CONTACTO -->
   <section id="contacto">
     <div class="cli-contacto">
       <div class="cli-contacto-inner">
-        <div class="cli-contacto-titulo">Estou aqui para si.</div>
-        <div class="cli-contacto-sub">Tenha aprovado ou ainda esteja a pensar — estou disponível para qualquer dúvida, ajuste ou esclarecimento. Não hesite em contactar-me diretamente.</div>
+        <div class="cli-contacto-titulo">Pronto para avançar?</div>
+        <div class="cli-contacto-sub">Estou à distância de uma mensagem.<br>Qualquer dúvida ou confirmação, contacte-me diretamente.</div>
         <div class="cli-contacto-card">
           <div class="cli-contacto-cabecalho">
             <div class="cli-contacto-avatar">H</div>
@@ -2179,7 +1861,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
             <div class="contacto-dado">
               <div class="contacto-dado-label">Email</div>
               <div class="contacto-email-linha">
-                <div class="contacto-dado-valor" id="cli-email-val">helder.melo<!-- -->@leroymerlin.pt</div>
+                <div class="contacto-dado-valor"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d9b1bcb5bdbcabf7b4bcb5b699b5bcabb6a0b4bcabb5b0b7f7a9ad">[email&#160;protected]</a></div>
                 <button class="btn-copiar-email" onclick="copiarEmail(this)">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
                   Copiar
@@ -2203,50 +1885,33 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
   <div class="lightbox-counter" id="lightbox-counter"></div>
 </div>
 
-<!-- TOAST NOTIFICAÇÃO -->
-<div class="toast-notif" id="toast-notif">
-  <div class="toast-icon">👁</div>
-  <div class="toast-body">
-    <div class="toast-titulo" id="toast-titulo">Cliente visitou a proposta</div>
-    <div class="toast-sub" id="toast-sub"></div>
-  </div>
-</div>
-
-<script type="module">
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ════════════════════════════════════════════════
 // DADOS & ESTADO
 // ════════════════════════════════════════════════
+const PASS = 'lm2026hm';
 const LS_KEY = 'projcozinha_v1';
 
 var PROJETOS = [];
 var EDIT_ID  = null;
 var EDIT_IMGS = []; // base64 das imagens em edição
-var cdInterval = null; // contador regressivo
 
 // lightbox
 var LB_IMGS = [];
 var LB_IDX  = 0;
 
-// ── Firebase Firestore ────────────────────────
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, doc, setDoc, getDoc, getDocs, deleteDoc, collection, query } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyALyrpFSGx4evXtOYCfRIvWc_jTjByz0R8",
-  authDomain: "hm-projetos-lm.firebaseapp.com",
-  projectId: "hm-projetos-lm",
-  storageBucket: "hm-projetos-lm.firebasestorage.app",
-  messagingSenderId: "772658359928",
-  appId: "1:772658359928:web:98332ec006329f380ec78d"
-};
-
-const _fbApp = initializeApp(firebaseConfig);
-const _db    = getFirestore(_fbApp);
-const _auth  = getAuth(_fbApp);
-const _colRef  = collection(_db, 'projetos');
+// ── Persistência JSONBin ────────────────────────
+const JSONBIN_KEY = ['$2a','$10','$8zF/cdS3bT7jSo.eKdk7pOTmee5MN/bDhJcWCNBIZh6FeVxNi.iKa'].join('');
+const JSONBIN_ACCESS_KEY = ['$2a','$10','$K0aGheX2pSgh9POANjqbk.benA2UK3Vp0PZg7JrjBeX6usZbqIM8W'].join('');
+const LS_BIN_ID   = 'projcozinha_bin_id';
+const FIXED_BIN_ID = '69b2fef7c3097a1dd51d56e9';
+// usar sempre o BIN_ID fixo — garante acesso de qualquer browser
+var BIN_ID = FIXED_BIN_ID;
+localStorage.setItem(LS_BIN_ID, BIN_ID);
+var   SYNC_TIMER  = null;
 
 function setSyncStatus(estado) {
+  // estado: 'saving' | 'saved' | 'error' | ''
   var el = document.getElementById('sync-status');
   if (!el) return;
   var map = { saving: '⏳ A guardar…', saved: '✓ Guardado', error: '⚠️ Erro ao guardar' };
@@ -2255,110 +1920,76 @@ function setSyncStatus(estado) {
   if (estado === 'saved') setTimeout(function(){ el.textContent = ''; el.className = 'sync-status'; }, 2500);
 }
 
-// ── comprimir imagem base64 via canvas (max 900px, qualidade 0.72) ──
-function comprimirImagem(b64, maxDim, qualidade) {
-  return new Promise(function(resolve) {
-    // se já for URL (http) ou já for pequena (~< 100KB), devolver tal qual
-    if (b64.startsWith('http') || b64.length < 130000) { resolve(b64); return; }
-    var img = new Image();
-    img.onload = function() {
-      var w = img.width, h = img.height;
-      var escala = Math.min(1, maxDim / Math.max(w, h));
-      var cw = Math.round(w * escala), ch = Math.round(h * escala);
-      var canvas = document.createElement('canvas');
-      canvas.width = cw; canvas.height = ch;
-      var ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, cw, ch);
-      resolve(canvas.toDataURL('image/jpeg', qualidade));
-    };
-    img.onerror = function() { resolve(b64); };
-    img.src = b64;
-  });
-}
-
-// ── guardar um projeto individual no Firestore ──────────────────────
-async function guardarProjFirestore(proj) {
-  // Comprimir todas as imagens antes de guardar
-  var imagensComprimidas = [];
-  for (var i = 0; i < (proj.imagens||[]).length; i++) {
-    var img = proj.imagens[i];
-    var imgComprimida = await comprimirImagem(img, 900, 0.72);
-    imagensComprimidas.push(imgComprimida);
-  }
-
-  var projParaGuardar = Object.assign({}, proj, { imagens: imagensComprimidas });
-
-  var projDoc = doc(_db, 'projetos', proj.id);
-  await setDoc(projDoc, projParaGuardar);
-  return projParaGuardar;
-}
-
-async function guardar(projetoEspecifico) {
-  if (typeof MODO_STANDALONE !== 'undefined' && MODO_STANDALONE) return;
+async function guardar() {
+  // backup local imediato
+  try { localStorage.setItem(LS_KEY, JSON.stringify(PROJETOS)); } catch(e) {}
   setSyncStatus('saving');
   try {
-    if (projetoEspecifico) {
-      // guardar apenas um projeto
-      var projAtualizado = await guardarProjFirestore(projetoEspecifico);
-      // atualizar array local com URLs de Storage
-      var idx = PROJETOS.findIndex(function(p){ return p.id === projetoEspecifico.id; });
-      if (idx >= 0) PROJETOS[idx] = projAtualizado;
+    var body = JSON.stringify({ projetos: PROJETOS });
+    var res;
+    if (!BIN_ID) {
+      // criar bin pela primeira vez
+      res = await fetch('https://api.jsonbin.io/v3/b', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Name': 'ProjCozinha', 'X-Bin-Private': 'false' },
+        body: body
+      });
+      var data = await res.json();
+      BIN_ID = data.metadata.id;
+      localStorage.setItem(LS_BIN_ID, BIN_ID);
     } else {
-      // guardar todos (usado após apagar)
-      for (var i = 0; i < PROJETOS.length; i++) {
-        await guardarProjFirestore(PROJETOS[i]);
-      }
+      res = await fetch('https://api.jsonbin.io/v3/b/' + BIN_ID, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY, 'X-Access-Key': JSONBIN_ACCESS_KEY },
+        body: body
+      });
     }
-    // cache local
-    try { localStorage.setItem(LS_KEY, JSON.stringify(PROJETOS)); } catch(e) {}
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     setSyncStatus('saved');
   } catch(e) {
-    console.error('Firebase save error:', e);
+    console.error('JSONBin save error:', e);
     setSyncStatus('error');
-    try { localStorage.setItem(LS_KEY, JSON.stringify(PROJETOS)); } catch(ex) {}
-    alert('Erro ao guardar no Firebase: ' + e.message + '\n\nOs dados ficaram guardados localmente.');
   }
 }
 
 async function carregar() {
-  if (typeof MODO_STANDALONE !== 'undefined' && MODO_STANDALONE) {
-    if (typeof PROJETO_EMBED !== 'undefined' && PROJETO_EMBED) {
-      PROJETOS = [PROJETO_EMBED];
-    }
-    return;
+  // tentar JSONBin primeiro
+  if (BIN_ID) {
+    try {
+      var res = await fetch('https://api.jsonbin.io/v3/b/' + BIN_ID + '/latest', {
+        headers: { 'X-Master-Key': JSONBIN_KEY, 'X-Access-Key': JSONBIN_ACCESS_KEY }
+      });
+      if (res.ok) {
+        var data = await res.json();
+        PROJETOS = data.record.projetos || [];
+        try { localStorage.setItem(LS_KEY, JSON.stringify(PROJETOS)); } catch(e) {}
+        return;
+      }
+    } catch(e) { console.warn('JSONBin load error, usando localStorage:', e); }
   }
-  try {
-    // Carregar todos os documentos da coleção 'projetos'
-    var snap = await getDocs(query(_colRef));
-    if (!snap.empty) {
-      PROJETOS = [];
-      snap.forEach(function(d) { PROJETOS.push(d.data()); });
-      // ordenar por data de criação
-      PROJETOS.sort(function(a,b){ return (a.dataCriacao||'') > (b.dataCriacao||'') ? 1 : -1; });
-      try { localStorage.setItem(LS_KEY, JSON.stringify(PROJETOS)); } catch(e) {}
-      return;
-    }
-  } catch(e) {
-    console.warn('Firebase load error, usando localStorage:', e);
-  }
-  // fallback localStorage (migração de dados antigos)
+
+  // fallback localStorage
   try {
     var s = localStorage.getItem(LS_KEY);
-    if (s) {
-      var dadosAntigos = JSON.parse(s);
-      // Se os dados antigos estiverem no formato antigo (array direto), migrar
-      if (Array.isArray(dadosAntigos)) {
-        PROJETOS = dadosAntigos;
-        // Migrar automaticamente para o novo formato
-        console.log('A migrar ' + PROJETOS.length + ' projetos para o novo formato...');
-        for (var i = 0; i < PROJETOS.length; i++) {
-          try { await guardarProjFirestore(PROJETOS[i]); } catch(e) {}
-        }
-      } else {
-        PROJETOS = [];
-      }
-    }
+    if (s) PROJETOS = JSON.parse(s);
   } catch(e) { PROJETOS = []; }
+
+  // se não há BIN_ID ainda, criar o bin agora com os dados actuais
+  if (!BIN_ID) {
+    try {
+      var res2 = await fetch('https://api.jsonbin.io/v3/b', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Name': 'ProjCozinha', 'X-Bin-Private': 'false' },
+        body: JSON.stringify({ projetos: PROJETOS })
+      });
+      if (res2.ok) {
+        var d2 = await res2.json();
+        BIN_ID = d2.metadata.id;
+        localStorage.setItem(LS_BIN_ID, BIN_ID);
+        console.log('Bin criado:', BIN_ID);
+      }
+    } catch(e) { console.warn('Erro ao criar bin:', e); }
+  }
 }
 function uid() {
   return Date.now().toString(36) + Math.random().toString(36).substr(2,6);
@@ -2376,11 +2007,9 @@ function processarImagens(files) {
     if (file.size > 4 * 1024 * 1024) { alert(file.name + ' é maior que 4MB.'); pendentes--; return; }
     var reader = new FileReader();
     reader.onload = function(e) {
-      comprimirImagem(e.target.result, 900, 0.72).then(function(b64) {
-        EDIT_IMGS.push(b64);
-        pendentes--;
-        if (pendentes <= 0) renderThumbs();
-      });
+      EDIT_IMGS.push(e.target.result);
+      pendentes--;
+      if (pendentes <= 0) renderThumbs();
     };
     reader.readAsDataURL(file);
   });
@@ -2433,151 +2062,48 @@ document.addEventListener('keydown', function(e) {
 // ════════════════════════════════════════════════
 // LOGIN
 // ════════════════════════════════════════════════
-// ════════════════════════════════════════════════
-// LOGIN — Firebase Authentication
-// ════════════════════════════════════════════════
 function doLogin() {
-  var email = document.getElementById('login-email').value.trim();
-  var pw    = document.getElementById('login-pw').value;
-  var err   = document.getElementById('login-err');
-  var btn   = document.querySelector('.login-btn');
-  if (!email || !pw) { err.textContent = 'Preenche o email e a password.'; err.style.display = 'block'; return; }
-  btn.textContent = 'A entrar…'; btn.disabled = true;
-  signInWithEmailAndPassword(_auth, email, pw)
-    .then(function() {
-      err.style.display = 'none';
-      btn.textContent = 'Entrar'; btn.disabled = false;
-    })
-    .catch(function(e) {
-      var msgs = {
-        'auth/invalid-credential':    'Email ou password incorretos.',
-        'auth/user-not-found':        'Utilizador não encontrado.',
-        'auth/wrong-password':        'Password incorreta.',
-        'auth/invalid-email':         'Email inválido.',
-        'auth/too-many-requests':     'Demasiadas tentativas. Tenta mais tarde.'
-      };
-      err.textContent = msgs[e.code] || 'Erro ao entrar. Tenta novamente.';
-      err.style.display = 'block';
-      btn.textContent = 'Entrar'; btn.disabled = false;
-    });
-}
-
-function doLogout() {
-  signOut(_auth).then(function() {
-    setView('login');
-    document.getElementById('login-email').value = '';
+  var pw = document.getElementById('login-pw').value;
+  if (pw === PASS) {
+    setView('painel');
+    renderPainel();
+  } else {
+    document.getElementById('login-err').style.display = 'block';
     document.getElementById('login-pw').value = '';
-    document.getElementById('login-err').style.display = 'none';
-  });
-}
-
-// Observador de estado de autenticação — controla qual view mostrar
-onAuthStateChanged(_auth, async function(user) {
-  if (user) {
-    var isCliente = await checkUrlParam();
-    if (!isCliente) {
-      carregar().then(function() {
-        setView('painel');
-        renderPainel();
-        document.getElementById('loading-overlay') && document.getElementById('loading-overlay').remove();
-      });
-    }
+    document.getElementById('login-pw').focus();
   }
-});
+}
+function doLogout() {
+  setView('login');
+  document.getElementById('login-pw').value = '';
+  document.getElementById('login-err').style.display = 'none';
+}
 function setView(v) {
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   document.getElementById('view-' + v).classList.add('active');
-  if (v === 'painel') {
-    iniciarPollingVisitas();
-  } else {
-    pararPollingVisitas();
-  }
-}
-
-var FILTRO_ATIVO = 'todos';
-
-function setFiltro(btn, fase) {
-  FILTRO_ATIVO = fase;
-  document.querySelectorAll('.filtro-btn').forEach(function(b) { b.classList.remove('active'); });
-  btn.classList.add('active');
-  renderPainel();
-}
-
-// ════════════════════════════════════════════════
-// NOTIFICAÇÕES DE VISITA DO CLIENTE
-// ════════════════════════════════════════════════
-function mostrarToast(titulo, sub) {
-  var t = document.getElementById('toast-notif');
-  document.getElementById('toast-titulo').textContent = titulo;
-  document.getElementById('toast-sub').textContent    = sub;
-  t.classList.add('show');
-  setTimeout(function() { t.classList.remove('show'); }, 6000);
-}
-
-async function registarVisitaCliente(projetoId, nomeCliente) {
-  try {
-    var agora = new Date();
-    var dataHora = agora.toLocaleDateString('pt-PT') + ' · ' +
-      String(agora.getHours()).padStart(2,'0') + ':' + String(agora.getMinutes()).padStart(2,'0');
-    var visitaDoc = doc(_db, 'visitas', projetoId);
-    var snapAtual = null;
-    try { snapAtual = await getDoc(visitaDoc); } catch(e) {}
-    var totalAtual = (snapAtual && snapAtual.exists()) ? (snapAtual.data().total||0)+1 : 1;
-    await setDoc(visitaDoc, {
-      ultimaVisita: dataHora,
-      nomeCliente: nomeCliente || 'Cliente',
-      total: totalAtual
-    }, { merge: true });
-  } catch(e) { console.warn('Visita não registada:', e.message); }
-}
-
-async function verificarNovasVisitas() {
-  // Verificar se há visitas registadas recentemente (últimos 10 min)
-  try {
-    for (var i = 0; i < PROJETOS.length; i++) {
-      var p = PROJETOS[i];
-      var visitaDoc = doc(_db, 'visitas', p.id);
-      var snap = await getDoc(visitaDoc);
-      if (snap.exists()) {
-        var d = snap.data();
-        var ultimaVistaPrev = p._ultimaVisita;
-        p._ultimaVisita    = d.ultimaVisita;
-        p._totalVisitas    = d.total || 0;
-        // Se houve nova visita desde a última verificação
-        if (ultimaVistaPrev && d.ultimaVisita !== ultimaVistaPrev) {
-          mostrarToast('👁 ' + (d.nomeCliente||'Cliente') + ' visitou a proposta', 'Última visita: ' + d.ultimaVisita + ' · ' + (d.total||1) + 'ª vez');
-        }
-      }
-    }
-  } catch(e) { /* silencioso */ }
-}
-
-// verificar visitas e aprovações a cada 2 minutos quando o painel está ativo
-var _visitasInterval = null;
-function iniciarPollingVisitas() {
-  if (_visitasInterval) return;
-  verificarNovasVisitas();
-  verificarAprovacoes();
-  _visitasInterval = setInterval(function() {
-    verificarNovasVisitas();
-    verificarAprovacoes();
-  }, 120000);
-}
-function pararPollingVisitas() {
-  if (_visitasInterval) { clearInterval(_visitasInterval); _visitasInterval = null; }
 }
 
 // ════════════════════════════════════════════════
 // PAINEL
 // ════════════════════════════════════════════════
 function renderPainel() {
+  // mostrar BIN ID se existir (para configuração inicial)
+  if (BIN_ID && !localStorage.getItem('projcozinha_bin_shown')) {
+    localStorage.setItem('projcozinha_bin_shown', '1');
+    var banner = document.getElementById('bin-id-banner');
+    if (banner) {
+      document.getElementById('bin-id-val').textContent = BIN_ID;
+      banner.style.display = 'block';
+    }
+  }
+
   var hoje = new Date();
   var em7  = new Date(hoje.getTime() + 7*24*60*60*1000);
 
   var nProposta = 0, nObra = 0, nExpira = 0;
   PROJETOS.forEach(function(p) {
     if (p.fase === 'proposta') nProposta++;
-    if (p.fase === 'obra' || p.fase === 'montagem' || p.fase === 'entrega') nObra++;
+    if (p.fase === 'obra')     nObra++;
     if (p.prazo) {
       var d = new Date(p.prazo);
       if (d > hoje && d <= em7) nExpira++;
@@ -2589,30 +2115,17 @@ function renderPainel() {
   document.getElementById('stat-obra').textContent     = nObra;
   document.getElementById('stat-expira').textContent   = nExpira;
 
-  // Filtrar por fase + pesquisa
-  var pesquisa = (document.getElementById('painel-pesquisa') ? document.getElementById('painel-pesquisa').value.toLowerCase().trim() : '');
-  var lista = PROJETOS.slice().reverse().filter(function(p) {
-    var passaFiltro = FILTRO_ATIVO === 'todos' ||
-      p.fase === FILTRO_ATIVO ||
-      (FILTRO_ATIVO === 'obra' && (p.fase === 'montagem' || p.fase === 'entrega'));
-    var passaPesquisa = !pesquisa ||
-      (p.nome||'').toLowerCase().includes(pesquisa) ||
-      (p.localidade||'').toLowerCase().includes(pesquisa) ||
-      (p.morada||'').toLowerCase().includes(pesquisa);
-    return passaFiltro && passaPesquisa;
-  });
-
   var grid = document.getElementById('proj-grid');
-  if (lista.length === 0) {
+  if (PROJETOS.length === 0) {
     grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">' +
-      '<div class="empty-state-icon">🔍</div>' +
-      '<div class="empty-state-title">' + (pesquisa ? 'Sem resultados para "'+pesquisa+'"' : 'Sem projetos nesta fase') + '</div>' +
-      '<div class="empty-state-sub">Tenta outro filtro ou pesquisa.</div>' +
+      '<div class="empty-state-icon">🍳</div>' +
+      '<div class="empty-state-title">Sem projetos ainda</div>' +
+      '<div class="empty-state-sub">Cria o primeiro projeto e partilha com o teu cliente.</div>' +
     '</div>';
     return;
   }
 
-  grid.innerHTML = lista.map(function(p) {
+  grid.innerHTML = PROJETOS.slice().reverse().map(function(p) {
     var total = calcTotal(p);
     var prazoInfo = '';
     if (p.prazo) {
@@ -2622,25 +2135,10 @@ function renderPainel() {
       else if (diff <= 3) prazoInfo = '<div class="proj-card-prazo prazo-urgente">⏳ Expira em ' + diff + 'd</div>';
       else prazoInfo = '<div class="proj-card-prazo">📅 Expira ' + d.toLocaleDateString('pt-PT') + '</div>';
     }
-    // Badge de visita
-    var visitaBadge = '';
-    if (p._ultimaVisita) {
-      visitaBadge = '<div class="proj-card-visita">' +
-        '<span class="badge-visita">👁 Visto · ' + p._ultimaVisita + (p._totalVisitas > 1 ? ' · ' + p._totalVisitas + 'x' : '') + '</span>' +
-        '</div>';
-    }
-    // Badge de aprovação
-    var aprovacaoBadge = '';
-    if (p.aprovacao && p.aprovacao.data) {
-      aprovacaoBadge = '<div class="proj-card-visita"><span class="badge-aprovacao">✓ Aprovado · ' + p.aprovacao.data + '</span></div>';
-    }
     return '<div class="proj-card">' +
       '<div class="proj-card-header">' +
         '<div class="proj-card-nome">' + (p.nome||'—') + '</div>' +
-        '<div class="proj-card-local">' +
-          (p.tipo && p.tipo !== 'cozinha' ? '<span style="font-family:\'Syne\',sans-serif;font-size:9px;font-weight:800;color:var(--lm-green-light);letter-spacing:.8px;text-transform:uppercase;margin-right:6px;">' + p.tipo.replace('casa-de-banho','Casa de Banho') + '</span>' : '') +
-          [p.morada, p.localidade].filter(Boolean).join(' · ') +
-        '</div>' +
+        '<div class="proj-card-local">' + [p.morada, p.localidade].filter(Boolean).join(' · ') + '</div>' +
       '</div>' +
       '<div class="proj-card-body">' +
         '<div class="proj-card-row">' +
@@ -2649,11 +2147,9 @@ function renderPainel() {
         '</div>' +
         prazoInfo +
       '</div>' +
-      visitaBadge +
-      aprovacaoBadge +
       '<div class="proj-card-footer">' +
         '<button class="btn-sm primary" onclick="verCliente(\'' + p.id + '\')">👁 Ver</button>' +
-        '<button class="btn-sm btn-partilhar" onclick="partilharCliente(\'' + p.id + '\', this)">📤 Partilhar</button>' +
+        '<button class="btn-sm" onclick="copiarLink(\'' + p.id + '\', this)" title="Copiar link para partilhar com o cliente">🔗 Link</button>' +
         '<button class="btn-sm" onclick="editarProjeto(\'' + p.id + '\')">✏ Editar</button>' +
         '<button class="btn-sm danger" onclick="apagarProjeto(\'' + p.id + '\')">🗑</button>' +
       '</div>' +
@@ -2662,7 +2158,7 @@ function renderPainel() {
 }
 
 function faseLbl(f) {
-  return { proposta:'Em Análise', aprovado:'Aprovado', encomenda:'Encomendado', entrega:'Aguarda Entrega', montagem:'Em Montagem', concluido:'Concluído', expirado:'Expirado' }[f] || f;
+  return { proposta:'Proposta', aprovado:'Aprovado', encomenda:'Encomendado', entrega:'Aguarda Entrega', montagem:'Em Montagem', concluido:'Concluído', expirado:'Expirado' }[f] || f;
 }
 
 function calcTotal(p) {
@@ -2700,100 +2196,12 @@ var catNomes = { moveis:'Móveis', tampos:'Tampos', eletros:'Eletrodomésticos',
 var catIcons = { moveis:'🪑', tampos:'🪨', eletros:'⚡', acessorios:'🔧' };
 
 function copiarLink(id, btn) {
-  var url = window.location.href.split('?')[0].replace('index.html','').replace(/\/$/,'') + '/cliente.html?p=' + id;
+  var url = window.location.href.split('?')[0] + '?p=' + id;
   navigator.clipboard.writeText(url).then(function() {
     var orig = btn.textContent;
     btn.textContent = '✓ Copiado';
     setTimeout(function(){ btn.textContent = orig; }, 2000);
   });
-}
-
-function partilharCliente(id, btn) {
-  var p = PROJETOS.find(function(x){ return x.id === id; });
-  if (!p) return;
-
-  var url = window.location.href.split('?')[0] + '?p=' + id;
-  var tipoNome = p.tipo === 'casa-de-banho' ? 'casa de banho' : (p.tipo && p.tipo !== 'cozinha' ? p.tipo : 'cozinha');
-  var fase = { proposta:'apresentada', aprovado:'aprovada', encomenda:'encomendada', entrega:'aguarda entrega', montagem:'em montagem', concluido:'concluída' }[p.fase] || p.fase;
-  var total = calcTotal(p);
-  var totalStr = total > 0 ? ' no valor de ' + total.toFixed(2).replace('.',',') + ' €' : '';
-
-  var msg = 'Ol\u00e1 ' + (p.nome ? p.nome.split(' ')[0] : '') + '! \ud83d\udc4b\n\n'
-    + 'A sua proposta de ' + tipoNome + totalStr + ' est\u00e1 dispon\u00edvel para consulta:\n\n'
-    + '\ud83d\udc49 ' + url + '\n\n'
-    + 'Pode ver todos os detalhes, or\u00e7amento e acompanhar o estado do projeto.\n\n'
-    + 'Qualquer d\u00favida estou dispon\u00edvel!\n'
-    + 'H\u00e9lder Melo \u00b7 Leroy Merlin';
-
-  // Mostrar modal de partilha
-  mostrarModalPartilha(url, msg, btn);
-}
-
-function mostrarModalPartilha(url, msg) {
-  var old = document.getElementById('modal-partilha');
-  if (old) old.remove();
-
-  var overlay = document.createElement('div');
-  overlay.id = 'modal-partilha';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(26,28,22,.75);backdrop-filter:blur(6px);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;';
-
-  var box = document.createElement('div');
-  box.style.cssText = 'background:#fff;border-radius:16px;padding:28px 32px;max-width:480px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,.25);';
-
-  var titulo = document.createElement('div');
-  titulo.style.cssText = 'font-family:Syne,sans-serif;font-size:17px;font-weight:800;color:#1A1C16;margin-bottom:4px;';
-  titulo.textContent = '📤 Partilhar com o Cliente';
-  box.appendChild(titulo);
-
-  var sub = document.createElement('div');
-  sub.style.cssText = 'font-family:Lato,sans-serif;font-size:12px;color:#7A7E72;margin-bottom:20px;';
-  sub.textContent = 'Escolha como quer enviar o link ao cliente';
-  box.appendChild(sub);
-
-  var linkRow = document.createElement('div');
-  linkRow.style.cssText = 'background:#F2EFE8;border:1.5px solid #D8D4C8;border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;gap:10px;';
-  var linkTxt = document.createElement('div');
-  linkTxt.style.cssText = 'font-family:Inconsolata,monospace;font-size:12px;color:#4A4E42;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
-  linkTxt.textContent = url;
-  var btnCopiar = document.createElement('button');
-  btnCopiar.style.cssText = 'font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#3D6B35;background:none;border:none;cursor:pointer;flex-shrink:0;white-space:nowrap;';
-  btnCopiar.textContent = 'Copiar';
-  btnCopiar.onclick = function() {
-    navigator.clipboard.writeText(url).then(function() {
-      btnCopiar.textContent = '✓ Copiado!';
-      setTimeout(function(){ btnCopiar.textContent = 'Copiar'; }, 2500);
-    });
-  };
-  linkRow.appendChild(linkTxt); linkRow.appendChild(btnCopiar);
-  box.appendChild(linkRow);
-
-  var waUrl = 'https://wa.me/?text=' + encodeURIComponent(msg);
-  var btnWA = document.createElement('a');
-  btnWA.href = waUrl; btnWA.target = '_blank';
-  btnWA.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px;background:#25D366;border-radius:10px;color:#fff;font-family:Syne,sans-serif;font-size:13px;font-weight:800;cursor:pointer;text-decoration:none;margin-bottom:12px;box-sizing:border-box;';
-  btnWA.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.135.562 4.14 1.543 5.876L.057 23.93l6.204-1.463A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.371l-.359-.213-3.683.868.934-3.417-.234-.372A9.818 9.818 0 1112 21.818z"/></svg> Enviar por WhatsApp';
-  box.appendChild(btnWA);
-
-  var details = document.createElement('details');
-  details.style.cssText = 'margin-bottom:16px;';
-  var summary = document.createElement('summary');
-  summary.style.cssText = 'font-family:Syne,sans-serif;font-size:10px;font-weight:700;color:#7A7E72;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;';
-  summary.textContent = 'Ver mensagem';
-  var pre = document.createElement('div');
-  pre.style.cssText = 'margin-top:10px;background:#F2EFE8;border-radius:8px;padding:12px;font-family:Lato,sans-serif;font-size:12px;color:#4A4E42;white-space:pre-wrap;line-height:1.6;';
-  pre.textContent = msg;
-  details.appendChild(summary); details.appendChild(pre);
-  box.appendChild(details);
-
-  var btnFechar = document.createElement('button');
-  btnFechar.style.cssText = 'width:100%;padding:10px;background:none;border:1.5px solid #D8D4C8;border-radius:9px;font-family:Syne,sans-serif;font-size:12px;font-weight:700;color:#7A7E72;cursor:pointer;';
-  btnFechar.textContent = 'Fechar';
-  btnFechar.onclick = function() { overlay.remove(); };
-  box.appendChild(btnFechar);
-
-  overlay.appendChild(box);
-  overlay.addEventListener('click', function(e){ if (e.target === overlay) overlay.remove(); });
-  document.body.appendChild(overlay);
 }
 
 function copiarEmail(btn) {
@@ -2808,13 +2216,10 @@ function copiarEmail(btn) {
   });
 }
 
-async function apagarProjeto(id) {
+function apagarProjeto(id) {
   if (!confirm('Apagar este projeto?')) return;
-  try {
-    await deleteDoc(doc(_db, 'projetos', id));
-  } catch(e) { console.warn('Erro ao apagar do Firestore:', e); }
   PROJETOS = PROJETOS.filter(function(p){ return p.id !== id; });
-  try { localStorage.setItem(LS_KEY, JSON.stringify(PROJETOS)); } catch(e) {}
+  guardar();
   renderPainel();
 }
 
@@ -2846,22 +2251,8 @@ function editarProjeto(id) {
   document.getElementById('f-morada').value     = p.morada||'';
   document.getElementById('f-localidade').value = p.localidade||'';
   document.getElementById('f-fase').value       = p.fase||'proposta';
-  // tipo de projeto
-  var tipoGuardado = p.tipo || 'cozinha';
-  var tiposFixos = ['cozinha','casa-de-banho'];
-  if (tiposFixos.includes(tipoGuardado)) {
-    document.getElementById('f-tipo').value = tipoGuardado;
-    document.getElementById('f-tipo-outro-wrap').style.display = 'none';
-  } else {
-    document.getElementById('f-tipo').value = 'outro';
-    document.getElementById('f-tipo-outro').value = tipoGuardado;
-    document.getElementById('f-tipo-outro-wrap').style.display = '';
-  }
   document.getElementById('f-prazo').value      = p.prazo||'';
   document.getElementById('f-entrega').value    = p.entrega||'';
-  document.getElementById('f-data-entrega-mat').value = p.dataEntregaMat||'';
-  document.getElementById('f-data-instalacao').value  = p.dataInstalacao||'';
-  document.getElementById('f-data-conclusao').value   = p.dataConclusao||'';
   document.getElementById('f-desconto').value   = p.desconto||'';
   document.getElementById('f-notas').value      = p.notas||'';
 
@@ -2893,12 +2284,6 @@ function limparForm() {
   ['f-nome','f-contacto','f-morada','f-localidade','f-prazo','f-entrega','f-desconto','f-notas']
     .forEach(function(id){ document.getElementById(id).value = ''; });
   document.getElementById('f-fase').value = 'proposta';
-  document.getElementById('f-tipo').value = 'cozinha';
-  document.getElementById('f-tipo-outro').value = '';
-  document.getElementById('f-tipo-outro-wrap').style.display = 'none';
-  document.getElementById('f-data-entrega-mat').value = '';
-  document.getElementById('f-data-instalacao').value  = '';
-  document.getElementById('f-data-conclusao').value   = '';
   ['tampos','eletros','acessorios'].forEach(function(cat){
     document.getElementById('lines-'+cat).innerHTML = '';
   });
@@ -3076,13 +2461,8 @@ function guardarProjeto() {
 
   var projetoAnterior = EDIT_ID ? PROJETOS.find(function(p){ return p.id === EDIT_ID; }) : null;
 
-  var tipoVal = document.getElementById('f-tipo').value;
-  var tipoOutro = document.getElementById('f-tipo-outro').value.trim();
-  var tipo = tipoVal === 'outro' ? (tipoOutro || 'Outro') : tipoVal;
-
   var proj = {
     id:          EDIT_ID || uid(),
-    tipo:        tipo,
     nome:        nome,
     contacto:    document.getElementById('f-contacto').value.trim(),
     morada:      document.getElementById('f-morada').value.trim(),
@@ -3090,9 +2470,6 @@ function guardarProjeto() {
     fase:        document.getElementById('f-fase').value,
     prazo:       document.getElementById('f-prazo').value,
     entrega:     document.getElementById('f-entrega').value.trim(),
-    dataEntregaMat:  document.getElementById('f-data-entrega-mat').value,
-    dataInstalacao:  document.getElementById('f-data-instalacao').value,
-    dataConclusao:   document.getElementById('f-data-conclusao').value,
     desconto:    document.getElementById('f-desconto').value.trim(),
     notas:       document.getElementById('f-notas').value.trim(),
     data:        projetoAnterior ? projetoAnterior.data : new Date().toLocaleDateString('pt-PT'),
@@ -3114,9 +2491,9 @@ function guardarProjeto() {
     PROJETOS.push(proj);
   }
 
+  guardar();
   fecharModal();
   renderPainel();
-  guardar(proj); // guardar apenas este projeto
 }
 
 // ════════════════════════════════════════════════
@@ -3159,7 +2536,7 @@ function addInteracao() {
                  String(agora.getHours()).padStart(2,'0') + ':' +
                  String(agora.getMinutes()).padStart(2,'0');
   p.interacoes.push({ tipo: tipo, texto: texto, data: dataHora });
-  guardar(p);
+  guardar();
   renderPainelFeed(p.interacoes);
   document.getElementById('feed-texto').value = '';
 }
@@ -3170,7 +2547,7 @@ function eliminarInteracao(idx) {
   if (!p || !p.interacoes) return;
   if (!confirm('Eliminar este registo?')) return;
   p.interacoes.splice(idx, 1);
-  guardar(p);
+  guardar();
   renderPainelFeed(p.interacoes);
 }
 
@@ -3178,34 +2555,24 @@ function eliminarInteracao(idx) {
 // DATA FLUTUANTE DE ENTREGA
 // ════════════════════════════════════════════════
 function calcDataEntregaFlutuante(p) {
-  // Fonte da data base: dataEntregaMat (ISO) preferido, fallback campo texto entrega
-  var dataBase = p.dataEntregaMat || p.entrega;
-  if (!dataBase) return null;
+  // Se a fase for proposta e existir data de criação e data de entrega configurada,
+  // a data avança um dia por cada dia que passou desde a criação.
+  // Em qualquer outra fase, a data fixada no campo entrega vigora sem alteração.
+  if (!p.entrega) return null;
+  var faseAberta = (!p.fase || p.fase === 'proposta');
+  if (!faseAberta || !p.dataCriacao) return p.entrega;
 
-  var aprovado = p.fase && p.fase !== 'proposta';
+  // tentar parse da entrega no formato DD/MM/YYYY ou YYYY-MM-DD
+  var entregaDate = parseDataEntrega(p.entrega);
+  if (!entregaDate) return p.entrega; // não conseguiu fazer parse, devolve como está
 
-  // Após aprovação — data fixa, sem flutuar
-  if (aprovado) {
-    if (p.dataEntregaMat) {
-      var d = new Date(p.dataEntregaMat + 'T12:00:00');
-      return isNaN(d) ? p.entrega : d.toLocaleDateString('pt-PT');
-    }
-    return p.entrega || null;
-  }
+  var criacao = new Date(p.dataCriacao);
+  criacao.setHours(0,0,0,0);
+  var hoje = new Date(); hoje.setHours(0,0,0,0);
+  var diasPassados = Math.floor((hoje - criacao) / 86400000);
+  if (diasPassados <= 0) return p.entrega;
 
-  // Antes da aprovação — data flutua +1 dia por dia desde criação
-  var entregaDate = p.dataEntregaMat
-    ? new Date(p.dataEntregaMat + 'T12:00:00')
-    : parseDataEntrega(p.entrega);
-  if (!entregaDate || isNaN(entregaDate)) return p.entrega || null;
-
-  if (p.dataCriacao) {
-    var criacao = new Date(p.dataCriacao); criacao.setHours(0,0,0,0);
-    var hoje = new Date(); hoje.setHours(0,0,0,0);
-    var diasPassados = Math.floor((hoje - criacao) / 86400000);
-    if (diasPassados > 0) entregaDate.setDate(entregaDate.getDate() + diasPassados);
-  }
-
+  entregaDate.setDate(entregaDate.getDate() + diasPassados);
   var dia = String(entregaDate.getDate()).padStart(2,'0');
   var mes = String(entregaDate.getMonth()+1).padStart(2,'0');
   var ano = entregaDate.getFullYear();
@@ -3226,95 +2593,67 @@ function parseDataEntrega(str) {
 // TIMELINE — MARCOS INTELIGENTES
 // ════════════════════════════════════════════════
 function gerarMarcos(p, fase) {
+  // estados por fase: proposta / aprovado / encomenda / entrega / montagem / concluido
   var FASES = ['proposta', 'aprovado', 'encomenda', 'entrega', 'montagem', 'concluido'];
   var faseIdx = FASES.indexOf(fase);
   if (faseIdx < 0) faseIdx = 0;
 
   function estadoPara(marcoIdx) {
-    // marco 0 = Apresentado — sempre done
-    if (marcoIdx === 0) return 'done';
-    // marco 1 = Em Análise/Aprovação — active quando proposta (idx 0)
-    var idxEfetivo = faseIdx === 0 ? 1 : faseIdx + 1;
-    if (marcoIdx < idxEfetivo) return 'done';
-    if (marcoIdx === idxEfetivo) return 'active';
+    if (marcoIdx < faseIdx) return 'done';
+    if (marcoIdx === faseIdx) return 'active';
     return 'pendente';
   }
 
-  function fmtDate(iso) {
-    if (!iso) return null;
-    var d = new Date(iso + 'T12:00:00');
-    return isNaN(d) ? null : d.toLocaleDateString('pt-PT', { day:'2-digit', month:'long', year:'numeric' });
-  }
-
-  // tipo de projeto para adaptar textos
-  var tipoNome = p.tipo === 'casa-de-banho' ? 'casa de banho'
-               : (p.tipo && p.tipo !== 'cozinha') ? p.tipo
-               : 'cozinha';
-  var tipoArt  = p.tipo === 'casa-de-banho' ? 'a nova casa de banho'
-               : (p.tipo && p.tipo !== 'cozinha') ? 'o projeto'
-               : 'a nova cozinha';
-
-  var prazoStr    = p.prazo            ? 'Válido até ' + fmtDate(p.prazo) : null;
-  var dataEntMat  = p.dataEntregaMat   ? fmtDate(p.dataEntregaMat)        : null;
-  var dataInst    = p.dataInstalacao   ? fmtDate(p.dataInstalacao)        : null;
-  var dataConcl   = p.dataConclusao    ? fmtDate(p.dataConclusao)         : null;
-  var entregaStr  = p.entrega          ? (calcDataEntregaFlutuante(p) || p.entrega) : null;
-
-  // data de entrega: preferir dataEntregaMat, fallback entregaStr
-  var dataEntregaFinal = dataEntMat || entregaStr;
+  var prazoStr = p.prazo ? new Date(p.prazo).toLocaleDateString('pt-PT') : null;
+  var entregaStr = p.entrega ? (calcDataEntregaFlutuante(p) || p.entrega) : null;
 
   var marcos = [
     {
       titulo: 'Projeto apresentado',
       data: p.data || null,
-      desc: 'Proposta entregue com os elementos do projeto, orçamento detalhado' + (p.imagens && p.imagens.length ? ' e render 3D' : '') + '.',
-      estado: 'done',
+      desc: 'Proposta entregue com elementos da cozinha, orçamento detalhado' + (p.imagens && p.imagens.length ? ' e render 3D' : '') + '.',
+      estado: estadoPara(0),
       apelo: null
     },
-    faseIdx >= 1
-    ? {
-        titulo: 'Obrigado pela confiança! ✦',
-        data: p.aprovacao ? p.aprovacao.data + (p.aprovacao.hora ? ' · ' + p.aprovacao.hora : '') : null,
-        desc: 'A sua decisão é o ponto de partida para transformar este projeto em realidade. É com muito gosto que avanço convosco — vamos construir algo especial.',
-        estado: 'done',
-        apelo: null
-      }
-    : {
-        titulo: 'A sua análise e decisão',
-        data: prazoStr,
-        desc: 'Período para analisar a proposta com calma. Estou disponível para qualquer ajuste ou esclarecimento.',
-        estado: 'active',
-        apelo: '✦ Um sim é tudo o que falta para começar'
-      },
+    {
+      titulo: 'A sua análise e decisão',
+      data: prazoStr ? 'Até ' + prazoStr : null,
+      desc: 'Período para analisar a proposta com calma. Estou disponível para qualquer ajuste ou esclarecimento.',
+      estado: estadoPara(1),
+      apelo: faseIdx <= 1 ? '✦ Um sim é tudo o que falta para começar' : null
+    },
     {
       titulo: 'Encomenda dos materiais',
-      data: faseIdx >= 2 ? (p.aprovacao ? 'Aprovado em ' + p.aprovacao.data : null) : 'Após aprovação',
+      data: faseIdx >= 2 ? null : 'Após aprovação',
       desc: 'Assim que confirmar, avançamos imediatamente com a encomenda junto dos fornecedores.',
       estado: estadoPara(2),
-      apelo: faseIdx === 2 ? '📦 Materiais em encomenda — estamos a avançar!' : null
+      apelo: faseIdx <= 2 ? '📦 Cada dia conta para cumprir o prazo de entrega' : null
     },
     {
       titulo: 'Entrega da mercadoria',
-      data: dataEntregaFinal || (faseIdx >= 3 ? null : 'Data a confirmar'),
-      desc: 'Móveis, tampos e materiais entregues em obra na data acordada.',
+      data: entregaStr || (faseIdx >= 3 ? null : 'Data prevista'),
+      desc: 'Móveis, tampos e eletrodomésticos entregues em obra na data acordada.',
       estado: estadoPara(3),
-      apelo: faseIdx === 3 ? '🚚 Mercadoria a caminho — entrega confirmada' : null
+      apelo: faseIdx <= 3 ? '🏠 Cada semana conta para ter a cozinha pronta a tempo' : null
     },
     {
-      titulo: 'Instalação',
-      data: dataInst || (faseIdx >= 4 ? null : 'Data a confirmar'),
-      desc: 'Instalação completa — da montagem à ligação de todos os equipamentos.',
+      titulo: 'Montagem e instalação',
+      data: faseIdx >= 4 ? null : 'A definir',
+      desc: 'Instalação completa — da montagem dos móveis à ligação dos eletrodomésticos.',
       estado: estadoPara(4),
-      apelo: faseIdx === 4 ? '🔧 Instalação em curso — está quase!' : null
+      apelo: faseIdx <= 4 ? '🍳 A sua nova cozinha está mesmo ao virar da esquina' : null
     },
     {
-      titulo: tipoNome.charAt(0).toUpperCase() + tipoNome.slice(1) + ' entregue ✓',
-      data: dataConcl || null,
-      desc: 'Projeto concluído. Obrigado pela confiança — foi um prazer trabalhar consigo.',
+      titulo: 'Cozinha entregue ✓',
+      data: faseIdx >= 5 ? null : null,
+      desc: 'Projeto concluído. Obrigado pela confiança.',
       estado: estadoPara(5),
-      apelo: faseIdx === 5 ? '🎉 Parabéns pela sua nova ' + tipoNome + '!' : null
+      apelo: null
     }
   ];
+
+  // Se a fase for "proposta", o primeiro marco aparece como done (já apresentado)
+  if (faseIdx === 0) marcos[0].estado = 'done';
 
   return marcos;
 }
@@ -3330,55 +2669,44 @@ function verCliente(id) {
   window.scrollTo(0,0);
 }
 
+function exportarHTML(id) {
+  var p = PROJETOS.find(function(x){ return x.id === id; });
+  if (!p) return;
 
-function exportarHTML(id) { /* desativado */ }
+  // obter o HTML completo da app
+  var htmlOriginal = document.documentElement.outerHTML;
 
+  // injectar os dados do projeto no início do script
+  var dadosScript = '<script id="dados-projeto-embed">var PROJETO_EMBED = ' + JSON.stringify(p) + ';<\/script>';
+  var htmlExport = htmlOriginal.replace('</head>', dadosScript + '</head>');
+
+  // criar e fazer download
+  var blob = new Blob([htmlExport], { type: 'text/html;charset=utf-8' });
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  var nomeCliente = (p.nome || 'projeto').replace(/[^a-zA-Z0-9\u00C0-\u024F]/g, '_').toLowerCase();
+  a.href     = url;
+  a.download = 'projeto_' + nomeCliente + '.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
 function renderPaginaCliente(p) {
-  _PROJ_ATUAL_ID = p.id;
-  var hoje = new Date(); hoje.setHours(0,0,0,0);
+  var hoje = new Date();
   var total = calcTotal(p);
   var cats  = calcCats(p);
   var expirado = p.prazo && new Date(p.prazo) < hoje;
-
-  // Se expirado e acesso de cliente real (não preview do painel), bloquear
-  var isPreview = document.getElementById('btn-voltar-painel') && document.getElementById('btn-voltar-painel').style.display !== 'none';
-  if (expirado && !isPreview) {
-    setView('expirada');
-    return;
-  }
-
-  // Registar visita no Firestore (só quando acesso real de cliente, não preview do painel)
-  if (typeof _db !== 'undefined' && typeof setDoc !== 'undefined') {
-    registarVisitaCliente(p.id, p.nome).catch(function(){});
-  }
-
-  // adaptar títulos ao tipo de projeto
-  var tipoLabels = {
-    'cozinha':      { hero: 'Projeto<br>da Cozinha',    elementos: 'Elementos da Cozinha',    orcamento: 'Orçamento da Cozinha' },
-    'casa-de-banho':{ hero: 'Projeto<br>Casa de Banho', elementos: 'Elementos da Casa de Banho', orcamento: 'Orçamento da Casa de Banho' }
-  };
-  var tipo = p.tipo || 'cozinha';
-  var lbl = tipoLabels[tipo] || {
-    hero: 'Projeto<br>' + tipo.charAt(0).toUpperCase() + tipo.slice(1),
-    elementos: 'Elementos do Projeto',
-    orcamento: 'Orçamento do Projeto'
-  };
-  var heroTit = document.getElementById('cli-hero-titulo');
-  if (heroTit) heroTit.innerHTML = lbl.hero;
-  var elTit = document.getElementById('cli-title-elementos');
-  if (elTit) elTit.textContent = lbl.elementos;
-  var orcTit = document.getElementById('cli-title-orcamento');
-  if (orcTit) orcTit.textContent = lbl.orcamento;
 
   // hero
   document.getElementById('cli-nome-hero').textContent = p.nome || '—';
   document.getElementById('cli-local-hero').textContent = [p.morada, p.localidade].filter(Boolean).join(', ') || '—';
   document.getElementById('cli-data-hero').textContent = p.data || '—';
 
-  var entregaDinamicaHero = calcDataEntregaFlutuante(p);
-  if (entregaDinamicaHero) {
-    document.getElementById('cli-entrega-hero').textContent = entregaDinamicaHero;
+  if (p.entrega) {
+    var entregaTexto = calcDataEntregaFlutuante(p);
+    document.getElementById('cli-entrega-hero').textContent = entregaTexto || p.entrega;
     document.getElementById('cli-entrega-row').style.display = 'flex';
   }
 
@@ -3489,14 +2817,7 @@ function renderPaginaCliente(p) {
     { icon:'📅', titulo:'Validade da Proposta', texto: p.prazo ? 'Este orçamento é válido até ' + new Date(p.prazo).toLocaleDateString('pt-PT') + '.' : 'Consulte-nos para informações sobre validade.' },
   ];
   if (p.desconto) notas.push({ icon:'⭐', titulo:'Desconto Incluído', texto: p.desconto });
-  var dataEntregaDinamica = calcDataEntregaFlutuante(p);
-  if (dataEntregaDinamica) {
-    var aprovado = p.fase && p.fase !== 'proposta';
-    var textoEntrega = aprovado
-      ? 'A entrega da mercadoria está prevista para ' + dataEntregaDinamica + '.'
-      : 'A previsão de entrega da mercadoria é para ' + dataEntregaDinamica + ', podendo sofrer alterações por motivos alheios à nossa responsabilidade.';
-    notas.push({ icon:'🚚', titulo:'Previsão de Entrega', texto: textoEntrega });
-  }
+  if (p.entrega)  notas.push({ icon:'🚚', titulo:'Previsão de Entrega', texto: 'A previsão de entrega da mercadoria é para ' + p.entrega + ', podendo sofrer alterações por motivos alheios à nossa responsabilidade.' });
   notas.push({ icon:'🔄', titulo:'Flexibilidade', texto:'Todos os elementos do projeto, incluindo materiais, cores e disposições, podem ser ajustados mediante nova análise e revisão do orçamento.' });
   notas.push({ icon:'🤝', titulo:'Transparência Total', texto:'Este documento pretende ser uma base clara para análise e tomada de decisão, promovendo uma comunicação transparente e eficaz.' });
   if (p.notas) notas.push({ icon:'📝', titulo:'Nota Adicional', texto: p.notas });
@@ -3542,11 +2863,10 @@ function renderPaginaCliente(p) {
       feedWrap.innerHTML = feedHTML;
     }
   }
-
-  // estado de aprovação
-  renderEstadoAprovacao(p.id, p.aprovacao || null);
 }
 
+// countdown
+var cdInterval = null;
 function iniciarContador(prazoStr) {
   if (cdInterval) clearInterval(cdInterval);
   function tick() {
@@ -3568,171 +2888,44 @@ function iniciarContador(prazoStr) {
 }
 
 // ════════════════════════════════════════════════
-// APROVAÇÃO DA PROPOSTA PELO CLIENTE
+// ROUTING — ?p=ID na URL
 // ════════════════════════════════════════════════
-var _PROJ_ATUAL_ID = null; // ID do projeto na vista cliente
-
-async function renderEstadoAprovacao(projetoId, aprovacao) {
-  var wrap = document.getElementById('aprovacao-estado');
-  if (!wrap) return;
-
-  if (aprovacao && aprovacao.data) {
-    // já aprovado
-    wrap.innerHTML = '<div class="aprovacao-ja-feita">' +
-      '✓ Proposta aprovada em ' + aprovacao.data +
-      (aprovacao.hora ? ' às ' + aprovacao.hora : '') +
-    '</div>';
-  } else {
-    // ainda não aprovado — mostrar botão
-    wrap.innerHTML =
-      '<button class="btn-aprovar" id="btn-aprovar-proj" onclick="aprovarProposta()">' +
-        '✓ Aprovar esta Proposta' +
-      '</button>' +
-      '<div class="aprovacao-confirmada" id="aprovacao-confirmada">' +
-        '<div class="aprovacao-confirmada-titulo">✓ Aprovação registada!</div>' +
-        '<div class="aprovacao-confirmada-texto">A sua confirmação foi enviada com sucesso. Entrarei em contacto brevemente para avançarmos com os próximos passos.</div>' +
-      '</div>';
+function checkUrlParam() {
+  // verificar se há projeto embebido no HTML exportado
+  if (typeof PROJETO_EMBED !== 'undefined' && PROJETO_EMBED) {
+    renderPaginaCliente(PROJETO_EMBED);
+    setView('cliente');
+    var btnE = document.getElementById('btn-voltar-painel');
+    if (btnE) btnE.style.display = 'none';
+    return true;
   }
-}
-
-async function aprovarProposta() {
-  if (!_PROJ_ATUAL_ID) return;
-  var btn = document.getElementById('btn-aprovar-proj');
-  if (btn) { btn.disabled = true; btn.textContent = 'A registar…'; }
-
-  var agora = new Date();
-  var data = agora.toLocaleDateString('pt-PT');
-  var hora = String(agora.getHours()).padStart(2,'0') + ':' + String(agora.getMinutes()).padStart(2,'0');
-
-  try {
-    var projDoc = doc(_db, 'projetos', _PROJ_ATUAL_ID);
-    var snap = await getDoc(projDoc);
-    if (snap.exists()) {
-      var p = snap.data();
-      p.aprovacao = { data: data, hora: hora };
-      p.fase = 'aprovado'; // avançar fase automaticamente
-      await setDoc(projDoc, p);
-    }
-    // mostrar confirmação
-    var conf = document.getElementById('aprovacao-confirmada');
-    if (conf) conf.classList.add('show');
-    if (btn) btn.style.display = 'none';
-    // recarregar a página do cliente com os dados atualizados (mostra agradecimento na timeline)
-    setTimeout(async function() {
-      try {
-        var snapAtual = await getDoc(doc(_db, 'projetos', _PROJ_ATUAL_ID));
-        if (snapAtual.exists()) renderPaginaCliente(snapAtual.data());
-      } catch(e) {}
-    }, 1200);
-    // notificar o painel se estiver aberto
-    mostrarToast('✓ Proposta aprovada!', 'O cliente aprovou · ' + data + ' · ' + hora);
-  } catch(e) {
-    console.error('Erro ao registar aprovação:', e);
-    if (btn) { btn.disabled = false; btn.textContent = '✓ Aprovar esta Proposta'; }
-    alert('Erro ao registar aprovação. Tente novamente ou contacte-nos diretamente.');
-  }
-}
-
-// verificar se o projeto já foi aprovado (polling no painel)
-async function verificarAprovacoes() {
-  try {
-    for (var i = 0; i < PROJETOS.length; i++) {
-      var p = PROJETOS[i];
-      var projDoc = doc(_db, 'projetos', p.id);
-      var snap = await getDoc(projDoc);
-      if (snap.exists()) {
-        var dados = snap.data();
-        var aprovacaoAnterior = p.aprovacao;
-        p.aprovacao = dados.aprovacao;
-        p.fase      = dados.fase;
-        // nova aprovação?
-        if (!aprovacaoAnterior && dados.aprovacao && dados.aprovacao.data) {
-          mostrarToast('🎉 ' + (p.nome||'Cliente') + ' aprovou a proposta!', 'Em ' + dados.aprovacao.data + ' às ' + (dados.aprovacao.hora||'--:--'));
-          renderPainel();
-        }
-      }
-    }
-  } catch(e) { /* silencioso */ }
-}
-
-async function checkUrlParam() {
+  // verificar ?p=ID na URL
   var params = new URLSearchParams(window.location.search);
   var id = params.get('p');
-  if (!id) return false;
-
-  try {
-    // Carregar APENAS este projeto do Firestore — os outros projetos não são transferidos
-    var projDoc = doc(_db, 'projetos', id);
-    var snap = await getDoc(projDoc);
-    if (snap.exists()) {
-      var p = snap.data();
+  if (id) {
+    var p = PROJETOS.find(function(x){ return x.id === id; });
+    if (p) {
       renderPaginaCliente(p);
       setView('cliente');
       var btn = document.getElementById('btn-voltar-painel');
       if (btn) btn.style.display = 'none';
       return true;
+    } else {
+      console.warn('Projeto não encontrado. Total carregados:', PROJETOS.length);
     }
-  } catch(e) {
-    console.warn('Erro ao carregar projeto:', e);
   }
-
-  // fallback: procurar no array local (compatibilidade)
-  var pLocal = PROJETOS.find(function(x){ return x.id === id; });
-  if (pLocal) {
-    renderPaginaCliente(pLocal);
-    setView('cliente');
-    var btn2 = document.getElementById('btn-voltar-painel');
-    if (btn2) btn2.style.display = 'none';
-    return true;
-  }
-
-  console.warn('Projeto não encontrado:', id);
   return false;
 }
 
 // ════════════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════════════
-
-// expor funções globalmente (necessário com type="module")
-window.doLogin          = doLogin;
-window.doLogout         = doLogout;
-window.setFiltro        = setFiltro;
-window.abrirModalNovo   = abrirModalNovo;
-window.fecharModal      = fecharModal;
-window.guardarProjeto   = guardarProjeto;
-window.editarProjeto    = editarProjeto;
-window.apagarProjeto    = apagarProjeto;
-window.verCliente       = verCliente;
-window.partilharCliente = partilharCliente;
-window.exportarHTML     = exportarHTML;
-window.setView          = setView;
-window.renderPainel     = renderPainel;
-window.addLinhaElem     = addLinhaElem;
-window.addCatExtra      = addCatExtra;
-window.addLinhaOrcamento= addLinhaOrcamento;
-window.addLinhaTimeline = addLinhaTimeline;
-window.processarImagens = processarImagens;
-window.removerImagem    = removerImagem;
-window.abrirLightbox    = abrirLightbox;
-window.fecharLightbox   = fecharLightbox;
-window.lightboxNav      = lightboxNav;
-window.addInteracao       = addInteracao;
-window.eliminarInteracao  = eliminarInteracao;
-window.copiarEmail      = copiarEmail;
-window.addInteracao     = addInteracao;
-window.eliminarInteracao = eliminarInteracao;
-window.atualizarTotalPreview = atualizarTotalPreview;
-window.renderThumbs     = renderThumbs;
-window.aprovarProposta  = aprovarProposta;
-window.atualizarTipoProjeto = atualizarTipoProjeto;
-
-function atualizarTipoProjeto() {
-  var val = document.getElementById('f-tipo').value;
-  document.getElementById('f-tipo-outro-wrap').style.display = val === 'outro' ? '' : 'none';
-}
-
 (async function() {
+  // verificar se é acesso direto por link de cliente (?p=ID)
+  var urlParams = new URLSearchParams(window.location.search);
+  var clienteId = urlParams.get('p');
+
+  // loading overlay enquanto carrega do JSONBin
   var overlay = document.createElement('div');
   overlay.id = 'loading-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:#1E2118;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:99999;';
@@ -3742,34 +2935,22 @@ function atualizarTipoProjeto() {
     '<style>@keyframes spin{to{transform:rotate(360deg)}}</style>';
   document.body.appendChild(overlay);
 
-  // Ficheiro exportado standalone — carregar projeto embebido diretamente
-  if (typeof MODO_STANDALONE !== 'undefined' && MODO_STANDALONE) {
-    await carregar(); // popula PROJETOS com PROJETO_EMBED
-    if (PROJETOS.length > 0) {
-      renderPaginaCliente(PROJETOS[0]);
-      setView('cliente');
-      var btnP = document.getElementById('btn-voltar-painel');
-      if (btnP) btnP.style.display = 'none';
-    }
-    overlay.remove();
+  // carregar dados do JSONBin
+  await carregar();
+
+  // remover overlay
+  if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+
+  // se há ?p=ID na URL, mostrar página do cliente sem pedir password
+  if (clienteId) {
+    if (checkUrlParam()) return;
+    // projeto não encontrado
+    document.body.innerHTML = '<div style="min-height:100vh;background:#1E2118;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;color:rgba(242,239,232,.5);font-size:13px;letter-spacing:1px;">PROJETO NÃO ENCONTRADO</div>';
     return;
   }
 
-  // Se for acesso direto de cliente via ?p=ID, carrega sem autenticacao
-  var isClienteAccess = await checkUrlParam();
-  if (isClienteAccess) {
-    overlay.remove();
-    return;
+  // fluxo normal — mostrar login ou painel
+  if (!checkUrlParam()) {
+    setView('login');
   }
-
-  // Aguardar estado de autenticação do Firebase
-  // O onAuthStateChanged acima trata do resto
-  // Se após 3 segundos não houver utilizador, mostrar login
-  setTimeout(function() {
-    var ov = document.getElementById('loading-overlay');
-    if (ov) { ov.remove(); setView('login'); }
-  }, 3000);
 })();
-</script>
-</body>
-</html>
