@@ -2027,6 +2027,10 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
       <a href="#timeline" class="cli-nav-link">Acompanhamento</a>
       <a href="#contacto" class="cli-nav-link">Contacto</a>
     </div>
+    <div id="lang-toggle" style="display:flex;align-items:center;gap:4px;margin-left:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:7px;overflow:hidden;flex-shrink:0;">
+      <button onclick="setLang('pt')" id="lang-pt" style="background:rgba(103,171,47,.3);border:none;color:#F2EFE8;font-family:'Syne',sans-serif;font-size:11px;font-weight:800;padding:6px 11px;cursor:pointer;transition:all .15s;">PT</button>
+      <button onclick="setLang('en')" id="lang-en" style="background:none;border:none;color:rgba(242,239,232,.45);font-family:'Syne',sans-serif;font-size:11px;font-weight:800;padding:6px 11px;cursor:pointer;transition:all .15s;">EN</button>
+    </div>
     <button onclick="setView('painel');renderPainel();" id="btn-voltar-painel"
       style="margin-left:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:rgba(242,239,232,.6);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;padding:6px 14px;border-radius:7px;cursor:pointer;flex-shrink:0;transition:all .15s;"
       onmouseover="this.style.color='#F2EFE8'" onmouseout="this.style.color='rgba(242,239,232,.6)'">
@@ -3247,6 +3251,125 @@ function parseDataEntrega(str) {
 // ════════════════════════════════════════════════
 // TIMELINE — MARCOS INTELIGENTES
 // ════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+// TRADUÇÕES PT / EN
+// ════════════════════════════════════════════════
+var _LANG = 'pt';
+var _PROJ_CACHE = null; // para re-renderizar ao mudar idioma
+
+var T = {
+  pt: {
+    nav: { inicio:'Início', galeria:'Galeria', elementos:'Elementos', orcamento:'Orçamento', condicoes:'Condições', timeline:'Acompanhamento', contacto:'Contacto' },
+    hero: { eyebrow:'Leroy Merlin Portugal', entregaPrev:'🚚 Entrega prevista:', aprovadoEm:'✦ Aprovado em:' },
+    countdown: { label:'⏳ Validade da Proposta', dias:'Dias', horas:'Horas', min:'Min', seg:'Seg' },
+    tipo: {
+      cozinha:       { hero:'Projeto<br>da Cozinha',    elementos:'Elementos da Cozinha',       orcamento:'Orçamento da Cozinha' },
+      'casa-de-banho':{ hero:'Projeto<br>Casa de Banho', elementos:'Elementos da Casa de Banho',  orcamento:'Orçamento da Casa de Banho' },
+      outro:         { hero:'Projeto',                  elementos:'Elementos do Projeto',         orcamento:'Orçamento do Projeto' }
+    },
+    secTitles: { notas:'Notas Importantes', timeline:'Estado da Obra' },
+    orcamento: { total:'Investimento Total', iva:'IVA, entrega e instalação incluídos' },
+    elementos: { vazio:'Sem elementos registados.' },
+    feed: { registo:'📋 Registo de Interações' },
+    notas: {
+      base:        { titulo:'Base do Projeto',     texto:'Este projeto foi desenvolvido com base nas preferências e necessidades apresentadas, procurando aliar estética, funcionalidade e aproveitamento do espaço.' },
+      validade:    { titulo:'Validade da Proposta', textoSem:'Consulte-nos para informações sobre validade.', textoBase:'Este orçamento é válido até ' },
+      desconto:    { titulo:'Desconto Incluído' },
+      entregaAprov:{ titulo:'Previsão de Entrega', textoAprov:'A entrega da mercadoria está prevista para ', textoPrevia:'A previsão de entrega da mercadoria é para ', sufixo:' podendo sofrer alterações por motivos alheios à nossa responsabilidade.' },
+      flex:        { titulo:'Flexibilidade',       texto:'Todos os elementos do projeto, incluindo materiais, cores e disposições, podem ser ajustados mediante nova análise e revisão do orçamento.' },
+      transp:      { titulo:'Transparência Total', texto:'Este documento pretende ser uma base clara para análise e tomada de decisão, promovendo uma comunicação transparente e eficaz.' },
+      adicional:   { titulo:'Nota Adicional' }
+    },
+    marcos: {
+      apresentado: { titulo:'Projeto apresentado', descBase:'Proposta entregue com os elementos do projeto, orçamento detalhado', desc3D:' e render 3D', descFim:'.' },
+      confianca:   { titulo:'Obrigado pela confiança! ✦', desc:'A sua decisão é o ponto de partida para transformar este projeto em realidade. É com muito gosto que avanço convosco — vamos construir algo especial.' },
+      analise:     { titulo:'A sua análise e decisão', desc:'Período para analisar a proposta com calma. Estou disponível para qualquer ajuste ou esclarecimento.', apelo:'✦ Um sim é tudo o que falta para começar' },
+      encomenda:   { titulo:'Encomenda dos materiais', desc:'Assim que confirmar, avançamos imediatamente com a encomenda junto dos fornecedores.', apelo:'📦 Materiais em encomenda — estamos a avançar!', aposAprov:'Após aprovação', aprovadoEm:'Aprovado em ' },
+      entrega:     { titulo:'Entrega da mercadoria', desc:'Móveis, tampos e materiais entregues em obra na data acordada.', apelo:'🚚 Mercadoria a caminho — entrega confirmada', aConfirmar:'Data a confirmar' },
+      instalacao:  { titulo:'Instalação', desc:'Instalação completa — da montagem à ligação de todos os equipamentos.', apelo:'🔧 Instalação em curso — está quase!', aConfirmar:'Data a confirmar' },
+      concluido:   { descBase:'Projeto concluído. Obrigado pela confiança — foi um prazer trabalhar consigo.', apelo:'🎉 Parabéns pela sua nova ', entregue:' entregue ✓' },
+      validoAte:   'Válido até '
+    },
+    aprovacao: {
+      titulo:'Está pronto para avançar?',
+      sub:'Com um clique confirma a aprovação desta proposta.<br>Ficará registado e serei notificado imediatamente.',
+      btn:'✓ Aprovar esta Proposta',
+      confirmTitulo:'✓ Aprovação registada!',
+      confirmTexto:'A sua confirmação foi recebida com sucesso. Entrarei em contacto brevemente para avançarmos com os próximos passos.',
+      aprovadaEm:'✓ Proposta aprovada em ',
+      aprovada:'✓ Proposta aprovada'
+    },
+    contacto: { titulo:'Estou aqui para si.', sub:'Tenha aprovado ou ainda esteja a pensar — estou disponível para qualquer dúvida, ajuste ou esclarecimento. Não hesite em contactar-me diretamente.' },
+    expirado: '⚠️ Esta proposta expirou. Contacte-nos para renovar.'
+  },
+  en: {
+    nav: { inicio:'Home', galeria:'Gallery', elementos:'Elements', orcamento:'Budget', condicoes:'Conditions', timeline:'Progress', contacto:'Contact' },
+    hero: { eyebrow:'Leroy Merlin Portugal', entregaPrev:'🚚 Estimated delivery:', aprovadoEm:'✦ Approved on:' },
+    countdown: { label:'⏳ Proposal Validity', dias:'Days', horas:'Hours', min:'Min', seg:'Sec' },
+    tipo: {
+      cozinha:       { hero:'Kitchen<br>Project',       elementos:'Kitchen Elements',       orcamento:'Kitchen Budget' },
+      'casa-de-banho':{ hero:'Bathroom<br>Project',      elementos:'Bathroom Elements',      orcamento:'Bathroom Budget' },
+      outro:         { hero:'Project',                   elementos:'Project Elements',        orcamento:'Project Budget' }
+    },
+    secTitles: { notas:'Important Notes', timeline:'Project Progress' },
+    orcamento: { total:'Total Investment', iva:'VAT, delivery and installation included' },
+    elementos: { vazio:'No elements registered.' },
+    feed: { registo:'📋 Interaction Log' },
+    notas: {
+      base:        { titulo:'Project Basis',       texto:'This project was developed based on the preferences and needs presented, seeking to combine aesthetics, functionality and space efficiency.' },
+      validade:    { titulo:'Proposal Validity',   textoSem:'Please contact us for validity information.', textoBase:'This budget is valid until ' },
+      desconto:    { titulo:'Discount Included' },
+      entregaAprov:{ titulo:'Delivery Estimate',   textoAprov:'Merchandise delivery is scheduled for ', textoPrevia:'The estimated delivery date is ', sufixo:', subject to change due to reasons beyond our control.' },
+      flex:        { titulo:'Flexibility',         texto:'All project elements, including materials, colours and layouts, can be adjusted following a new analysis and budget revision.' },
+      transp:      { titulo:'Full Transparency',   texto:'This document is intended as a clear basis for analysis and decision-making, promoting transparent and effective communication.' },
+      adicional:   { titulo:'Additional Note' }
+    },
+    marcos: {
+      apresentado: { titulo:'Proposal presented', descBase:'Proposal delivered with project elements, detailed budget', desc3D:' and 3D render', descFim:'.' },
+      confianca:   { titulo:'Thank you for your trust! ✦', desc:'Your decision is the starting point for turning this project into reality. It is with great pleasure that we move forward together — let\'s build something special.' },
+      analise:     { titulo:'Your review and decision', desc:'Time to review the proposal calmly. I am available for any adjustments or clarifications.', apelo:'✦ A yes is all it takes to get started' },
+      encomenda:   { titulo:'Materials order', desc:'Once confirmed, we immediately proceed with ordering from suppliers.', apelo:'📦 Materials on order — we are moving forward!', aposAprov:'After approval', aprovadoEm:'Approved on ' },
+      entrega:     { titulo:'Merchandise delivery', desc:'Furniture, worktops and materials delivered on site on the agreed date.', apelo:'🚚 Merchandise on the way — delivery confirmed', aConfirmar:'Date to be confirmed' },
+      instalacao:  { titulo:'Installation', desc:'Complete installation — from assembly to connection of all appliances.', apelo:'🔧 Installation underway — almost there!', aConfirmar:'Date to be confirmed' },
+      concluido:   { descBase:'Project completed. Thank you for your trust — it was a pleasure working with you.', apelo:'🎉 Congratulations on your new ', entregue:' delivered ✓' },
+      validoAte:   'Valid until '
+    },
+    aprovacao: {
+      titulo:'Ready to move forward?',
+      sub:'With one click you confirm the approval of this proposal.<br>It will be registered and I will be notified immediately.',
+      btn:'✓ Approve this Proposal',
+      confirmTitulo:'✓ Approval registered!',
+      confirmTexto:'Your confirmation has been received successfully. I will be in touch shortly to move forward with the next steps.',
+      aprovadaEm:'✓ Proposal approved on ',
+      aprovada:'✓ Proposal approved'
+    },
+    contacto: { titulo:'I am here for you.', sub:'Whether you have approved or are still thinking — I am available for any question, adjustment or clarification. Do not hesitate to contact me directly.' },
+    expirado: '⚠️ This proposal has expired. Please contact us to renew.'
+  }
+};
+
+function setLang(lang) {
+  _LANG = lang;
+  // actualizar botões do toggle
+  document.getElementById('lang-pt').style.background = lang === 'pt' ? 'rgba(103,171,47,.3)' : 'none';
+  document.getElementById('lang-pt').style.color      = lang === 'pt' ? '#F2EFE8' : 'rgba(242,239,232,.45)';
+  document.getElementById('lang-en').style.background = lang === 'en' ? 'rgba(103,171,47,.3)' : 'none';
+  document.getElementById('lang-en').style.color      = lang === 'en' ? '#F2EFE8' : 'rgba(242,239,232,.45)';
+  // re-renderizar a página com o idioma escolhido
+  if (_PROJ_CACHE) renderPaginaCliente(_PROJ_CACHE);
+}
+
+function t(key) {
+  // acesso por path tipo 'nav.inicio'
+  var parts = key.split('.');
+  var obj = T[_LANG];
+  for (var i = 0; i < parts.length; i++) {
+    if (obj == null) return key;
+    obj = obj[parts[i]];
+  }
+  return obj != null ? obj : key;
+}
+
 function gerarMarcos(p, fase) {
   var FASES = ['proposta', 'aprovado', 'encomenda', 'entrega', 'montagem', 'concluido'];
   var faseIdx = FASES.indexOf(fase);
@@ -3268,73 +3391,67 @@ function gerarMarcos(p, fase) {
     return isNaN(d) ? null : d.toLocaleDateString('pt-PT', { day:'2-digit', month:'long', year:'numeric' });
   }
 
-  // tipo de projeto para adaptar textos
-  var tipoNome = p.tipo === 'casa-de-banho' ? 'casa de banho'
-               : (p.tipo && p.tipo !== 'cozinha') ? p.tipo
-               : 'cozinha';
-  var tipoArt  = p.tipo === 'casa-de-banho' ? 'a nova casa de banho'
-               : (p.tipo && p.tipo !== 'cozinha') ? 'o projeto'
-               : 'a nova cozinha';
+  var tM = T[_LANG].marcos;
+  var tipoNome = p.tipo === 'casa-de-banho'
+    ? (_LANG === 'en' ? 'bathroom' : 'casa de banho')
+    : (p.tipo && p.tipo !== 'cozinha') ? p.tipo
+    : (_LANG === 'en' ? 'kitchen' : 'cozinha');
 
-  var prazoStr    = p.prazo            ? 'Válido até ' + fmtDate(p.prazo) : null;
-  var dataEntMat  = p.dataEntregaMat   ? fmtDate(p.dataEntregaMat)        : null;
-  var dataInst    = p.dataInstalacao   ? fmtDate(p.dataInstalacao)        : null;
-  var dataConcl   = p.dataConclusao    ? fmtDate(p.dataConclusao)         : null;
-  var entregaStr  = p.entrega          ? (calcDataEntregaFlutuante(p) || p.entrega) : null;
-
-  // data de entrega: preferir dataEntregaMat, fallback entregaStr
+  var prazoStr   = p.prazo          ? tM.validoAte + fmtDate(p.prazo) : null;
+  var dataEntMat = p.dataEntregaMat ? fmtDate(p.dataEntregaMat)       : null;
+  var dataInst   = p.dataInstalacao ? fmtDate(p.dataInstalacao)       : null;
+  var dataConcl  = p.dataConclusao  ? fmtDate(p.dataConclusao)        : null;
+  var entregaStr = p.entrega        ? (calcDataEntregaFlutuante(p) || p.entrega) : null;
   var dataEntregaFinal = dataEntMat || entregaStr;
 
   var marcos = [
     {
-      titulo: 'Projeto apresentado',
-      data: p.data || null,
-      desc: 'Proposta entregue com os elementos do projeto, orçamento detalhado' + (p.imagens && p.imagens.length ? ' e render 3D' : '') + '.',
-      estado: 'done',
-      apelo: null
+      titulo: tM.apresentado.titulo,
+      data:   p.data || null,
+      desc:   tM.apresentado.descBase + (p.imagens && p.imagens.length ? tM.apresentado.desc3D : '') + tM.apresentado.descFim,
+      estado: 'done', apelo: null
     },
     faseIdx >= 1
     ? {
-        titulo: 'Obrigado pela confiança! ✦',
-        data: p.aprovacao ? p.aprovacao.data + (p.aprovacao.hora ? ' · ' + p.aprovacao.hora : '') : null,
-        desc: 'A sua decisão é o ponto de partida para transformar este projeto em realidade. É com muito gosto que avanço convosco — vamos construir algo especial.',
-        estado: 'done',
-        apelo: null
+        titulo: tM.confianca.titulo,
+        data:   p.aprovacao ? p.aprovacao.data + (p.aprovacao.hora ? ' · ' + p.aprovacao.hora : '') : null,
+        desc:   tM.confianca.desc,
+        estado: 'done', apelo: null
       }
     : {
-        titulo: 'A sua análise e decisão',
-        data: prazoStr,
-        desc: 'Período para analisar a proposta com calma. Estou disponível para qualquer ajuste ou esclarecimento.',
+        titulo: tM.analise.titulo,
+        data:   prazoStr,
+        desc:   tM.analise.desc,
         estado: 'active',
-        apelo: '✦ Um sim é tudo o que falta para começar'
+        apelo:  tM.analise.apelo
       },
     {
-      titulo: 'Encomenda dos materiais',
-      data: faseIdx >= 2 ? (p.aprovacao ? 'Aprovado em ' + p.aprovacao.data : null) : 'Após aprovação',
-      desc: 'Assim que confirmar, avançamos imediatamente com a encomenda junto dos fornecedores.',
+      titulo: tM.encomenda.titulo,
+      data:   faseIdx >= 2 ? (p.aprovacao ? tM.encomenda.aprovadoEm + p.aprovacao.data : null) : tM.encomenda.aposAprov,
+      desc:   tM.encomenda.desc,
       estado: estadoPara(2),
-      apelo: faseIdx === 2 ? '📦 Materiais em encomenda — estamos a avançar!' : null
+      apelo:  faseIdx === 2 ? tM.encomenda.apelo : null
     },
     {
-      titulo: 'Entrega da mercadoria',
-      data: dataEntregaFinal || (faseIdx >= 3 ? null : 'Data a confirmar'),
-      desc: 'Móveis, tampos e materiais entregues em obra na data acordada.',
+      titulo: tM.entrega.titulo,
+      data:   dataEntregaFinal || (faseIdx >= 3 ? null : tM.entrega.aConfirmar),
+      desc:   tM.entrega.desc,
       estado: estadoPara(3),
-      apelo: faseIdx === 3 ? '🚚 Mercadoria a caminho — entrega confirmada' : null
+      apelo:  faseIdx === 3 ? tM.entrega.apelo : null
     },
     {
-      titulo: 'Instalação',
-      data: dataInst || (faseIdx >= 4 ? null : 'Data a confirmar'),
-      desc: 'Instalação completa — da montagem à ligação de todos os equipamentos.',
+      titulo: tM.instalacao.titulo,
+      data:   dataInst || (faseIdx >= 4 ? null : tM.instalacao.aConfirmar),
+      desc:   tM.instalacao.desc,
       estado: estadoPara(4),
-      apelo: faseIdx === 4 ? '🔧 Instalação em curso — está quase!' : null
+      apelo:  faseIdx === 4 ? tM.instalacao.apelo : null
     },
     {
-      titulo: tipoNome.charAt(0).toUpperCase() + tipoNome.slice(1) + ' entregue ✓',
-      data: dataConcl || null,
-      desc: 'Projeto concluído. Obrigado pela confiança — foi um prazer trabalhar consigo.',
+      titulo: tipoNome.charAt(0).toUpperCase() + tipoNome.slice(1) + tM.concluido.entregue,
+      data:   dataConcl || null,
+      desc:   tM.concluido.descBase,
       estado: estadoPara(5),
-      apelo: faseIdx === 5 ? '🎉 Parabéns pela sua nova ' + tipoNome + '!' : null
+      apelo:  faseIdx === 5 ? tM.concluido.apelo + tipoNome + '!' : null
     }
   ];
 
@@ -3358,6 +3475,8 @@ function exportarHTML(id) { /* desativado */ }
 
 function renderPaginaCliente(p) {
   _PROJ_ATUAL_ID = p.id;
+  _PROJ_CACHE = p; // guardar para re-renderizar ao mudar idioma
+  var L = T[_LANG];
   var hoje = new Date(); hoje.setHours(0,0,0,0);
   var total = calcTotal(p);
   var cats  = calcCats(p);
@@ -3375,23 +3494,51 @@ function renderPaginaCliente(p) {
     registarVisitaCliente(p.id, p.nome).catch(function(){});
   }
 
+  // nav links
+  var navLinks = document.querySelectorAll('.cli-nav-link');
+  var navKeys = ['inicio','galeria','elementos','orcamento','condicoes','timeline','contacto'];
+  navLinks.forEach(function(el, i) { if (navKeys[i]) el.textContent = L.nav[navKeys[i]] || el.textContent; });
+
   // adaptar títulos ao tipo de projeto
-  var tipoLabels = {
-    'cozinha':      { hero: 'Projeto<br>da Cozinha',    elementos: 'Elementos da Cozinha',    orcamento: 'Orçamento da Cozinha' },
-    'casa-de-banho':{ hero: 'Projeto<br>Casa de Banho', elementos: 'Elementos da Casa de Banho', orcamento: 'Orçamento da Casa de Banho' }
-  };
   var tipo = p.tipo || 'cozinha';
-  var lbl = tipoLabels[tipo] || {
-    hero: 'Projeto<br>' + tipo.charAt(0).toUpperCase() + tipo.slice(1),
-    elementos: 'Elementos do Projeto',
-    orcamento: 'Orçamento do Projeto'
-  };
+  var tipoKey = tipo === 'casa-de-banho' ? 'casa-de-banho' : (tipo === 'cozinha' ? 'cozinha' : 'outro');
+  var lbl = L.tipo[tipoKey] || L.tipo['outro'];
   var heroTit = document.getElementById('cli-hero-titulo');
   if (heroTit) heroTit.innerHTML = lbl.hero;
   var elTit = document.getElementById('cli-title-elementos');
   if (elTit) elTit.textContent = lbl.elementos;
   var orcTit = document.getElementById('cli-title-orcamento');
   if (orcTit) orcTit.textContent = lbl.orcamento;
+
+  // títulos de secção fixos
+  var secNotas = document.querySelector('#condicoes .cli-section-title');
+  if (secNotas) secNotas.textContent = L.secTitles.notas;
+  var secTimeline = document.querySelector('#timeline .cli-section-title');
+  if (secTimeline) secTimeline.textContent = L.secTitles.timeline;
+
+  // countdown label
+  var cdLabel = document.querySelector('.countdown-label');
+  if (cdLabel) cdLabel.textContent = L.countdown.label;
+  document.querySelectorAll('.countdown-unit-lbl').forEach(function(el, i) {
+    var keys = ['dias','horas','min','seg'];
+    if (keys[i]) el.textContent = L.countdown[keys[i]];
+  });
+
+  // hero meta labels
+  var entregaRow = document.getElementById('cli-entrega-row');
+  if (entregaRow) entregaRow.childNodes[0].textContent = L.hero.entregaPrev + ' ';
+  var aprovRow = document.getElementById('cli-aprovacao-row');
+  if (aprovRow) aprovRow.childNodes[0].textContent = L.hero.aprovadoEm + ' ';
+
+  // banner expirado
+  var bannerExp = document.querySelector('.expirado-banner-txt');
+  if (bannerExp) bannerExp.textContent = L.expirado;
+
+  // contacto
+  var ctTit = document.querySelector('.cli-contacto-titulo');
+  if (ctTit) ctTit.textContent = L.contacto.titulo;
+  var ctSub = document.querySelector('.cli-contacto-sub');
+  if (ctSub) ctSub.textContent = L.contacto.sub;
 
   // hero
   document.getElementById('cli-nome-hero').textContent = p.nome || '—';
@@ -3493,7 +3640,7 @@ function renderPaginaCliente(p) {
     });
   }
 
-  document.getElementById('cli-elementos').innerHTML = elemHTML || '<p style="color:var(--ink3);font-size:13px;">Sem elementos registados.</p>';
+  document.getElementById('cli-elementos').innerHTML = elemHTML || '<p style="color:var(--ink3);font-size:13px;">' + L.elementos.vazio + '</p>';
 
   // orçamento — card escuro único com total + barras por categoria
   var maxVal = Math.max.apply(null, Object.values(cats).concat([1]));
@@ -3507,9 +3654,9 @@ function renderPaginaCliente(p) {
   }).join('');
 
   var orcaHTML = '<div class="orca-card">' +
-    '<div class="orca-total-label">Investimento Total</div>' +
+    '<div class="orca-total-label">' + L.orcamento.total + '</div>' +
     '<div class="orca-total-valor">' + total.toFixed(2).replace('.',',') + ' €</div>' +
-    '<div class="orca-total-nota">IVA, entrega e instalação incluídos</div>' +
+    '<div class="orca-total-nota">' + L.orcamento.iva + '</div>' +
     '<div class="orca-separador"></div>' +
     barrasHTML +
     (p.desconto ? '<div class="orca-nota">⭐ ' + p.desconto + '</div>' : '') +
@@ -3518,22 +3665,23 @@ function renderPaginaCliente(p) {
   document.getElementById('cli-orcamento').innerHTML = orcaHTML;
 
   // notas
+  var tN = L.notas;
   var notas = [
-    { icon:'✅', titulo:'Base do Projeto', texto:'Este projeto foi desenvolvido com base nas preferências e necessidades apresentadas, procurando aliar estética, funcionalidade e aproveitamento do espaço.' },
-    { icon:'📅', titulo:'Validade da Proposta', texto: p.prazo ? 'Este orçamento é válido até ' + new Date(p.prazo).toLocaleDateString('pt-PT') + '.' : 'Consulte-nos para informações sobre validade.' },
+    { icon:'✅', titulo: tN.base.titulo,     texto: tN.base.texto },
+    { icon:'📅', titulo: tN.validade.titulo, texto: p.prazo ? tN.validade.textoBase + new Date(p.prazo).toLocaleDateString(_LANG === 'en' ? 'en-GB' : 'pt-PT') + '.' : tN.validade.textoSem },
   ];
-  if (p.desconto) notas.push({ icon:'⭐', titulo:'Desconto Incluído', texto: p.desconto });
+  if (p.desconto) notas.push({ icon:'⭐', titulo: tN.desconto.titulo, texto: p.desconto });
   var dataEntregaDinamica = calcDataEntregaFlutuante(p);
   if (dataEntregaDinamica) {
     var aprovado = p.fase && p.fase !== 'proposta';
-    var textoEntrega = aprovado
-      ? 'A entrega da mercadoria está prevista para ' + dataEntregaDinamica + '.'
-      : 'A previsão de entrega da mercadoria é para ' + dataEntregaDinamica + ', podendo sofrer alterações por motivos alheios à nossa responsabilidade.';
-    notas.push({ icon:'🚚', titulo:'Previsão de Entrega', texto: textoEntrega });
+    notas.push({ icon:'🚚', titulo: tN.entregaAprov.titulo,
+      texto: aprovado
+        ? tN.entregaAprov.textoAprov + dataEntregaDinamica + '.'
+        : tN.entregaAprov.textoPrevia + dataEntregaDinamica + tN.entregaAprov.sufixo });
   }
-  notas.push({ icon:'🔄', titulo:'Flexibilidade', texto:'Todos os elementos do projeto, incluindo materiais, cores e disposições, podem ser ajustados mediante nova análise e revisão do orçamento.' });
-  notas.push({ icon:'🤝', titulo:'Transparência Total', texto:'Este documento pretende ser uma base clara para análise e tomada de decisão, promovendo uma comunicação transparente e eficaz.' });
-  if (p.notas) notas.push({ icon:'📝', titulo:'Nota Adicional', texto: p.notas });
+  notas.push({ icon:'🔄', titulo: tN.flex.titulo,   texto: tN.flex.texto });
+  notas.push({ icon:'🤝', titulo: tN.transp.titulo, texto: tN.transp.texto });
+  if (p.notas) notas.push({ icon:'📝', titulo: tN.adicional.titulo, texto: p.notas });
 
   document.getElementById('cli-notas').innerHTML = notas.map(function(n) {
     return '<div class="nota-card">' +
@@ -3562,7 +3710,7 @@ function renderPaginaCliente(p) {
     if (interacoes.length === 0) {
       feedWrap.innerHTML = '';
     } else {
-      var feedHTML = '<div class="feed-sep">📋 Registo de Interações</div><div class="feed-lista">';
+      var feedHTML = '<div class="feed-sep">' + L.feed.registo + '</div><div class="feed-lista">';
       feedHTML += interacoes.slice().reverse().map(function(item) {
         return '<div class="feed-item">' +
           '<span class="feed-badge badge-' + item.tipo + '">' + (BADGE_LABELS[item.tipo]||item.tipo) + '</span>' +
@@ -3627,18 +3775,18 @@ async function renderEstadoAprovacao(projetoId, aprovacao) {
     } catch(e) {}
   }
 
+  var tA = T[_LANG].aprovacao;
   if (projAprovado) {
     var dataTexto = (aprovacao && aprovacao.data)
-      ? '✓ Proposta aprovada em ' + aprovacao.data + (aprovacao.hora ? ' às ' + aprovacao.hora : '')
-      : '✓ Proposta aprovada';
-    // cliente aprovou = origem 'cliente'; painel = origem 'painel' ou sem origem mas fase mudada
+      ? tA.aprovadaEm + aprovacao.data + (aprovacao.hora ? ' às ' + aprovacao.hora : '')
+      : tA.aprovada;
     var aprovadoPeloCliente = aprovacao && aprovacao.data && aprovacao.origem === 'cliente';
     if (aprovadoPeloCliente) {
       secao.innerHTML =
         '<div class="aprovacao-inner">' +
           '<div class="aprovacao-confirmada show">' +
-            '<div class="aprovacao-confirmada-titulo">✓ Aprovação registada!</div>' +
-            '<div class="aprovacao-confirmada-texto">A sua confirmação foi recebida com sucesso. Entrarei em contacto brevemente para avançarmos com os próximos passos.</div>' +
+            '<div class="aprovacao-confirmada-titulo">' + tA.confirmTitulo + '</div>' +
+            '<div class="aprovacao-confirmada-texto">' + tA.confirmTexto + '</div>' +
           '</div>' +
           '<div class="aprovacao-ja-feita">' + dataTexto + '</div>' +
         '</div>';
@@ -3651,13 +3799,13 @@ async function renderEstadoAprovacao(projetoId, aprovacao) {
   } else {
     secao.innerHTML =
       '<div class="aprovacao-inner">' +
-        '<div class="aprovacao-titulo">Está pronto para avançar?</div>' +
-        '<div class="aprovacao-sub">Com um clique confirma a aprovação desta proposta.<br>Ficará registado e serei notificado imediatamente.</div>' +
+        '<div class="aprovacao-titulo">' + tA.titulo + '</div>' +
+        '<div class="aprovacao-sub">' + tA.sub + '</div>' +
         '<div id="aprovacao-estado">' +
-          '<button class="btn-aprovar" id="btn-aprovar-proj" onclick="aprovarProposta()">✓ Aprovar esta Proposta</button>' +
+          '<button class="btn-aprovar" id="btn-aprovar-proj" onclick="aprovarProposta()">' + tA.btn + '</button>' +
           '<div class="aprovacao-confirmada" id="aprovacao-confirmada">' +
-            '<div class="aprovacao-confirmada-titulo">✓ Aprovação registada!</div>' +
-            '<div class="aprovacao-confirmada-texto">A sua confirmação foi enviada com sucesso. Entrarei em contacto brevemente para avançarmos com os próximos passos.</div>' +
+            '<div class="aprovacao-confirmada-titulo">' + tA.confirmTitulo + '</div>' +
+            '<div class="aprovacao-confirmada-texto">' + tA.confirmTexto + '</div>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -3694,7 +3842,7 @@ async function aprovarProposta() {
     mostrarToast('✓ Proposta aprovada!', 'O cliente aprovou · ' + data + ' · ' + hora);
   } catch(e) {
     console.error('Erro ao registar aprovação:', e);
-    if (btn) { btn.disabled = false; btn.textContent = '✓ Aprovar esta Proposta'; }
+    if (btn) { btn.disabled = false; btn.textContent = T[_LANG].aprovacao.btn; }
     alert('Erro ao registar aprovação. Tente novamente ou contacte-nos diretamente.');
   }
 }
