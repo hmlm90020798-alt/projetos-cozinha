@@ -2703,7 +2703,7 @@ var catNomes = { moveis:'Móveis', tampos:'Tampos', eletros:'Eletrodomésticos',
 var catIcons = { moveis:'🪑', tampos:'🪨', eletros:'⚡', acessorios:'🔧' };
 
 function copiarLink(id, btn) {
-  var base = window.location.href.split('?')[0];
+  var base = window.location.origin + window.location.pathname;
   var url = base + '?p=' + id;
   navigator.clipboard.writeText(url).then(function() {
     var orig = btn.textContent;
@@ -2716,7 +2716,8 @@ function partilharCliente(id, btn) {
   var p = PROJETOS.find(function(x){ return x.id === id; });
   if (!p) return;
 
-  var url = window.location.href.split('?')[0] + '?p=' + id;
+  var base = window.location.origin + window.location.pathname;
+  var url = base + '?p=' + id;
   var tipoNome = p.tipo === 'casa-de-banho' ? 'casa de banho' : (p.tipo && p.tipo !== 'cozinha' ? p.tipo : 'cozinha');
   var fase = { proposta:'apresentada', aprovado:'aprovada', encomenda:'encomendada', entrega:'aguarda entrega', montagem:'em montagem', concluido:'concluída' }[p.fase] || p.fase;
   var total = calcTotal(p);
