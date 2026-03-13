@@ -2145,13 +2145,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
 
   <!-- APROVAÇÃO DA PROPOSTA -->
   <div class="aprovacao-wrap" id="sec-aprovacao">
-    <div class="aprovacao-inner">
-      <div class="aprovacao-titulo">Está pronto para avançar?</div>
-      <div class="aprovacao-sub">Com um clique confirma a aprovação desta proposta.<br>Ficará registado e serei notificado imediatamente.</div>
-      <div id="aprovacao-estado">
-        <!-- preenchido por JS -->
-      </div>
-    </div>
+    <!-- preenchido por renderEstadoAprovacao() -->
   </div>
 
   <!-- CONTACTO -->
@@ -3667,21 +3661,18 @@ async function aprovarProposta() {
     if (snap.exists()) {
       var p = snap.data();
       p.aprovacao = { data: data, hora: hora };
-      p.fase = 'aprovado'; // avançar fase automaticamente
+      p.fase = 'aprovado';
       await setDoc(projDoc, p);
     }
-    // mostrar confirmação
-    var conf = document.getElementById('aprovacao-confirmada');
-    if (conf) conf.classList.add('show');
-    if (btn) btn.style.display = 'none';
-    // recarregar a página do cliente com os dados atualizados (mostra agradecimento na timeline)
+    // re-renderizar a secção de aprovação com os dados corretos
+    await renderEstadoAprovacao(_PROJ_ATUAL_ID, { data: data, hora: hora });
+    // recarregar timeline
     setTimeout(async function() {
       try {
         var snapAtual = await getDoc(doc(_db, 'projetos', _PROJ_ATUAL_ID));
         if (snapAtual.exists()) renderPaginaCliente(snapAtual.data());
       } catch(e) {}
     }, 1200);
-    // notificar o painel se estiver aberto
     mostrarToast('✓ Proposta aprovada!', 'O cliente aprovou · ' + data + ' · ' + hora);
   } catch(e) {
     console.error('Erro ao registar aprovação:', e);
