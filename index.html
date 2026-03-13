@@ -2046,6 +2046,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
           <div class="cli-hero-meta-row">📍 <strong id="cli-local-hero">—</strong></div>
           <div class="cli-hero-meta-row">📅 <strong id="cli-data-hero">—</strong></div>
           <div class="cli-hero-meta-row" id="cli-entrega-row" style="display:none;">🚚 Entrega prevista: <strong id="cli-entrega-hero">—</strong></div>
+          <div class="cli-hero-meta-row" id="cli-aprovacao-row" style="display:none;">✦ Aprovado em: <strong id="cli-aprovacao-hero">—</strong></div>
         </div>
 
         <div id="cli-expirado-banner" class="expirado-banner" style="display:none;">
@@ -3386,6 +3387,15 @@ function renderPaginaCliente(p) {
     document.getElementById('cli-entrega-row').style.display = 'flex';
   }
 
+  // data de aprovação no hero
+  var aprovacaoRow = document.getElementById('cli-aprovacao-row');
+  if (p.aprovacao && p.aprovacao.data) {
+    document.getElementById('cli-aprovacao-hero').textContent = p.aprovacao.data + (p.aprovacao.hora ? ' às ' + p.aprovacao.hora : '');
+    if (aprovacaoRow) aprovacaoRow.style.display = 'flex';
+  } else if (aprovacaoRow) {
+    aprovacaoRow.style.display = 'none';
+  }
+
   // expirado vs countdown
   document.getElementById('cli-expirado-banner').style.display = expirado ? 'block' : 'none';
   document.getElementById('cli-countdown-wrap').style.display  = (p.prazo && !expirado) ? 'block' : 'none';
@@ -3580,12 +3590,33 @@ async function renderEstadoAprovacao(projetoId, aprovacao) {
   var wrap = document.getElementById('aprovacao-estado');
   if (!wrap) return;
 
-  if (aprovacao && aprovacao.data) {
-    // já aprovado
-    wrap.innerHTML = '<div class="aprovacao-ja-feita">' +
-      '✓ Proposta aprovada em ' + aprovacao.data +
-      (aprovacao.hora ? ' às ' + aprovacao.hora : '') +
-    '</div>';
+  // aprovado: ou tem registo de aprovação OU a fase já passou de proposta
+  var projAprovado = (aprovacao && aprovacao.data) || (function() {
+    var p = PROJETOS.find(function(x){ return x.id === projetoId; });
+    return p && p.fase && p.fase !== 'proposta';
+  })();
+
+  // para acesso cliente direto (sem PROJETOS carregados), verificar via Firestore
+  if (!projAprovado && projetoId && typeof _db !== 'undefined') {
+    try {
+      var snap = await getDoc(doc(_db, 'projetos', projetoId));
+      if (snap.exists() && snap.data().fase && snap.data().fase !== 'proposta') {
+        projAprovado = true;
+        if (!aprovacao || !aprovacao.data) aprovacao = snap.data().aprovacao || {};
+      }
+    } catch(e) {}
+  }
+
+  if (projAprovado) {
+    var dataTexto = (aprovacao && aprovacao.data)
+      ? '✓ Proposta aprovada em ' + aprovacao.data + (aprovacao.hora ? ' às ' + aprovacao.hora : '')
+      : '✓ Proposta aprovada';
+    wrap.innerHTML =
+      '<div class="aprovacao-confirmada show">' +
+        '<div class="aprovacao-confirmada-titulo">✓ Aprovação registada!</div>' +
+        '<div class="aprovacao-confirmada-texto">A sua confirmação foi recebida com sucesso. Entrarei em contacto brevemente para avançarmos com os próximos passos.</div>' +
+      '</div>' +
+      '<div class="aprovacao-ja-feita">' + dataTexto + '</div>';
   } else {
     // ainda não aprovado — mostrar botão
     wrap.innerHTML =
