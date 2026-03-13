@@ -2466,20 +2466,26 @@ function doLogout() {
   });
 }
 
+// ════════════════════════════════════════════════
+// MODO CLIENTE — deve ser definido ANTES do onAuthStateChanged
+// ════════════════════════════════════════════════
+var _IS_CLIENTE_MODE = (new URLSearchParams(window.location.search)).get('p') !== null;
+
 // Observador de estado de autenticação — controla qual view mostrar
 onAuthStateChanged(_auth, async function(user) {
-  if (_IS_CLIENTE_MODE) return; // cliente nunca vai para o painel
+  if (_IS_CLIENTE_MODE) return; // cliente nunca vai para o painel ou login
+  var ov = document.getElementById('loading-overlay');
   if (user) {
-    var isCliente = await checkUrlParam();
-    if (!isCliente) {
-      carregar().then(function() {
-        setView('painel');
-        renderPainel();
-        document.getElementById('loading-overlay') && document.getElementById('loading-overlay').remove();
-      });
-    }
+    await carregar();
+    if (ov) ov.remove();
+    setView('painel');
+    renderPainel();
+  } else {
+    if (ov) ov.remove();
+    setView('login');
   }
 });
+
 function setView(v) {
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   document.getElementById('view-' + v).classList.add('active');
@@ -2490,8 +2496,6 @@ function setView(v) {
     pararPollingVisitas();
   }
 }
-
-var _IS_CLIENTE_MODE = false; // true quando acesso via ?p=ID — nunca mostrar login
 
 function setFiltro(btn, fase) {
   FILTRO_ATIVO = fase;
@@ -3794,6 +3798,7 @@ function atualizarTipoProjeto() {
 }
 
 (async function() {
+  // Mostrar overlay de carregamento
   var overlay = document.createElement('div');
   overlay.id = 'loading-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:#1E2118;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:99999;';
@@ -3803,9 +3808,9 @@ function atualizarTipoProjeto() {
     '<style>@keyframes spin{to{transform:rotate(360deg)}}</style>';
   document.body.appendChild(overlay);
 
-  // Ficheiro exportado standalone — carregar projeto embebido diretamente
+  // Modo standalone (ficheiro exportado com projeto embebido)
   if (typeof MODO_STANDALONE !== 'undefined' && MODO_STANDALONE) {
-    await carregar(); // popula PROJETOS com PROJETO_EMBED
+    await carregar();
     if (PROJETOS.length > 0) {
       renderPaginaCliente(PROJETOS[0]);
       setView('cliente');
@@ -3816,19 +3821,15 @@ function atualizarTipoProjeto() {
     return;
   }
 
-  // Se for acesso direto de cliente via ?p=ID, carrega sem autenticacao
-  var isClienteAccess = await checkUrlParam();
-  if (isClienteAccess) {
+  // Modo cliente — acesso via ?p=ID (sem autenticação)
+  if (_IS_CLIENTE_MODE) {
+    await checkUrlParam();
     overlay.remove();
     return;
   }
 
-  // Se após 3 segundos não houver utilizador, mostrar login — mas nunca se for acesso de cliente
-  setTimeout(function() {
-    if (_IS_CLIENTE_MODE) return;
-    var ov = document.getElementById('loading-overlay');
-    if (ov) { ov.remove(); setView('login'); }
-  }, 3000);
+  // Modo painel — o onAuthStateChanged trata do resto
+  // (remove o overlay e mostra painel ou login conforme o estado)
 })();
 </script>
 </body>
