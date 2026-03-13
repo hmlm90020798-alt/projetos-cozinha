@@ -3267,13 +3267,21 @@ function gerarMarcos(p, fase) {
       estado: 'done',
       apelo: null
     },
-    {
-      titulo: 'A sua análise e decisão',
-      data: prazoStr,
-      desc: 'Período para analisar a proposta com calma. Estou disponível para qualquer ajuste ou esclarecimento.',
-      estado: estadoPara(1),
-      apelo: faseIdx <= 1 ? '✦ Um sim é tudo o que falta para começar' : null
-    },
+    faseIdx >= 2
+    ? {
+        titulo: 'Obrigado pela confiança! ✦',
+        data: p.aprovacao ? p.aprovacao.data + (p.aprovacao.hora ? ' · ' + p.aprovacao.hora : '') : null,
+        desc: 'A sua decisão é o ponto de partida para transformar este projeto em realidade. É com muito gosto que avanço convosco — vamos construir algo especial.',
+        estado: 'done',
+        apelo: null
+      }
+    : {
+        titulo: 'A sua análise e decisão',
+        data: prazoStr,
+        desc: 'Período para analisar a proposta com calma. Estou disponível para qualquer ajuste ou esclarecimento.',
+        estado: estadoPara(1),
+        apelo: '✦ Um sim é tudo o que falta para começar'
+      },
     {
       titulo: 'Encomenda dos materiais',
       data: faseIdx >= 2 ? (p.aprovacao ? 'Aprovado em ' + p.aprovacao.data : null) : 'Após aprovação',
