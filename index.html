@@ -1687,6 +1687,53 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
 @media (max-width: 768px) {
   .aprovacao-wrap { padding: 40px 24px; }
 }
+
+/* ══ MOBILE — PÁGINA DO CLIENTE ══ */
+@media (max-width: 768px) {
+
+  /* Nav — esconder links, mostrar só logo e toggle idioma */
+  .cli-nav { padding: 0 16px; gap: 10px; }
+  .cli-nav-links { display: none; }
+  #lang-toggle { margin-left: auto; }
+
+  /* Hero */
+  .cli-hero { padding: 80px 24px 48px; min-height: auto; }
+  .cli-hero-cta { flex-direction: column; }
+  .cli-hero-cta a, .cli-hero-cta button { width: 100%; justify-content: center; }
+  .countdown-num { font-size: 24px; }
+
+  /* Secções */
+  .cli-section { padding: 48px 20px; }
+  .cli-section-num { font-size: 44px; }
+  .cli-section-title { font-size: 24px; }
+  .cli-section-header { gap: 12px; margin-bottom: 28px; }
+
+  /* Galeria — coluna única em mobile */
+  .galeria-grid.n2,
+  .galeria-grid.n3,
+  .galeria-grid.n4plus { grid-template-columns: 1fr; grid-template-rows: auto; }
+  .galeria-grid.n3 .galeria-img:first-child,
+  .galeria-grid.n4plus .galeria-img:first-child { grid-row: auto; }
+  .galeria-img { height: 220px; }
+
+  /* Orçamento */
+  .orca-card { padding: 28px 20px; border-radius: 14px; }
+
+  /* Notas — coluna única */
+  .notas-grid { grid-template-columns: 1fr; }
+
+  /* Aprovação */
+  .aprovacao-wrap { padding: 40px 20px; }
+  .btn-aprovar { width: 100%; justify-content: center; padding: 16px 24px; }
+
+  /* Contacto */
+  .cli-contacto { padding: 60px 20px; }
+  .cli-contacto-cabecalho { padding: 24px 20px 20px; gap: 14px; }
+  .contacto-info-row { flex-wrap: wrap; justify-content: flex-start; gap: 6px; }
+  .contacto-info-label { width: auto; text-align: left; }
+  .cli-contacto-acoes { padding: 20px; gap: 10px; }
+  .cli-contacto-acoes a { padding: 13px 16px; font-size: 12px; }
+}
 /* ══ PÁGINA EXPIRADA ══ */
 #view-expirada { display:none; min-height:100vh; background:var(--dark); align-items:center; justify-content:center; }
 #view-expirada.active { display:flex; }
