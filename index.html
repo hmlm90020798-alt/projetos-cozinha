@@ -3725,36 +3725,30 @@ async function checkUrlParam() {
   var id = params.get('p');
   if (!id) return false;
 
+  // Há ?p=ID — esta página É do cliente, nunca mostrar login
+  _IS_CLIENTE_MODE = true;
+
   try {
-    // Carregar APENAS este projeto do Firestore — os outros projetos não são transferidos
     var projDoc = doc(_db, 'projetos', id);
     var snap = await getDoc(projDoc);
     if (snap.exists()) {
       var p = snap.data();
-      _IS_CLIENTE_MODE = true;
       renderPaginaCliente(p);
       setView('cliente');
       var btn = document.getElementById('btn-voltar-painel');
       if (btn) btn.style.display = 'none';
       return true;
+    } else {
+      // ID não existe no Firestore
+      setView('expirada');
+      return true; // ainda é modo cliente — não mostrar login
     }
   } catch(e) {
     console.warn('Erro ao carregar projeto:', e);
-  }
-
-  // fallback: procurar no array local (compatibilidade)
-  var pLocal = PROJETOS.find(function(x){ return x.id === id; });
-  if (pLocal) {
-    _IS_CLIENTE_MODE = true;
-    renderPaginaCliente(pLocal);
-    setView('cliente');
-    var btn2 = document.getElementById('btn-voltar-painel');
-    if (btn2) btn2.style.display = 'none';
+    // erro de rede ou permissões — mostrar página expirada em vez de login
+    setView('expirada');
     return true;
   }
-
-  console.warn('Projeto não encontrado:', id);
-  return false;
 }
 
 // ════════════════════════════════════════════════
@@ -3827,7 +3821,7 @@ function atualizarTipoProjeto() {
   var isClienteAccess = await checkUrlParam();
   if (isClienteAccess) {
     overlay.remove();
-    return;
+    return; // sair ANTES de criar o setTimeout — login nunca é mostrado
   }
 
   // Sem ?p=ID — aguardar Firebase Auth
