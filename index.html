@@ -1581,21 +1581,111 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
 }
 
 /* ══ RESPONSIVE ══ */
-@media (max-width: 768px) {
-  .cli-galeria { padding: 48px 24px; }
-  .galeria-grid.n3, .galeria-grid.n4plus { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
-  .galeria-grid.n3 .galeria-img:first-child,
-  .galeria-grid.n4plus .galeria-img:first-child { grid-row: auto; grid-column: 1/-1; }
+.badge-aprovacao {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(61,107,53,.15);
+  border: 1px solid rgba(103,171,47,.4);
+  color: var(--lm-green-light);
+  font-family: 'Syne', sans-serif;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 99px;
+  letter-spacing: .4px;
+}
+
+/* ══ BOTÃO DE APROVAÇÃO DO CLIENTE ══ */
+.aprovacao-wrap {
+  background: var(--dark);
+  padding: 60px 40px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.aprovacao-inner {
+  max-width: 580px;
+  margin: 0 auto;
+  text-align: center;
+}
+.aprovacao-titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 900;
+  color: #F2EFE8;
+  margin-bottom: 12px;
+  line-height: 1.1;
+}
+.aprovacao-sub {
+  font-size: 14px;
+  color: rgba(242,239,232,.38);
+  margin-bottom: 36px;
+  line-height: 1.8;
+}
+.btn-aprovar {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 40px;
+  background: linear-gradient(135deg, var(--lm-green), var(--lm-green-light));
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all .25s cubic-bezier(.16,1,.3,1);
+  letter-spacing: .3px;
+  box-shadow: 0 8px 32px rgba(61,107,53,.4);
+}
+.btn-aprovar:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 40px rgba(61,107,53,.55);
+}
+.btn-aprovar:disabled {
+  background: rgba(255,255,255,.1);
+  box-shadow: none;
+  cursor: default;
+  transform: none;
+}
+.aprovacao-confirmada {
+  display: none;
+  background: rgba(61,107,53,.12);
+  border: 1.5px solid rgba(103,171,47,.35);
+  border-radius: 16px;
+  padding: 28px 32px;
+  margin-top: 20px;
+}
+.aprovacao-confirmada.show { display: block; }
+.aprovacao-confirmada-titulo {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--lm-green-light);
+  letter-spacing: .5px;
+  margin-bottom: 6px;
+}
+.aprovacao-confirmada-texto {
+  font-size: 13px;
+  color: rgba(242,239,232,.5);
+  line-height: 1.6;
+}
+.aprovacao-ja-feita {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(61,107,53,.12);
+  border: 1.5px solid rgba(103,171,47,.3);
+  border-radius: 12px;
+  padding: 14px 24px;
+  color: var(--lm-green-light);
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .5px;
 }
 @media (max-width: 768px) {
-  .cli-hero-grid { grid-template-columns: 1fr; gap: 40px; }
-  .cli-hero { padding: 80px 24px 48px; }
-  .cli-section { padding: 56px 24px; }
-  .stats-bar { grid-template-columns: repeat(2, 1fr); }
-  .painel-body { padding: 20px; }
-  .cli-contacto { padding: 56px 24px; }
-  .orca-total-band { flex-direction: column; gap: 16px; text-align: center; }
-  .cli-nav-links { display: none; }
+  .aprovacao-wrap { padding: 40px 24px; }
 }
 </style>
 </head>
@@ -1975,6 +2065,17 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
     </div>
   </section>
 
+  <!-- APROVAÇÃO DA PROPOSTA -->
+  <div class="aprovacao-wrap" id="sec-aprovacao">
+    <div class="aprovacao-inner">
+      <div class="aprovacao-titulo">Está pronto para avançar?</div>
+      <div class="aprovacao-sub">Com um clique confirma a aprovação desta proposta.<br>Ficará registado e serei notificado imediatamente.</div>
+      <div id="aprovacao-estado">
+        <!-- preenchido por JS -->
+      </div>
+    </div>
+  </div>
+
   <!-- CONTACTO -->
   <section id="contacto">
     <div class="cli-contacto">
@@ -2051,7 +2152,7 @@ var LB_IDX  = 0;
 
 // ── Firebase Firestore ────────────────────────
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, doc, setDoc, getDoc, getDocs, deleteDoc, collection, query } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
 const firebaseConfig = {
@@ -2066,7 +2167,7 @@ const firebaseConfig = {
 const _fbApp = initializeApp(firebaseConfig);
 const _db    = getFirestore(_fbApp);
 const _auth  = getAuth(_fbApp);
-const _docRef = doc(_db, 'projcozinha', 'dados');
+const _colRef  = collection(_db, 'projetos');
 
 function setSyncStatus(estado) {
   var el = document.getElementById('sync-status');
@@ -2077,40 +2178,109 @@ function setSyncStatus(estado) {
   if (estado === 'saved') setTimeout(function(){ el.textContent = ''; el.className = 'sync-status'; }, 2500);
 }
 
-async function guardar() {
+// ── comprimir imagem base64 via canvas (max 900px, qualidade 0.72) ──
+function comprimirImagem(b64, maxDim, qualidade) {
+  return new Promise(function(resolve) {
+    // se já for URL (http) ou já for pequena (~< 100KB), devolver tal qual
+    if (b64.startsWith('http') || b64.length < 130000) { resolve(b64); return; }
+    var img = new Image();
+    img.onload = function() {
+      var w = img.width, h = img.height;
+      var escala = Math.min(1, maxDim / Math.max(w, h));
+      var cw = Math.round(w * escala), ch = Math.round(h * escala);
+      var canvas = document.createElement('canvas');
+      canvas.width = cw; canvas.height = ch;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, cw, ch);
+      resolve(canvas.toDataURL('image/jpeg', qualidade));
+    };
+    img.onerror = function() { resolve(b64); };
+    img.src = b64;
+  });
+}
+
+// ── guardar um projeto individual no Firestore ──────────────────────
+async function guardarProjFirestore(proj) {
+  // Comprimir todas as imagens antes de guardar
+  var imagensComprimidas = [];
+  for (var i = 0; i < (proj.imagens||[]).length; i++) {
+    var img = proj.imagens[i];
+    var imgComprimida = await comprimirImagem(img, 900, 0.72);
+    imagensComprimidas.push(imgComprimida);
+  }
+
+  var projParaGuardar = Object.assign({}, proj, { imagens: imagensComprimidas });
+
+  var projDoc = doc(_db, 'projetos', proj.id);
+  await setDoc(projDoc, projParaGuardar);
+  return projParaGuardar;
+}
+
+async function guardar(projetoEspecifico) {
   if (typeof MODO_STANDALONE !== 'undefined' && MODO_STANDALONE) return;
-  try { localStorage.setItem(LS_KEY, JSON.stringify(PROJETOS)); } catch(e) {}
   setSyncStatus('saving');
   try {
-    await setDoc(_docRef, { projetos: JSON.stringify(PROJETOS) });
+    if (projetoEspecifico) {
+      // guardar apenas um projeto
+      var projAtualizado = await guardarProjFirestore(projetoEspecifico);
+      // atualizar array local com URLs de Storage
+      var idx = PROJETOS.findIndex(function(p){ return p.id === projetoEspecifico.id; });
+      if (idx >= 0) PROJETOS[idx] = projAtualizado;
+    } else {
+      // guardar todos (usado após apagar)
+      for (var i = 0; i < PROJETOS.length; i++) {
+        await guardarProjFirestore(PROJETOS[i]);
+      }
+    }
+    // cache local
+    try { localStorage.setItem(LS_KEY, JSON.stringify(PROJETOS)); } catch(e) {}
     setSyncStatus('saved');
   } catch(e) {
     console.error('Firebase save error:', e);
     setSyncStatus('error');
+    try { localStorage.setItem(LS_KEY, JSON.stringify(PROJETOS)); } catch(ex) {}
     alert('Erro ao guardar no Firebase: ' + e.message + '\n\nOs dados ficaram guardados localmente.');
   }
 }
 
 async function carregar() {
   if (typeof MODO_STANDALONE !== 'undefined' && MODO_STANDALONE) {
-    // ficheiro exportado — usar apenas dados embebidos
     if (typeof PROJETO_EMBED !== 'undefined' && PROJETO_EMBED) {
       PROJETOS = [PROJETO_EMBED];
     }
     return;
   }
   try {
-    var snap = await getDoc(_docRef);
-    if (snap.exists()) {
-      PROJETOS = JSON.parse(snap.data().projetos || '[]');
+    // Carregar todos os documentos da coleção 'projetos'
+    var snap = await getDocs(query(_colRef));
+    if (!snap.empty) {
+      PROJETOS = [];
+      snap.forEach(function(d) { PROJETOS.push(d.data()); });
+      // ordenar por data de criação
+      PROJETOS.sort(function(a,b){ return (a.dataCriacao||'') > (b.dataCriacao||'') ? 1 : -1; });
       try { localStorage.setItem(LS_KEY, JSON.stringify(PROJETOS)); } catch(e) {}
       return;
     }
-  } catch(e) { console.warn('Firebase load error, usando localStorage:', e); }
-  // fallback localStorage
+  } catch(e) {
+    console.warn('Firebase load error, usando localStorage:', e);
+  }
+  // fallback localStorage (migração de dados antigos)
   try {
     var s = localStorage.getItem(LS_KEY);
-    if (s) PROJETOS = JSON.parse(s);
+    if (s) {
+      var dadosAntigos = JSON.parse(s);
+      // Se os dados antigos estiverem no formato antigo (array direto), migrar
+      if (Array.isArray(dadosAntigos)) {
+        PROJETOS = dadosAntigos;
+        // Migrar automaticamente para o novo formato
+        console.log('A migrar ' + PROJETOS.length + ' projetos para o novo formato...');
+        for (var i = 0; i < PROJETOS.length; i++) {
+          try { await guardarProjFirestore(PROJETOS[i]); } catch(e) {}
+        }
+      } else {
+        PROJETOS = [];
+      }
+    }
   } catch(e) { PROJETOS = []; }
 }
 function uid() {
@@ -2129,9 +2299,11 @@ function processarImagens(files) {
     if (file.size > 4 * 1024 * 1024) { alert(file.name + ' é maior que 4MB.'); pendentes--; return; }
     var reader = new FileReader();
     reader.onload = function(e) {
-      EDIT_IMGS.push(e.target.result);
-      pendentes--;
-      if (pendentes <= 0) renderThumbs();
+      comprimirImagem(e.target.result, 900, 0.72).then(function(b64) {
+        EDIT_IMGS.push(b64);
+        pendentes--;
+        if (pendentes <= 0) renderThumbs();
+      });
     };
     reader.readAsDataURL(file);
   });
@@ -2223,10 +2395,10 @@ function doLogout() {
 }
 
 // Observador de estado de autenticação — controla qual view mostrar
-onAuthStateChanged(_auth, function(user) {
+onAuthStateChanged(_auth, async function(user) {
   if (user) {
-    // utilizador autenticado
-    if (!checkUrlParam()) {
+    var isCliente = await checkUrlParam();
+    if (!isCliente) {
       carregar().then(function() {
         setView('painel');
         renderPainel();
@@ -2234,7 +2406,6 @@ onAuthStateChanged(_auth, function(user) {
       });
     }
   }
-  // se não autenticado, o init abaixo trata de mostrar o login
 });
 function setView(v) {
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
@@ -2304,12 +2475,16 @@ async function verificarNovasVisitas() {
   } catch(e) { /* silencioso */ }
 }
 
-// verificar visitas a cada 2 minutos quando o painel está ativo
+// verificar visitas e aprovações a cada 2 minutos quando o painel está ativo
 var _visitasInterval = null;
 function iniciarPollingVisitas() {
   if (_visitasInterval) return;
   verificarNovasVisitas();
-  _visitasInterval = setInterval(verificarNovasVisitas, 120000);
+  verificarAprovacoes();
+  _visitasInterval = setInterval(function() {
+    verificarNovasVisitas();
+    verificarAprovacoes();
+  }, 120000);
 }
 function pararPollingVisitas() {
   if (_visitasInterval) { clearInterval(_visitasInterval); _visitasInterval = null; }
@@ -2377,6 +2552,11 @@ function renderPainel() {
         '<span class="badge-visita">👁 Visto · ' + p._ultimaVisita + (p._totalVisitas > 1 ? ' · ' + p._totalVisitas + 'x' : '') + '</span>' +
         '</div>';
     }
+    // Badge de aprovação
+    var aprovacaoBadge = '';
+    if (p.aprovacao && p.aprovacao.data) {
+      aprovacaoBadge = '<div class="proj-card-visita"><span class="badge-aprovacao">✓ Aprovado · ' + p.aprovacao.data + '</span></div>';
+    }
     return '<div class="proj-card">' +
       '<div class="proj-card-header">' +
         '<div class="proj-card-nome">' + (p.nome||'—') + '</div>' +
@@ -2390,6 +2570,7 @@ function renderPainel() {
         prazoInfo +
       '</div>' +
       visitaBadge +
+      aprovacaoBadge +
       '<div class="proj-card-footer">' +
         '<button class="btn-sm primary" onclick="verCliente(\'' + p.id + '\')">👁 Ver</button>' +
         '<button class="btn-sm btn-partilhar" onclick="partilharCliente(\'' + p.id + '\', this)">📤 Partilhar</button>' +
@@ -2546,10 +2727,13 @@ function copiarEmail(btn) {
   });
 }
 
-function apagarProjeto(id) {
+async function apagarProjeto(id) {
   if (!confirm('Apagar este projeto?')) return;
+  try {
+    await deleteDoc(doc(_db, 'projetos', id));
+  } catch(e) { console.warn('Erro ao apagar do Firestore:', e); }
   PROJETOS = PROJETOS.filter(function(p){ return p.id !== id; });
-  guardar();
+  try { localStorage.setItem(LS_KEY, JSON.stringify(PROJETOS)); } catch(e) {}
   renderPainel();
 }
 
@@ -2823,7 +3007,7 @@ function guardarProjeto() {
 
   fecharModal();
   renderPainel();
-  guardar();
+  guardar(proj); // guardar apenas este projeto
 }
 
 // ════════════════════════════════════════════════
@@ -2866,7 +3050,7 @@ function addInteracao() {
                  String(agora.getHours()).padStart(2,'0') + ':' +
                  String(agora.getMinutes()).padStart(2,'0');
   p.interacoes.push({ tipo: tipo, texto: texto, data: dataHora });
-  guardar();
+  guardar(p);
   renderPainelFeed(p.interacoes);
   document.getElementById('feed-texto').value = '';
 }
@@ -2877,7 +3061,7 @@ function eliminarInteracao(idx) {
   if (!p || !p.interacoes) return;
   if (!confirm('Eliminar este registo?')) return;
   p.interacoes.splice(idx, 1);
-  guardar();
+  guardar(p);
   renderPainelFeed(p.interacoes);
 }
 
@@ -3004,6 +3188,7 @@ function exportarHTML(id) { /* desativado */ }
 
 
 function renderPaginaCliente(p) {
+  _PROJ_ATUAL_ID = p.id; // guardar ID para aprovação
   var hoje = new Date();
   var total = calcTotal(p);
   var cats  = calcCats(p);
@@ -3178,6 +3363,9 @@ function renderPaginaCliente(p) {
       feedWrap.innerHTML = feedHTML;
     }
   }
+
+  // estado de aprovação
+  renderEstadoAprovacao(p.id, p.aprovacao || null);
 }
 
 function iniciarContador(prazoStr) {
@@ -3200,22 +3388,119 @@ function iniciarContador(prazoStr) {
   cdInterval = setInterval(tick, 1000);
 }
 
-function checkUrlParam() {
-  // verificar ?p=ID na URL
+// ════════════════════════════════════════════════
+// APROVAÇÃO DA PROPOSTA PELO CLIENTE
+// ════════════════════════════════════════════════
+var _PROJ_ATUAL_ID = null; // ID do projeto na vista cliente
+
+async function renderEstadoAprovacao(projetoId, aprovacao) {
+  var wrap = document.getElementById('aprovacao-estado');
+  if (!wrap) return;
+
+  if (aprovacao && aprovacao.data) {
+    // já aprovado
+    wrap.innerHTML = '<div class="aprovacao-ja-feita">' +
+      '✓ Proposta aprovada em ' + aprovacao.data +
+      (aprovacao.hora ? ' às ' + aprovacao.hora : '') +
+    '</div>';
+  } else {
+    // ainda não aprovado — mostrar botão
+    wrap.innerHTML =
+      '<button class="btn-aprovar" id="btn-aprovar-proj" onclick="aprovarProposta()">' +
+        '✓ Aprovar esta Proposta' +
+      '</button>' +
+      '<div class="aprovacao-confirmada" id="aprovacao-confirmada">' +
+        '<div class="aprovacao-confirmada-titulo">✓ Aprovação registada!</div>' +
+        '<div class="aprovacao-confirmada-texto">A sua confirmação foi enviada com sucesso. Entrarei em contacto brevemente para avançarmos com os próximos passos.</div>' +
+      '</div>';
+  }
+}
+
+async function aprovarProposta() {
+  if (!_PROJ_ATUAL_ID) return;
+  var btn = document.getElementById('btn-aprovar-proj');
+  if (btn) { btn.disabled = true; btn.textContent = 'A registar…'; }
+
+  var agora = new Date();
+  var data = agora.toLocaleDateString('pt-PT');
+  var hora = String(agora.getHours()).padStart(2,'0') + ':' + String(agora.getMinutes()).padStart(2,'0');
+
+  try {
+    var projDoc = doc(_db, 'projetos', _PROJ_ATUAL_ID);
+    var snap = await getDoc(projDoc);
+    if (snap.exists()) {
+      var p = snap.data();
+      p.aprovacao = { data: data, hora: hora };
+      p.fase = 'aprovado'; // avançar fase automaticamente
+      await setDoc(projDoc, p);
+    }
+    // mostrar confirmação
+    var conf = document.getElementById('aprovacao-confirmada');
+    if (conf) conf.classList.add('show');
+    if (btn) btn.style.display = 'none';
+    // notificar o painel se estiver aberto
+    mostrarToast('✓ Proposta aprovada!', 'O cliente aprovou · ' + data + ' · ' + hora);
+  } catch(e) {
+    console.error('Erro ao registar aprovação:', e);
+    if (btn) { btn.disabled = false; btn.textContent = '✓ Aprovar esta Proposta'; }
+    alert('Erro ao registar aprovação. Tente novamente ou contacte-nos diretamente.');
+  }
+}
+
+// verificar se o projeto já foi aprovado (polling no painel)
+async function verificarAprovacoes() {
+  try {
+    for (var i = 0; i < PROJETOS.length; i++) {
+      var p = PROJETOS[i];
+      var projDoc = doc(_db, 'projetos', p.id);
+      var snap = await getDoc(projDoc);
+      if (snap.exists()) {
+        var dados = snap.data();
+        var aprovacaoAnterior = p.aprovacao;
+        p.aprovacao = dados.aprovacao;
+        p.fase      = dados.fase;
+        // nova aprovação?
+        if (!aprovacaoAnterior && dados.aprovacao && dados.aprovacao.data) {
+          mostrarToast('🎉 ' + (p.nome||'Cliente') + ' aprovou a proposta!', 'Em ' + dados.aprovacao.data + ' às ' + (dados.aprovacao.hora||'--:--'));
+          renderPainel();
+        }
+      }
+    }
+  } catch(e) { /* silencioso */ }
+}
+
+async function checkUrlParam() {
   var params = new URLSearchParams(window.location.search);
   var id = params.get('p');
-  if (id) {
-    var p = PROJETOS.find(function(x){ return x.id === id; });
-    if (p) {
+  if (!id) return false;
+
+  try {
+    // Carregar APENAS este projeto do Firestore — os outros projetos não são transferidos
+    var projDoc = doc(_db, 'projetos', id);
+    var snap = await getDoc(projDoc);
+    if (snap.exists()) {
+      var p = snap.data();
       renderPaginaCliente(p);
       setView('cliente');
       var btn = document.getElementById('btn-voltar-painel');
       if (btn) btn.style.display = 'none';
       return true;
-    } else {
-      console.warn('Projeto não encontrado. Total carregados:', PROJETOS.length);
     }
+  } catch(e) {
+    console.warn('Erro ao carregar projeto:', e);
   }
+
+  // fallback: procurar no array local (compatibilidade)
+  var pLocal = PROJETOS.find(function(x){ return x.id === id; });
+  if (pLocal) {
+    renderPaginaCliente(pLocal);
+    setView('cliente');
+    var btn2 = document.getElementById('btn-voltar-painel');
+    if (btn2) btn2.style.display = 'none';
+    return true;
+  }
+
+  console.warn('Projeto não encontrado:', id);
   return false;
 }
 
@@ -3253,6 +3538,7 @@ window.addInteracao     = addInteracao;
 window.eliminarInteracao = eliminarInteracao;
 window.atualizarTotalPreview = atualizarTotalPreview;
 window.renderThumbs     = renderThumbs;
+window.aprovarProposta  = aprovarProposta;
 
 (async function() {
   var overlay = document.createElement('div');
@@ -3278,7 +3564,8 @@ window.renderThumbs     = renderThumbs;
   }
 
   // Se for acesso direto de cliente via ?p=ID, carrega sem autenticacao
-  if (checkUrlParam()) {
+  var isClienteAccess = await checkUrlParam();
+  if (isClienteAccess) {
     overlay.remove();
     return;
   }
