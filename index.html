@@ -3524,11 +3524,23 @@ function renderPaginaCliente(p) {
     if (keys[i]) el.textContent = L.countdown[keys[i]];
   });
 
-  // hero meta labels
+  // hero meta labels — actualizar só o texto antes do <strong>
   var entregaRow = document.getElementById('cli-entrega-row');
-  if (entregaRow) entregaRow.childNodes[0].textContent = L.hero.entregaPrev + ' ';
+  if (entregaRow) {
+    var tNode = document.createTextNode(L.hero.entregaPrev + ' ');
+    var strong = entregaRow.querySelector('strong');
+    entregaRow.innerHTML = '';
+    entregaRow.appendChild(tNode);
+    if (strong) entregaRow.appendChild(strong);
+  }
   var aprovRow = document.getElementById('cli-aprovacao-row');
-  if (aprovRow) aprovRow.childNodes[0].textContent = L.hero.aprovadoEm + ' ';
+  if (aprovRow) {
+    var tNode2 = document.createTextNode(L.hero.aprovadoEm + ' ');
+    var strong2 = aprovRow.querySelector('strong');
+    aprovRow.innerHTML = '';
+    aprovRow.appendChild(tNode2);
+    if (strong2) aprovRow.appendChild(strong2);
+  }
 
   // banner expirado
   var bannerExp = document.querySelector('.expirado-banner-txt');
@@ -3936,6 +3948,7 @@ window.atualizarTotalPreview = atualizarTotalPreview;
 window.renderThumbs     = renderThumbs;
 window.aprovarProposta  = aprovarProposta;
 window.atualizarTipoProjeto = atualizarTipoProjeto;
+window.setLang          = setLang;
 
 function atualizarTipoProjeto() {
   var val = document.getElementById('f-tipo').value;
