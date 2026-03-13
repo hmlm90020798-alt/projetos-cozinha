@@ -1687,6 +1687,23 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
 @media (max-width: 768px) {
   .aprovacao-wrap { padding: 40px 24px; }
 }
+/* ══ PÁGINA EXPIRADA ══ */
+#view-expirada { display:none; min-height:100vh; background:var(--dark); align-items:center; justify-content:center; }
+#view-expirada.active { display:flex; }
+.expirada-box { max-width:480px; width:100%; padding:48px 32px; text-align:center; }
+.expirada-icone { font-size:52px; margin-bottom:28px; opacity:.6; }
+.expirada-titulo { font-family:'Playfair Display',serif; font-size:clamp(28px,5vw,40px); font-weight:900; color:#F2EFE8; line-height:1.1; margin-bottom:16px; }
+.expirada-sub { font-size:14px; color:rgba(242,239,232,.45); line-height:1.9; margin-bottom:40px; }
+.expirada-card { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); border-radius:16px; overflow:hidden; text-align:left; }
+.expirada-card-header { display:flex; align-items:center; gap:16px; padding:24px 28px; border-bottom:1px solid rgba(255,255,255,.06); }
+.expirada-avatar { width:46px; height:46px; border-radius:50%; background:linear-gradient(145deg,var(--lm-green-dark),var(--lm-green)); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:19px; font-weight:700; color:#F2EFE8; flex-shrink:0; }
+.expirada-nome { font-family:'Playfair Display',serif; font-size:16px; font-weight:700; color:#F2EFE8; }
+.expirada-cargo { font-size:11px; color:rgba(242,239,232,.35); font-style:italic; margin-top:2px; }
+.expirada-contactos { padding:20px 28px; display:flex; flex-direction:column; gap:14px; }
+.expirada-linha { display:flex; align-items:center; gap:12px; }
+.expirada-label { font-family:'Syne',sans-serif; font-size:9px; font-weight:800; letter-spacing:1.5px; color:rgba(242,239,232,.25); text-transform:uppercase; width:52px; flex-shrink:0; }
+.expirada-valor { font-family:'Inconsolata',monospace; font-size:15px; color:rgba(242,239,232,.8); }
+@media(max-width:480px){ .expirada-box{ padding:32px 20px; } }
 </style>
 </head>
 <body>
@@ -1756,7 +1773,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
           oninput="renderPainel()">
       </div>
       <button class="filtro-btn active" onclick="setFiltro(this,'todos')">Todos</button>
-      <button class="filtro-btn" onclick="setFiltro(this,'proposta')">Em Análise</button>
+      <button class="filtro-btn" onclick="setFiltro(this,'proposta')">Apresentado</button>
       <button class="filtro-btn" onclick="setFiltro(this,'aprovado')">Aprovado</button>
       <button class="filtro-btn" onclick="setFiltro(this,'obra')">Em Obra</button>
       <button class="filtro-btn" onclick="setFiltro(this,'concluido')">Concluído</button>
@@ -1769,7 +1786,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
       </div>
       <div class="stat-card">
         <div class="stat-val" id="stat-proposta">0</div>
-        <div class="stat-lbl">Em Análise</div>
+        <div class="stat-lbl">Apresentados</div>
       </div>
       <div class="stat-card">
         <div class="stat-val" id="stat-obra">0</div>
@@ -1836,7 +1853,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
           <div class="form-field">
             <div class="form-label">Fase</div>
             <select id="f-fase" class="form-select">
-              <option value="proposta">Em Análise</option>
+              <option value="proposta">Apresentado</option>
               <option value="aprovado">Aprovado</option>
               <option value="encomenda">Materiais Encomendados</option>
               <option value="entrega">Aguarda Entrega</option>
@@ -1949,6 +1966,34 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
 </div>
 
 <!-- ══ PÁGINA PÚBLICA DO CLIENTE ══ -->
+<!-- ══ EXPIRADA ══ -->
+<div id="view-expirada" class="view">
+  <div class="expirada-box">
+    <div class="expirada-icone">⏳</div>
+    <div class="expirada-titulo">Esta proposta<br>já não está disponível.</div>
+    <div class="expirada-sub">O período de validade desta proposta terminou.<br>Mas não se preocupe — estou sempre disponível<br>para rever o projeto e encontrar a melhor solução para si.</div>
+    <div class="expirada-card">
+      <div class="expirada-card-header">
+        <div class="expirada-avatar">H</div>
+        <div>
+          <div class="expirada-nome">Hélder Melo</div>
+          <div class="expirada-cargo">Vendedor de Projetos · Leroy Merlin</div>
+        </div>
+      </div>
+      <div class="expirada-contactos">
+        <div class="expirada-linha">
+          <span class="expirada-label">Tel.</span>
+          <span class="expirada-valor">917 880 364</span>
+        </div>
+        <div class="expirada-linha">
+          <span class="expirada-label">Email</span>
+          <span class="expirada-valor">helder.melo@leroymerlin.pt</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="view-cliente" class="view">
 
   <nav class="cli-nav">
@@ -2597,7 +2642,7 @@ function renderPainel() {
 }
 
 function faseLbl(f) {
-  return { proposta:'Em Análise', aprovado:'Aprovado', encomenda:'Encomendado', entrega:'Aguarda Entrega', montagem:'Em Montagem', concluido:'Concluído', expirado:'Expirado' }[f] || f;
+  return { proposta:'Apresentado', aprovado:'Aprovado', encomenda:'Encomendado', entrega:'Aguarda Entrega', montagem:'Em Montagem', concluido:'Concluído', expirado:'Expirado' }[f] || f;
 }
 
 function calcTotal(p) {
@@ -2649,7 +2694,7 @@ function partilharCliente(id, btn) {
 
   var url = window.location.href.split('?')[0] + '?p=' + id;
   var tipoNome = p.tipo === 'casa-de-banho' ? 'casa de banho' : (p.tipo && p.tipo !== 'cozinha' ? p.tipo : 'cozinha');
-  var fase = { proposta:'em análise', aprovado:'aprovada', encomenda:'encomendada', entrega:'aguarda entrega', montagem:'em montagem', concluido:'concluída' }[p.fase] || p.fase;
+  var fase = { proposta:'apresentada', aprovado:'aprovada', encomenda:'encomendada', entrega:'aguarda entrega', montagem:'em montagem', concluido:'concluída' }[p.fase] || p.fase;
   var total = calcTotal(p);
   var totalStr = total > 0 ? ' no valor de ' + total.toFixed(2).replace('.',',') + ' €' : '';
 
@@ -3223,11 +3268,18 @@ function exportarHTML(id) { /* desativado */ }
 
 
 function renderPaginaCliente(p) {
-  _PROJ_ATUAL_ID = p.id; // guardar ID para aprovação
-  var hoje = new Date();
+  _PROJ_ATUAL_ID = p.id;
+  var hoje = new Date(); hoje.setHours(0,0,0,0);
   var total = calcTotal(p);
   var cats  = calcCats(p);
   var expirado = p.prazo && new Date(p.prazo) < hoje;
+
+  // Se expirado e acesso de cliente real (não preview do painel), bloquear
+  var isPreview = document.getElementById('btn-voltar-painel') && document.getElementById('btn-voltar-painel').style.display !== 'none';
+  if (expirado && !isPreview) {
+    setView('expirada');
+    return;
+  }
 
   // Registar visita no Firestore (só quando acesso real de cliente, não preview do painel)
   if (typeof _db !== 'undefined' && typeof setDoc !== 'undefined') {
