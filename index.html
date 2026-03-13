@@ -1726,10 +1726,10 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
       <div class="form-field" style="margin-bottom:20px;">
         <div class="login-label">Password</div>
         <input type="password" id="login-pw" class="login-input" placeholder="••••••••"
-          onkeydown="if(event.key==='Enter')doLogin()"
+          onkeydown="if(event.key==='Enter') window.doLogin && window.doLogin()"
           style="margin-bottom:0;">
       </div>
-      <button class="login-btn" onclick="doLogin()">Entrar</button>
+      <button class="login-btn" onclick="window.doLogin && window.doLogin()">Entrar</button>
       <div class="login-error" id="login-err"></div>
     </div>
   </div>
@@ -2212,7 +2212,7 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
+<script type="module">
 // ════════════════════════════════════════════════
 // DADOS & ESTADO
 // ════════════════════════════════════════════════
@@ -3745,3 +3745,12 @@ function atualizarTipoProjeto() {
 
   // Aguardar estado de autenticação do Firebase
   // O onAuthStateChanged acima trata do resto
+  // Se após 3 segundos não houver utilizador, mostrar login
+  setTimeout(function() {
+    var ov = document.getElementById('loading-overlay');
+    if (ov) { ov.remove(); setView('login'); }
+  }, 3000);
+})();
+</script>
+</body>
+</html>
