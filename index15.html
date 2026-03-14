@@ -584,6 +584,21 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
   transition: all .2s;
 }
 .btn-save:hover { background: var(--lm-green-dark); }
+.btn-reiniciar-prazo {
+  flex-shrink: 0;
+  padding: 10px 13px;
+  background: var(--lm-green);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .2s;
+}
+.btn-reiniciar-prazo:hover { background: var(--lm-green-dark); }
 
 /* ══════════════════════════════════════
    PÁGINA PÚBLICA DO CLIENTE
@@ -1913,7 +1928,10 @@ body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--i
           </div>
           <div class="form-field">
             <div class="form-label">Validade da Proposta</div>
-            <input type="date" id="f-prazo" class="form-input">
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input type="date" id="f-prazo" class="form-input" style="flex:1;">
+              <button type="button" class="btn-reiniciar-prazo" onclick="reiniciarPrazoForm()" title="Reiniciar validade para hoje, mantendo o número de dias original">📅 Reiniciar</button>
+            </div>
           </div>
         </div>
       </div>
@@ -4046,7 +4064,33 @@ window.atualizarTotalPreview = atualizarTotalPreview;
 window.renderThumbs     = renderThumbs;
 window.aprovarProposta  = aprovarProposta;
 window.atualizarTipoProjeto = atualizarTipoProjeto;
+window.reiniciarPrazoForm  = reiniciarPrazoForm;
 window.setLang          = setLang;
+
+function reiniciarPrazoForm() {
+  var prazoInput = document.getElementById('f-prazo');
+  var prazoAtual = prazoInput.value;
+  if (!prazoAtual) { alert('Define primeiro uma data de validade.'); return; }
+
+  var diasValidade = 15; // default
+  if (EDIT_ID) {
+    var p = PROJETOS.find(function(x){ return x.id === EDIT_ID; });
+    if (p && p.dataCriacao && p.prazo) {
+      var criacao = new Date(p.dataCriacao + 'T12:00:00');
+      var prazoOriginal = new Date(p.prazo + 'T12:00:00');
+      var calculado = Math.round((prazoOriginal - criacao) / (1000*60*60*24));
+      if (!isNaN(calculado) && calculado > 0) diasValidade = calculado;
+    }
+  }
+
+  var hoje = new Date();
+  var novoPrazo = new Date(hoje.getTime() + diasValidade * 24*60*60*1000);
+  var novoPrazoISO = novoPrazo.toISOString().split('T')[0];
+
+  if (!confirm('Reiniciar validade da proposta?\n\nDias de validade: ' + diasValidade + '\nNovo prazo: ' + novoPrazo.toLocaleDateString('pt-PT'))) return;
+
+  prazoInput.value = novoPrazoISO;
+}
 
 function atualizarTipoProjeto() {
   var val = document.getElementById('f-tipo').value;
